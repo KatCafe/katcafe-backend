@@ -1,0 +1,5 @@
+node_modules/
+dist_bundle/
+package-lock.json
+.idea/
+consts/
