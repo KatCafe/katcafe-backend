@@ -78,12 +78,12 @@ export default function (express){
             if (!slug || slug.length < 1) throw "slug is not right";
             if (slug[0] === '/') slug = slug.substr(1);
 
-            const channel = new Topic(slug);
+            const topic = new Topic(slug);
 
-            if ( await channel.load() === false)
+            if ( await topic.load() === false)
                 throw "Not found";
 
-            res.json({result: true, channel: channel.toJSON() });
+            res.json({result: true, topic: topic.toJSON()});
 
 
         }catch(err){
@@ -97,10 +97,11 @@ export default function (express){
         try{
 
             let {searchQuery, search, index, count} = req.body;
-            if (searchQuery === 'country' && !search ) search = 'us';
 
             if (!search) search = '';
             if (search[0] === '/') search = search.substr(1);
+
+            if (searchQuery === 'country' && !search ) search = 'us';
 
             const out = await getTopics( searchQuery, search, index, count, true);
             res.json({result: true, topics: out });
