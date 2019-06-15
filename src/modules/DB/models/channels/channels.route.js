@@ -65,7 +65,7 @@ export default function (express){
 
             let {country, index, count} = req.params;
 
-            if (!country ) country = 'usa';
+            if (!country ) country = 'us';
             if (!index) index = 1;
             if ( !count ) count = 10;
 
