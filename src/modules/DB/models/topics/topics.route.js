@@ -3,7 +3,7 @@ import Channel from "../channels/channel";
 import StringHelper from "modules/helpers/string-helper";
 import client from "../../redis";
 
-async function getTopics(searchAlgorithm = 'hot', searchQuery, search, index, count, load){
+async function getTopics(revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load){
 
     if (!index) index = 1;
     if ( !count ) count = 10;
@@ -11,7 +11,7 @@ async function getTopics(searchAlgorithm = 'hot', searchQuery, search, index, co
     search = (search || '').toLowerCase();
     count = Math.min( count, 30);
 
-    const out = await client.zrangeAsync( `topics:rank:${searchAlgorithm}:${searchQuery}:${search}`, (index-1)*count, index*count-1 );
+    const out = await client[`z${revert ? 'rev' : ''}rangeAsync`]( `topics:rank:${searchAlgorithm}:${searchQuery}:${search}`, (index-1) * count, index*count-1 );
 
     if (!load) return out;
 
@@ -96,14 +96,14 @@ export default function (express){
 
         try{
 
-            let {searchAlgorithm, searchQuery, search, index, count} = req.body;
+            let {searchRevert, searchAlgorithm, searchQuery, search, index, count} = req.body;
 
             if (!search) search = '';
             if (search[0] === '/') search = search.substr(1);
 
             if (searchQuery === 'country' && !search ) search = 'us';
 
-            const out = await getTopics( searchAlgorithm, searchQuery, search, index, count, true);
+            const out = await getTopics( searchRevert, searchAlgorithm, searchQuery, search, index, count, true);
             res.json({result: true, topics: out });
 
 

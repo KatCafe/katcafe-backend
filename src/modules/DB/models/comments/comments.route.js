@@ -5,7 +5,7 @@ import StringHelper from "../../../helpers/string-helper";
 import Comment from "./comment";
 import client from "../../redis";
 
-async function getComments(searchAlgorithm = 'hot', searchQuery, search, index, count, load){
+async function getComments(revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load){
 
     if ( !index ) index = 1;
     if ( !count ) count = 10;
@@ -13,7 +13,7 @@ async function getComments(searchAlgorithm = 'hot', searchQuery, search, index, 
     search = (search || '').toLowerCase();
     count = Math.min( count, 30);
 
-    const out = await client.zrangeAsync( `comments:rank:${searchAlgorithm}:${searchQuery}:${search}`, (index-1)*count, index*count-1 );
+    const out = await client[`z${revert ? 'rev' : ''}rangeAsync`]( `comments:rank:${searchAlgorithm}:${searchQuery}:${search}`, (index-1) * count, index*count-1 );
 
     if (!load) return out;
 
@@ -81,14 +81,14 @@ export default function (express){
 
         try{
 
-            let {searchAlgorithm, searchQuery, search, index, count} = req.body;
+            let { searchRevert, searchAlgorithm, searchQuery, search, index, count} = req.body;
 
             if (!search) search = '';
             if (search[0] === '/') search = search.substr(1);
 
             if (searchQuery === 'country' && !search ) search = 'us';
 
-            const out = await getComments( searchAlgorithm, searchQuery, search, index, count, true);
+            const out = await getComments( searchRevert, searchAlgorithm, searchQuery, search, index, count, true);
             res.json({result: true, comments: out });
 
 
