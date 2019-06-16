@@ -2,9 +2,9 @@ import Model from "modules/DB/model"
 
 export default class CommentModel extends Model {
 
-    constructor( slug, topic, body, link, preview, channel, country, date){
+    constructor( slug, topic, body, link, preview, author, channel, country, date){
 
-        super( "comment", ["slug", "topic", "body","link", "preview", "channel", "country", "date"] );
+        super( "comment", ["slug", "topic", "body","link", "preview", "channel", "author", "country", "date"] );
 
         this.slug = slug;
 
@@ -12,6 +12,7 @@ export default class CommentModel extends Model {
         this.body = body;
         this.link = link;
         this.preview = preview;
+        this.author = author;
 
         this.channel = channel;
         this.country = country;

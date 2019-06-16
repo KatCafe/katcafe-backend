@@ -59,20 +59,21 @@ export default function (express){
 
     });
 
-    express.get( '/channels/top/:country?/:index?/:count?', async function(req, res ) {
+    express.get( '/channels/:algorithm/:country?/:index?/:count?', async function(req, res ) {
 
         try{
 
-            let {country, index, count} = req.params;
+            let {algorithm, country, index, count} = req.params;
 
             if (!country ) country = 'us';
             if (!index) index = 1;
             if ( !count ) count = 10;
+            if (!algorithm ) algorithm = 'hot';
 
             country = country.toLowerCase();
             count = Math.min( count, 40);
 
-            const out = await client.zrangeAsync( 'channels:rank:hot:'+country, (index-1)*count, index*count-1 );
+            const out = await client.zrangeAsync( `channels:rank:${algorithm}:${country}`, (index-1)*count, index*count-1 );
 
             res.json({result: true, channels: out });
 

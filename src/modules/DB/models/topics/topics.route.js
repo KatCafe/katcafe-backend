@@ -3,7 +3,7 @@ import Channel from "../channels/channel";
 import StringHelper from "modules/helpers/string-helper";
 import client from "../../redis";
 
-async function getTopics(searchQuery, search, index, count, load){
+async function getTopics(searchAlgorithm = 'hot', searchQuery, search, index, count, load){
 
     if (!index) index = 1;
     if ( !count ) count = 10;
@@ -11,7 +11,7 @@ async function getTopics(searchQuery, search, index, count, load){
     search = (search || '').toLowerCase();
     count = Math.min( count, 30);
 
-    const out = await client.zrangeAsync( `topics:rank:hot:${searchQuery}:${search}`, (index-1)*count, index*count-1 );
+    const out = await client.zrangeAsync( `topics:rank:${searchAlgorithm}:${searchQuery}:${search}`, (index-1)*count, index*count-1 );
 
     if (!load) return out;
 
@@ -35,7 +35,7 @@ export default function (express){
 
             let { channel, title, link, body, author } = req.body;
 
-            if (!channel || channel.length < 1) throw "Name is to small. Required at least 1 char";
+            if (!channel || channel.length < 1) throw "Channel was not selected";
             if (!title || title.length < 5) throw "Title is too small. Required at least 5 char";
             if (!link) link = '';
             if (!body) body = '';
@@ -46,7 +46,7 @@ export default function (express){
 
             if (await channelModel.load() === false) throw "channel was not found";
 
-            const slug = channelModel.slug + '/' + StringHelper.url_slug(  title );
+            const slug = channelModel.slug + '/' + StringHelper.url_slug(  title ) ;
             let existsTopic = new Topic();
             let suffix = '';
 
@@ -57,7 +57,7 @@ export default function (express){
 
             let preview = '';
 
-            const topic = new Topic(existsTopic.slug, channelModel.slug, title, link, preview, body, author, channelModel.country, new Date().getTime() );
+            const topic = new Topic(existsTopic.slug.toLowerCase(), channelModel.slug.toLowerCase(), title, link, preview, body, author, channelModel.country.toLowerCase(), new Date().getTime() );
 
             await topic.save();
             res.json({result: true, topic: topic.toJSON() });
@@ -96,14 +96,14 @@ export default function (express){
 
         try{
 
-            let {searchQuery, search, index, count} = req.body;
+            let {searchAlgorithm, searchQuery, search, index, count} = req.body;
 
             if (!search) search = '';
             if (search[0] === '/') search = search.substr(1);
 
             if (searchQuery === 'country' && !search ) search = 'us';
 
-            const out = await getTopics( searchQuery, search, index, count, true);
+            const out = await getTopics( searchAlgorithm, searchQuery, search, index, count, true);
             res.json({result: true, topics: out });
 
 
