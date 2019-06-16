@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 
+const secret = 'KABOOOM';
+
 class CryptoHelper {
 
     sha256(data){

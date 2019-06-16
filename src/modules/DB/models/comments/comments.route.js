@@ -6,6 +6,10 @@ import Comment from "./comment";
 import client from "../../redis";
 
 import ScraperHelper from "modules/DB/models/scraper/scraper-helper"
+import CryptoHelper from "modules/helpers/crypto-helper"
+
+import FileController from "modules/DB/models/files/file-controller"
+
 
 async function getComments(revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load){
 
@@ -39,14 +43,14 @@ export default function (express){
 
         try{
 
-            let { topic, body, link, author } = req.body;
+            let { topic, body, link, author, file } = req.body;
 
             if (!topic || topic.length < 1) throw "Topic was not selected";
             if (!link) link = '';
             if (!body) body = '';
             if (!author ) author = '';
 
-            if (!link && body.length < 5) throw "You need to provide either a link/file or a text";
+            if (!file && !link && body.length < 5) throw "You need to provide either a link/file or a text";
 
             const topicModel = new Topic(topic);
             if (await topicModel.load() === false ) throw "topic was not found";
@@ -72,6 +76,16 @@ export default function (express){
                     preview = previewData.image;
                     if (!body) body = previewData.description || previewData.title || '';
                 }
+            }
+            if (file){
+
+                if (file.base64) {
+
+                    file.title = file.body;
+                    const fileSlug = await FileController.processUploadedBase64File(file );
+
+                } else throw "file not supported";
+
             }
 
             const comment = new Comment( existsComment.slug.toLowerCase(), topicModel.slug.toLowerCase(), channelModel.slug.toLowerCase(), body, link, preview, author, channelModel.country, new Date().getTime() );

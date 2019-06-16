@@ -25,7 +25,6 @@ class ScraperHelper {
                 return size;
             }
         }catch(err){
-            console.error(err);
         }
 
     }
