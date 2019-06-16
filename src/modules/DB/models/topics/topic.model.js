@@ -2,19 +2,19 @@ import Model from "modules/DB/model"
 
 export default class TopicModel extends Model {
 
-    constructor( slug, channel, title, link, image, body, author, country, date){
+    constructor( slug, channel, title, link, preview, body, author, country, date){
 
-        super( "topic", [ "slug", "channel", "title","link", "body", "author", "image", "country" , "date" ] );
-
-        this.slug = slug;
+        super( "topic", [ "slug", "channel", "title","link", "body", "author", "preview", "country" , "date" ] );
 
         this.channel = channel;
         this.title = title;
         this.body = body;
 
         this.link = link;
-        this.image = image;
+        this.preview = preview;
         this.author = author;
+
+        this.slug = slug;
 
         this.country = country;
 

@@ -55,9 +55,9 @@ export default function (express){
                 suffix = '-' + StringHelper.makeId(8);
             } while (await existsTopic.load() );
 
-            let image = '';
+            let preview = '';
 
-            const topic = new Topic(existsTopic.slug, channelModel.slug, title, link, image, body, author, channelModel.country, new Date().getTime() );
+            const topic = new Topic(existsTopic.slug, channelModel.slug, title, link, preview, body, author, channelModel.country, new Date().getTime() );
 
             await topic.save();
             res.json({result: true, topic: topic.toJSON() });

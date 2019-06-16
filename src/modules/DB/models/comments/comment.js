@@ -1,8 +1,8 @@
 import client from "modules/DB/redis"
-import TopicModel from "./topic.model"
+import CommentModel from "./comment.model"
 
 
-export default class Topic extends TopicModel {
+export default class Comment extends CommentModel {
 
     async saveScore(){
 
@@ -11,10 +11,12 @@ export default class Topic extends TopicModel {
         const hot = - this.hot();
         await client.zaddAsync(this._table+'s:rank:hot:channel:' + this.channel, hot, this.id );
         await client.zaddAsync(this._table+'s:rank:hot:country:' + this.country, hot, this.id );
+        await client.zaddAsync(this._table+'s:rank:hot:topic:' + this.topic, hot, this.id );
 
         const date = - this.date;
         await client.zaddAsync(this._table+'s:rank:date:channel:' + this.channel, date, this.id );
         await client.zaddAsync(this._table+'s:rank:date:country:' + this.country, date, this.id );
+        await client.zaddAsync(this._table+'s:rank:date:topic:' + this.topic, date, this.id );
 
     }
 
@@ -23,13 +25,16 @@ export default class Topic extends TopicModel {
 
         client.sremAsync(this._table+"s:list", this.id );
 
-        await client.zremAsync(this._table+'s:rank:hot:channel:' + this.channel, this.id );
         await client.zremAsync(this._table+'s:rank:hot:country:' + this.country, this.id );
+        await client.zremAsync(this._table+'s:rank:hot:channel:' + this.channel, this.id );
+        await client.zremAsync(this._table+'s:rank:hot:topic:' + this.topic, this.id );
 
-        await client.zremAsync(this._table+'s:rank:date:channel:' + this.channel, this.id );
         await client.zremAsync(this._table+'s:rank:date:country:' + this.country, this.id );
+        await client.zremAsync(this._table+'s:rank:date:channel:' + this.channel, this.id );
+        await client.zremAsync(this._table+'s:rank:date:topic:' + this.topic, this.id );
 
     }
+
 
 
 
