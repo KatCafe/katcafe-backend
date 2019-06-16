@@ -81,8 +81,11 @@ export default function (express){
 
                 if (file.base64) {
 
-                    file.title = file.body;
-                    const fileSlug = await FileController.processUploadedBase64File(file );
+                    file.title = body;
+                    const fileModel = await FileController.processUploadedBase64File(file );
+
+                    preview = fileModel.preview;
+                    link = fileModel.slug;
 
                 } else throw "file not supported";
 

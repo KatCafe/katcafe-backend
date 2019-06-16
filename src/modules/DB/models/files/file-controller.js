@@ -26,6 +26,7 @@ class FileController{
     }
 
     async processUploadedBase64File(file, res1 = 800, res2 = 200){
+
         const extension = path.extname(file.name).toLowerCase();
 
         if ( ['.jpg','.jpeg','.gif','.png','.tiff'].indexOf(extension) < 0 ) throw "invalid image extension";
@@ -66,23 +67,21 @@ class FileController{
             const thumbnailSlug = '/public/images/'+ path.parse( fileModel.slug).name+'_'+res2+extension;
             const thumbnail = await this.resizeFile(global.appRoot + thumbnailSlug, file.buffer, res2 );
 
-            fileModel = new FileClass( fileModel.slug, file.mime, {
+            fileModel = new FileClass( resizedSlug, file.mime, {
                 img: thumbnailSlug,
                 width: thumbnail.width,
                 height: thumbnail.height,
             }, file.title, file.sha256, {
-                img: resizedSlug,
                 width: resized.width,
                 height: resized.height,
             }, new Date().getTime() );
 
-            console.log(fileModel.toJSON() );
 
             await fileModel.save();
 
         }
 
-        return fileModel.slug;
+        return fileModel;
 
     }
 
