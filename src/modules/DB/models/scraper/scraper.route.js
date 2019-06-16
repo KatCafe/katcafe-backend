@@ -1,6 +1,4 @@
-const cheerio = require('cheerio');
-
-import NetworkHelper from "modules/helpers/network-helper"
+import ScraperHelper from "./scraper-helper"
 
 export default function (express) {
 
@@ -10,32 +8,15 @@ export default function (express) {
 
             let uri = req.params[0];
 
-            const html = NetworkHelper.get( uri, undefined, false, 10000 );
+            const out = await ScraperHelper.getPreview(uri);
 
-            const $ = cheerio.load( html );
-
-            let title, description, image;
-
-            title = $("meta[name='og:title']").attr("content");
-            image = $("meta[name='og:image']").attr("content");
-            description = $("meta[name='og:description']").attr("content");
-
-            if (!title) title = $("meta[name='twitter:title']").attr("content");
-            if (!image) image = $("meta[name='twitter:image']").attr("content");
-            if (!description) description = $("meta[name='twitter:description']").attr("content");
-
-            if ( !title && $("title").length ) title = $("title").text();
-            if ( !title && $("h1").length ) title = $("h1").text();
+            if (!out) throw "invalid";
 
             res.json( {
 
                 result: true,
+                scrape : out,
 
-                scrape : {
-                    title,
-                    image,
-                    description,
-                }
             });
 
         }catch(err){

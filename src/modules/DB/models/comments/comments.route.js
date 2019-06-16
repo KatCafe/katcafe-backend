@@ -5,6 +5,8 @@ import StringHelper from "modules/helpers/string-helper";
 import Comment from "./comment";
 import client from "../../redis";
 
+import ScraperHelper from "modules/DB/models/scraper/scraper-helper"
+
 async function getComments(revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load){
 
     if ( !index ) index = 1;
@@ -63,6 +65,14 @@ export default function (express){
             } while (await existsComment.load() );
 
             let preview = '';
+            if (link) {
+                const previewData = await ScraperHelper.getPreview(link);
+
+                if (previewData) {
+                    preview = previewData.image;
+                    if (!body) body = previewData.description || previewData.title || '';
+                }
+            }
 
             const comment = new Comment( existsComment.slug.toLowerCase(), topicModel.slug.toLowerCase(), channelModel.slug.toLowerCase(), body, link, preview, author, channelModel.country, new Date().getTime() );
 

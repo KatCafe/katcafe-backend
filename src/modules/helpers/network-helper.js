@@ -2,27 +2,28 @@ const rp = require('request-promise');
 
 class NetworkHelper {
 
-    async post( uri, body, json = true, timeout ){
+    async post( uri, body, json = true, timeout = 10000 ){
 
         return rp({
-            uri: uri,
+            uri,
             headers: { 'User-Agent': 'Request-Promise' },
-            json: json,
-            timeout: timeout,
+            json,
+            timeout,
             method: "POST",
-            body: body
+            body
         });
 
     }
 
-    async get( uri, body, json = true, timeout){
+    async get( uri, body, json = true, timeout = 10000, encoding){
 
         return rp({
-            uri: uri,
+            uri,
             headers: { 'User-Agent': 'Request-Promise' },
-            json: json,
-            timeout: timeout,
-            body: body,
+            json,
+            timeout,
+            body,
+            encoding,
         });
 
     }

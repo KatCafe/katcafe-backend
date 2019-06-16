@@ -26,7 +26,7 @@ import consts from 'consts/consts';
 import Channels from "modules/DB/models/channels/channels.route"
 import Topics from "modules/DB/models/topics/topics.route"
 import Comments from "modules/DB/models/comments/comments.route"
-
+import Scraper from "modules/DB/models/scraper/scraper.route"
 
 class APIServer {
 
@@ -102,6 +102,7 @@ class APIServer {
         Channels(this.app);
         Topics(this.app);
         Comments(this.app);
+        Scraper(this.app);
 
     }
 
