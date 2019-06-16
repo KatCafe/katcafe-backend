@@ -39,6 +39,7 @@
     "run-middleware": "^0.6.6",
     "salted-md5": "^4.0.2",
     "sanitize-html": "^1.14.1",
+    "sharp": "^0.22.1",
     "xregexp": "^4.2.4"
   },
   "devDependencies": {

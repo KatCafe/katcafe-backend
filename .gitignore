@@ -3,3 +3,4 @@ dist_bundle/
 package-lock.json
 .idea/
 consts/
+public/images/*
