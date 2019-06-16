@@ -2,6 +2,8 @@ import Topic from "./topic"
 import Channel from "../channels/channel";
 import StringHelper from "modules/helpers/string-helper";
 import client from "../../redis";
+import ScraperHelper from "../scraper/scraper-controller";
+import FileController from "../files/file-controller";
 
 async function getTopics(revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load){
 
@@ -33,7 +35,7 @@ export default function (express){
 
         try{
 
-            let { channel, title, link, body, author } = req.body;
+            let { channel, title, link, body, author, file } = req.body;
 
             if (!channel || channel.length < 1) throw "Channel was not selected";
             if (!title || title.length < 5) throw "Title is too small. Required at least 5 char";
@@ -56,6 +58,29 @@ export default function (express){
             } while (await existsTopic.load() );
 
             let preview = '';
+            if (link) {
+
+                const previewData = await ScraperHelper.getPreview(link);
+
+                if (previewData) {
+                    preview = previewData.image;
+                    if (!body) body = previewData.description || previewData.title || '';
+                }
+
+            }
+            if (file){
+
+                if (file.base64) {
+
+                    file.title = body;
+                    const fileModel = await FileController.processUploadedBase64File(file );
+
+                    preview = fileModel.preview;
+                    preview.full = fileModel.slug;
+
+                } else throw "file not supported";
+
+            }
 
             const topic = new Topic(existsTopic.slug.toLowerCase(), channelModel.slug.toLowerCase(), title, link, preview, body, author, channelModel.country.toLowerCase(), new Date().getTime() );
 

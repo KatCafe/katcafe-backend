@@ -6,7 +6,7 @@ import NetworkHelper from "modules/helpers/network-helper"
 
 const timeout = 10000;
 
-class ScraperHelper {
+class ScraperController {
 
 
     async getImage(uri, timeout){
@@ -79,4 +79,4 @@ class ScraperHelper {
 
 }
 
-export default new ScraperHelper();
+export default new ScraperController();

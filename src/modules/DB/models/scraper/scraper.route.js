@@ -1,4 +1,4 @@
-import ScraperHelper from "./scraper-helper"
+import ScraperHelper from "./scraper-controller"
 
 export default function (express) {
 

@@ -27,6 +27,7 @@ import Channels from "modules/DB/models/channels/channels.route"
 import Topics from "modules/DB/models/topics/topics.route"
 import Comments from "modules/DB/models/comments/comments.route"
 import Scraper from "modules/DB/models/scraper/scraper.route"
+import Captcha from "modules/DB/models/captcha/captcha.route"
 
 global.appRoot = path.resolve(__dirname+'/../');
 
@@ -49,6 +50,8 @@ class APIServer {
 
         app.use(cors({ credentials: true }));
         app.use('/.well-known/acme-challenge', serve('./certificates/well-known/acme-challenge', true) );
+
+        app.use('/public', express.static('./public'));
 
         this.app = app;
 
@@ -105,6 +108,7 @@ class APIServer {
         Topics(this.app);
         Comments(this.app);
         Scraper(this.app);
+        Captcha(this.app);
 
     }
 

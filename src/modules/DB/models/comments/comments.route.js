@@ -5,7 +5,7 @@ import StringHelper from "modules/helpers/string-helper";
 import Comment from "./comment";
 import client from "../../redis";
 
-import ScraperHelper from "modules/DB/models/scraper/scraper-helper"
+import ScraperHelper from "modules/DB/models/scraper/scraper-controller"
 import CryptoHelper from "modules/helpers/crypto-helper"
 
 import FileController from "modules/DB/models/files/file-controller"
@@ -76,6 +76,7 @@ export default function (express){
                     preview = previewData.image;
                     if (!body) body = previewData.description || previewData.title || '';
                 }
+
             }
             if (file){
 
@@ -85,7 +86,7 @@ export default function (express){
                     const fileModel = await FileController.processUploadedBase64File(file );
 
                     preview = fileModel.preview;
-                    link = fileModel.slug;
+                    preview.full = fileModel.slug;
 
                 } else throw "file not supported";
 
