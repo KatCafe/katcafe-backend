@@ -1,7 +1,7 @@
 import Channel from "../channels/channel";
 import Topic from "../topics/topic";
 
-import StringHelper from "../../../helpers/string-helper";
+import StringHelper from "modules/helpers/string-helper";
 import Comment from "./comment";
 import client from "../../redis";
 
@@ -64,7 +64,7 @@ export default function (express){
 
             let preview = '';
 
-            const comment = new Comment( existsComment.slug.toLowerCase(), topicModel.slug.toLowerCase(), body, link, preview, author, channelModel.slug.toLowerCase(), channelModel.country, new Date().getTime() );
+            const comment = new Comment( existsComment.slug.toLowerCase(), topicModel.slug.toLowerCase(), channelModel.slug.toLowerCase(), body, link, preview, author, channelModel.country, new Date().getTime() );
 
             await comment .save();
             res.json({result: true, comment : comment.toJSON() });

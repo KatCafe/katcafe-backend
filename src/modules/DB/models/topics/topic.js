@@ -1,8 +1,12 @@
 import client from "modules/DB/redis"
 import TopicModel from "./topic.model"
-
+import StringHelper from "modules/helpers/string-helper";
 
 export default class Topic extends TopicModel {
+
+    constructor( slug, channel, title='', link='', preview, body='', author='', country='', date){
+        super( slug, channel , StringHelper.removeWhiteSpace( title ), StringHelper.removeWhiteSpace( link ), preview, StringHelper.removeWhiteSpace( body ), StringHelper.removeWhiteSpace( author ), country.toLowerCase(), date);
+    }
 
     async saveScore(){
 

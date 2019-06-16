@@ -1,8 +1,13 @@
 import client from "modules/DB/redis"
 import ChannelModel from "./channel.model"
+import StringHelper from "../../../helpers/string-helper";
 
 
 export default class Channel extends ChannelModel {
+
+    constructor( slug, name = '', title = '', icon, cover, country = '', date){
+        super(slug, StringHelper.removeWhiteSpace( name ), StringHelper.removeWhiteSpace( title), icon, cover, country.toLowerCase(), date);
+    }
 
     async saveScore(){
 

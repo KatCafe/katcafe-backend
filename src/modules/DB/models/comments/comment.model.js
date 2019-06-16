@@ -2,7 +2,7 @@ import Model from "modules/DB/model"
 
 export default class CommentModel extends Model {
 
-    constructor( slug, topic, body, link, preview, author, channel, country, date){
+    constructor( slug, topic, channel, body, link, preview, author, country, date){
 
         super( "comment", ["slug", "topic", "body","link", "preview", "channel", "author", "country", "date"] );
 

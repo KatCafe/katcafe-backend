@@ -179,6 +179,14 @@ class StringHelper {
         return result;
     }
 
+    removeWhiteSpace(str){
+
+        str = str.replace(/\s+/g,' ').trim();
+
+        return str;
+
+    }
+
 }
 
 export default new StringHelper();

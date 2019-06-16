@@ -1,5 +1,5 @@
 import Channel from "./channel"
-import StringHelper from "../../../helpers/string-helper";
+import StringHelper from "modules/helpers/string-helper";
 import client from "modules/DB/redis";
 
 export default function (express){
