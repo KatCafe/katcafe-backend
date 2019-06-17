@@ -11,7 +11,7 @@ class Controller{
         search = StringHelper.parseBody( (search || '').toLowerCase() );
         count = Math.min( count, 30);
 
-        const out = await client[`z${revert ? 'rev' : ''}rangeAsync`]( `${tabel}:rank:${searchAlgorithm}:${searchQuery}:${search}`, (index-1) * count, index*count-1 );
+        const out = await client[`z${revert ? 'rev' : ''}rangeAsync`]( `${tabel}:rank:${searchAlgorithm}:${searchQuery}${search ? ':'+search : ''}`, (index-1) * count, index*count-1 );
 
         if (!load) return out;
 

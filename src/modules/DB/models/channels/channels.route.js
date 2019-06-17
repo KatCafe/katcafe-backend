@@ -3,6 +3,7 @@ import StringHelper from "modules/helpers/string-helper";
 import client from "modules/DB/redis";
 
 import CaptchaController from "modules/DB/models/captcha/captcha-controller"
+import ChannelsController from "./channels.controller"
 
 export default function (express){
 
@@ -67,7 +68,7 @@ export default function (express){
 
         try{
 
-            let {algorithm, country, index, count} = req.params;
+            let {searchRevert, algorithm, country, index, count} = req.params;
 
             if (!country ) country = 'us';
             if (!index) index = 1;
@@ -77,7 +78,7 @@ export default function (express){
             country = country.toLowerCase();
             count = Math.min( count, 40);
 
-            const out = await client.zrangeAsync( `channels:rank:${algorithm}:${country}`, (index-1)*count, index*count-1 );
+            const out = await ChannelsController.getByRank( searchRevert, algorithm, country, '',(index-1)*count, index*count-1 );
 
             res.json({result: true, channels: out });
 
