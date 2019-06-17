@@ -9,14 +9,14 @@ import ScraperHelper from "modules/DB/models/scraper/scraper-controller"
 import CryptoHelper from "modules/helpers/crypto-helper"
 
 import FileController from "modules/DB/models/files/file-controller"
-
+import CaptchaController from "modules/DB/models/captcha/captcha-controller"
 
 async function getComments(revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load){
 
     if ( !index ) index = 1;
     if ( !count ) count = 10;
 
-    search = (search || '').toLowerCase();
+    search = StringHelper.parseBody( (search || '').toLowerCase() );
     count = Math.min( count, 30);
 
     const out = await client[`z${revert ? 'rev' : ''}rangeAsync`]( `comments:rank:${searchAlgorithm}:${searchQuery}:${search}`, (index-1) * count, index*count-1 );
@@ -43,7 +43,7 @@ export default function (express){
 
         try{
 
-            let { topic, body, link, author, file } = req.body;
+            let { topic, body, link, author, file, captcha } = req.body;
 
             if (!topic || topic.length < 1) throw "Topic was not selected";
             if (!link) link = '';
@@ -62,6 +62,8 @@ export default function (express){
             const slug = topicModel.slug + '/';
             let existsComment = new Topic();
             let suffix = '';
+
+            await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
             do{
                 suffix = StringHelper.makeId(15);

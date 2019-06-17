@@ -2,13 +2,15 @@ import Channel from "./channel"
 import StringHelper from "modules/helpers/string-helper";
 import client from "modules/DB/redis";
 
+import CaptchaController from "modules/DB/models/captcha/captcha-controller"
+
 export default function (express){
 
     express.post( '/channels/create', async function(req, res ) {
 
         try{
 
-            let { name, title, icon, cover, country } = req.body;
+            let { name, title, icon, cover, country, captcha } = req.body;
 
             if (!name || name.length < 1) throw "Name is to small. Required at least 1 char";
             if (!title || title.length < 5) throw "Title is too small. Required at least 5 char";
@@ -16,6 +18,8 @@ export default function (express){
 
             country = country.toLowerCase();
             if (!country) country = 'us';
+
+            await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
             const slug = (country !== 'us' ? country +'/' : '') + StringHelper.url_slug( name );
 

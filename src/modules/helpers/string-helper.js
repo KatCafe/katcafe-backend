@@ -1,6 +1,8 @@
 var XRegExp = require ('xregexp');
 let regexUnicodeWord = XRegExp('^\\pL+$');
 
+const queryString = require('querystring');
+
 class StringHelper {
 
 
@@ -128,11 +130,9 @@ class StringHelper {
             s = s.replace(RegExp(k, 'g'), opt.replacements[k]);
 
 
-        // Transliterate characters to ASCII
-        // NO LONGER LITERATING
-        // if (opt.transliterate) {
-        //     s = this.transliterate(s);
-        // }
+        if (opt.transliterate)
+            s = this.transliterate(s);
+
 
         // Replace non-alphanumeric characters with our delimiter
         var alnum = (typeof(XRegExp) === 'undefined') ? RegExp('[^a-z0-9]+', 'ig') : XRegExp('[^\\p{L}\\p{N}]+', 'ig');
@@ -185,6 +185,11 @@ class StringHelper {
 
         return str;
 
+    }
+
+    parseBody(string){
+        string =  queryString.decode(string);
+        return Object.keys(string)[0];
     }
 
 }

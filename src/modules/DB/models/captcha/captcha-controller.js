@@ -5,31 +5,25 @@ class CaptchaController {
 
     async captchaSolution(solution, encryption){
 
-        try{
+        const data = CryptoHelper.decryptText(encryption);
 
-            const data = CryptoHelper.decryptText(encryption);
+        const array = data.split('#$#');
 
-            const array = data.split('#$#');
+        const version = array[0];
+        const sol = array[1];
+        const id = array[2];
+        const date = array[3];
 
-            const version = array[0];
-            const sol = array[0];
-            const id = array[1];
-            const date = array[2];
+        const out = await client.hexistsAsync("captcha",  id );
+        if (out === 1)
+            throw "Captcha was already used";
 
-            if (sol !== solution)
-                throw "Captcha is incorrect";
+        await client.hsetAsync("captcha", id, date);
 
-            const out = await client.hexistsAsync("captcha", "used", id );
-            if (out === 1)
-                throw "Captcha was already used";
+        if (sol.toLowerCase() !== solution.toLowerCase())
+            throw "Captcha is incorrect";
 
-            await client.hsetAsync("captcha", 'used', id);
-
-            return true;
-
-        }catch(err){
-
-        }
+        return true;
 
     }
 
