@@ -25,6 +25,8 @@ export default function (express){
 
             await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
+            if (channel[0] === '/') channel = channel.substr(1);
+
             const channelModel = new Channel(channel);
 
             if (await channelModel.load() === false) throw "channel was not found";

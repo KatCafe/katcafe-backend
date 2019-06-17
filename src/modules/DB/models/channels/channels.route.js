@@ -5,6 +5,8 @@ import client from "modules/DB/redis";
 import CaptchaController from "modules/DB/models/captcha/captcha-controller"
 import ChannelsController from "./channels.controller"
 
+import {getFlags} from "modules/helpers/flags";
+
 export default function (express){
 
     express.post( '/channels/create', async function(req, res ) {
@@ -14,6 +16,8 @@ export default function (express){
             let { name, title, icon, cover, country, captcha } = req.body;
 
             if (!name || name.length < 1) throw "Name is to small. Required at least 1 char";
+            if (name.length === 2) throw "2 letters are reserved for countries";
+
             if (!title || title.length < 5) throw "Title is too small. Required at least 5 char";
             if (!country || country.length === 0) throw "Country Code is required";
 
@@ -80,7 +84,7 @@ export default function (express){
 
             const out = await ChannelsController.getByRank( searchRevert, algorithm, country, '',(index-1)*count, index*count-1 );
 
-            res.json({result: true, channels: out.map( it=>it.toJSON() ) });
+            res.json({result: true, channels: out });
 
 
         }catch(err){
