@@ -44,7 +44,6 @@ class ScraperController {
 
             let title, description;
 
-            title = $("meta[property='og:title']").attr("content");
             image = $("meta[property='og:image']").attr("content");
             description = $("meta[property='og:description']").attr("content");
 

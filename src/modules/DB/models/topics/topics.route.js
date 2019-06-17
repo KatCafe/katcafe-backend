@@ -7,6 +7,7 @@ import ScraperHelper from "../scraper/scraper-controller";
 import FileController from "../files/file-controller";
 import CaptchaController from "modules/DB/models/captcha/captcha-controller"
 import TopicsController from "./topics.controller"
+import CommentsController from "./../comments/comments.controller"
 
 export default function (express){
 
@@ -110,7 +111,15 @@ export default function (express){
             if (searchQuery === 'country' && !search ) search = 'us';
 
             const out = await TopicsController.getByRank( searchRevert, searchAlgorithm, searchQuery, search, index, count, true);
-            res.json({result: true, topics: out });
+
+            let outComments = [];
+            for (const topic of out){
+
+                const comments = await CommentsController.getByRank( true, 'date', 'topic', topic.slug, 1, 2, true );
+                outComments = outComments.concat(comments);
+            }
+
+            res.json({result: true, topics: out, comments: outComments });
 
 
         }catch(err){

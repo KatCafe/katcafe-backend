@@ -1,12 +1,14 @@
 import ScraperHelper from "./scraper-controller"
+import StringHelper from "modules/helpers/string-helper";
 
 export default function (express) {
 
-    express.get('/scraper/*', async function(req, res ) {
+    express.post('/scraper/get', async function(req, res ) {
 
         try{
 
-            let uri = req.params[0];
+            let {uri} = req.body;
+            uri = decodeURI(uri);
 
             const out = await ScraperHelper.getPreview(uri);
 
