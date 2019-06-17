@@ -97,7 +97,7 @@ export default function (express){
             if (searchQuery === 'country' && !search ) search = 'us';
 
             const out = await CommentsController.getByRank( searchRevert, searchAlgorithm, searchQuery, search, index, count, true);
-            res.json({result: true, comments: out });
+            res.json({result: true, comments: out.map( it=>it.toJSON() ) });
 
 
         }catch(err){

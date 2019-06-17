@@ -80,7 +80,7 @@ export default function (express){
 
             const out = await ChannelsController.getByRank( searchRevert, algorithm, country, '',(index-1)*count, index*count-1 );
 
-            res.json({result: true, channels: out });
+            res.json({result: true, channels: out.map( it=>it.toJSON() ) });
 
 
         }catch(err){

@@ -5,10 +5,11 @@ const startingDate = new Date("2019/01/01").getTime();
 
 export default class Model {
 
-    constructor(table, fields) {
+    constructor(table, fields = [], fieldsAdditionalToJSON = []) {
 
         this._table = table;
         this._fields = fields;
+        this._fieldsAdditionalToJSON = fieldsAdditionalToJSON;
 
     }
 
@@ -21,7 +22,7 @@ export default class Model {
 
     async save(){
 
-        await client.hsetAsync( this._table, this.id.toLowerCase(), JSON.stringify(this.toJSON() ) );
+        await client.hsetAsync( this._table, this.id.toLowerCase(), JSON.stringify(this.toJSON( true ) ) );
 
         if (this.saveScore)
             await this.saveScore();
@@ -55,12 +56,19 @@ export default class Model {
 
     }
 
-    toJSON(){
+    toJSON(save = false){
 
         const obj = {};
 
         for (const key of this._fields)
             obj[key] = this[key];
+
+        if (!save){
+
+            for (const key of this._fieldsAdditionalToJSON)
+                obj[key] = this[key];
+
+        }
 
         return obj;
 

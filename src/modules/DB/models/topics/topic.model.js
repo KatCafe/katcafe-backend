@@ -4,7 +4,7 @@ export default class TopicModel extends Model {
 
     constructor( slug, channel, title, link, preview, body, author, country, date){
 
-        super( "topic", [ "slug", "channel", "title","link", "body", "author", "preview", "country" , "date" ] );
+        super( "topic", [ "slug", "channel", "title","link", "body", "author", "preview", "country" , "date" ], ["comments"] );
 
         this.channel = channel;
         this.title = title;

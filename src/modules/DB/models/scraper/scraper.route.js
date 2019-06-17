@@ -8,7 +8,7 @@ export default function (express) {
         try{
 
             let {uri} = req.body;
-            uri = decodeURI(uri);
+            uri = StringHelper.parseBody(uri);
 
             const out = await ScraperHelper.getPreview(uri);
 

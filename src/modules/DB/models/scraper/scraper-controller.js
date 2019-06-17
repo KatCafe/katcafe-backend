@@ -11,11 +11,11 @@ class ScraperController {
 
     async getImage(uri, timeout){
 
-        let image = await NetworkHelper.get(uri,undefined, false, timeout, null);
-
-        if (!image) return;
-
         try{
+
+            let image = await NetworkHelper.get(uri,undefined, false, timeout, null);
+
+            if (!image) return;
 
             image = Buffer.from(image);
 
@@ -70,7 +70,7 @@ class ScraperController {
             }
 
         }catch(err){
-
+            console.error("fetching error", err);
         }
 
 

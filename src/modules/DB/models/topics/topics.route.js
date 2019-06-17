@@ -115,11 +115,11 @@ export default function (express){
             let outComments = [];
             for (const topic of out){
 
-                const comments = await CommentsController.getByRank( true, 'date', 'topic', topic.slug, 1, 2, true );
+                const comments = await CommentsController.getByRank( false, 'date', 'topic', topic.slug, 1, 2, true );
                 outComments = outComments.concat(comments);
             }
 
-            res.json({result: true, topics: out, comments: outComments });
+            res.json({result: true, topics: out.map( it=>it.toJSON() ), comments: outComments.map( it=>it.toJSON() ) });
 
 
         }catch(err){

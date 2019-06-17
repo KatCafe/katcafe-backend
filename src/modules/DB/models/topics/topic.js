@@ -1,6 +1,7 @@
 import client from "modules/DB/redis"
 import TopicModel from "./topic.model"
 import StringHelper from "modules/helpers/string-helper";
+import Model from "../../model";
 
 export default class Topic extends TopicModel {
 
@@ -41,6 +42,19 @@ export default class Topic extends TopicModel {
         );
 
         await Promise.all(promises);
+
+    }
+
+
+    async load(){
+
+        const promises = [
+            Model.prototype.load.call(this),
+            client.zcardAsync('comments:rank:date:topic:'+this.id.toLowerCase() )
+        ];
+        const out = await Promise.all(promises);
+
+        this.comments = out[1] || 0;
 
     }
 
