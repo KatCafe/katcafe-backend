@@ -14,14 +14,17 @@ export default class Comment extends CommentModel {
         await client.saddAsync(this._table+"s:list", this.id );
 
         const hot = - this.hot();
-        await client.zaddAsync(this._table+'s:rank:hot:channel:' + this.channel, hot, this.id );
-        await client.zaddAsync(this._table+'s:rank:hot:country:' + this.country, hot, this.id );
-        await client.zaddAsync(this._table+'s:rank:hot:topic:' + this.topic, hot, this.id );
-
         const date = - this.date;
-        await client.zaddAsync(this._table+'s:rank:date:channel:' + this.channel, date, this.id );
-        await client.zaddAsync(this._table+'s:rank:date:country:' + this.country, date, this.id );
-        await client.zaddAsync(this._table+'s:rank:date:topic:' + this.topic, date, this.id );
+
+        const promises = ["channel", "topic", "country"].map( it => Promise.all([
+
+                client.zaddAsync(this._table+'s:rank:hot:'+it+':' + this[it].toLowerCase(), hot, this.id ),
+                client.zaddAsync(this._table+'s:rank:date:'+it+':' + this[it].toLowerCase(), date, this.id )
+
+            ])
+        );
+
+        await Promise.all(promises);
 
     }
 
@@ -30,13 +33,15 @@ export default class Comment extends CommentModel {
 
         client.sremAsync(this._table+"s:list", this.id );
 
-        await client.zremAsync(this._table+'s:rank:hot:country:' + this.country, this.id );
-        await client.zremAsync(this._table+'s:rank:hot:channel:' + this.channel, this.id );
-        await client.zremAsync(this._table+'s:rank:hot:topic:' + this.topic, this.id );
+        const promises = ["channel", "topic", "country"].map( it => Promise.all([
 
-        await client.zremAsync(this._table+'s:rank:date:country:' + this.country, this.id );
-        await client.zremAsync(this._table+'s:rank:date:channel:' + this.channel, this.id );
-        await client.zremAsync(this._table+'s:rank:date:topic:' + this.topic, this.id );
+                client.zremAsync(this._table+'s:rank:hot:'+it+':' + this[it].toLowerCase(), this.id ),
+                client.zremAsync(this._table+'s:rank:date:'+it+':' + this[it].toLowerCase(), this.id )
+
+            ])
+        );
+
+        await Promise.all(promises);
 
     }
 

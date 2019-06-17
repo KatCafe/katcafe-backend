@@ -23,7 +23,7 @@ export default class TopicModel extends Model {
     }
 
     get id(){
-        return this.slug;
+        return this.slug.toLowerCase();
     }
 
 }

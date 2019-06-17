@@ -64,7 +64,7 @@ export default function (express){
 
             }
 
-            const topic = new Topic(existsTopic.slug.toLowerCase(), channelModel.slug.toLowerCase(), title, link, preview, body, author, channelModel.country.toLowerCase(), new Date().getTime() );
+            const topic = new Topic(existsTopic.slug, channelModel.slug, title, link, preview, body, author, channelModel.country.toLowerCase(), new Date().getTime() );
 
             await topic.save();
             res.json({result: true, topic: topic.toJSON() });

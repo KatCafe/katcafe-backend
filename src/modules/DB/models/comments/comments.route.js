@@ -72,7 +72,7 @@ export default function (express){
 
             }
 
-            const comment = new Comment( existsComment.slug.toLowerCase(), topicModel.slug.toLowerCase(), channelModel.slug.toLowerCase(), body, link, preview, author, channelModel.country, new Date().getTime() );
+            const comment = new Comment( existsComment.slug, topicModel.slug, channelModel.slug, body, link, preview, author, channelModel.country, new Date().getTime() );
 
             await comment .save();
             res.json({result: true, comment : comment.toJSON() });

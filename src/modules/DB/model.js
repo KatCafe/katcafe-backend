@@ -21,7 +21,7 @@ export default class Model {
 
     async save(){
 
-        await client.hsetAsync( this._table, this.id, JSON.stringify(this.toJSON() ) );
+        await client.hsetAsync( this._table, this.id.toLowerCase(), JSON.stringify(this.toJSON() ) );
 
         if (this.saveScore)
             await this.saveScore();
@@ -30,7 +30,7 @@ export default class Model {
 
     async load(){
 
-        const out = await client.hgetAsync( this._table, this.id);
+        const out = await client.hgetAsync( this._table, this.id.toLowerCase());
         if (!out) return false;
 
         const json = JSON.parse(out);
@@ -41,7 +41,7 @@ export default class Model {
 
     async delete() {
 
-        await client.hdelAsync( this._table, this.id);
+        await client.hdelAsync( this._table, this.id.toLowerCase());
 
         if (this.deleteScore)
             await this.deleteScore();

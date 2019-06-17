@@ -22,7 +22,7 @@ export default class CommentModel extends Model {
     }
 
     get id(){
-        return this.slug;
+        return this.slug.toLowerCase();
     }
 
 }
