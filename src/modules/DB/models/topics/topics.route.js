@@ -6,30 +6,7 @@ import ScraperHelper from "../scraper/scraper-controller";
 
 import FileController from "../files/file-controller";
 import CaptchaController from "modules/DB/models/captcha/captcha-controller"
-
-async function getTopics(revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load){
-
-    if (!index) index = 1;
-    if ( !count ) count = 10;
-
-    search = StringHelper.parseBody( (search || '').toLowerCase() );
-    count = Math.min( count, 30);
-
-    const out = await client[`z${revert ? 'rev' : ''}rangeAsync`]( `topics:rank:${searchAlgorithm}:${searchQuery}:${search}`, (index-1) * count, index*count-1 );
-
-    if (!load) return out;
-
-    const p = [], data = [];
-    for (const slug of out){
-        const topic = new Topic(slug);
-        p.push( topic.load() );
-        data.push(topic);
-    }
-
-    await Promise.all(p);
-
-    return data;
-}
+import TopicsController from "./topics.controller"
 
 export default function (express){
 
@@ -132,7 +109,7 @@ export default function (express){
 
             if (searchQuery === 'country' && !search ) search = 'us';
 
-            const out = await getTopics( searchRevert, searchAlgorithm, searchQuery, search, index, count, true);
+            const out = await TopicsController.getByRank( searchRevert, searchAlgorithm, searchQuery, search, index, count, true);
             res.json({result: true, topics: out });
 
 

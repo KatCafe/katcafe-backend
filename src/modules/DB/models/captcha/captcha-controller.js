@@ -14,11 +14,9 @@ class CaptchaController {
         const id = array[2];
         const date = array[3];
 
-        const out = await client.hexistsAsync("captcha",  id );
-        if (out === 1)
+        const out = await client.hsetnxAsync("captcha",  id, date );
+        if (out === 0)
             throw "Captcha was already used";
-
-        await client.hsetAsync("captcha", id, date);
 
         if (sol.toLowerCase() !== solution.toLowerCase())
             throw "Captcha is incorrect";

@@ -10,30 +10,8 @@ import CryptoHelper from "modules/helpers/crypto-helper"
 
 import FileController from "modules/DB/models/files/file-controller"
 import CaptchaController from "modules/DB/models/captcha/captcha-controller"
+import CommentsController from "./comments.controller"
 
-async function getComments(revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load){
-
-    if ( !index ) index = 1;
-    if ( !count ) count = 10;
-
-    search = StringHelper.parseBody( (search || '').toLowerCase() );
-    count = Math.min( count, 30);
-
-    const out = await client[`z${revert ? 'rev' : ''}rangeAsync`]( `comments:rank:${searchAlgorithm}:${searchQuery}:${search}`, (index-1) * count, index*count-1 );
-
-    if (!load) return out;
-
-    const p = [], data = [];
-    for (const slug of out){
-        const topic = new Comment(slug);
-        p.push( topic.load() );
-        data.push(topic);
-    }
-
-    await Promise.all(p);
-
-    return data;
-}
 
 
 export default function (express){
@@ -118,7 +96,7 @@ export default function (express){
 
             if (searchQuery === 'country' && !search ) search = 'us';
 
-            const out = await getComments( searchRevert, searchAlgorithm, searchQuery, search, index, count, true);
+            const out = await CommentsController.getByRank( searchRevert, searchAlgorithm, searchQuery, search, index, count, true);
             res.json({result: true, comments: out });
 
 
