@@ -5,8 +5,8 @@ import Model from "../../model";
 
 export default class Topic extends TopicModel {
 
-    constructor( slug, channel, title='', link='', preview, body='', author='', country='', date){
-        super( slug, channel , StringHelper.removeWhiteSpace( title ), StringHelper.removeWhiteSpace( link ), preview, StringHelper.removeWhiteSpace( body ), StringHelper.removeWhiteSpace( author ), country.toLowerCase(), date);
+    constructor( slug, channel, uuid, title='', link='', preview, body='', author='', country='', date){
+        super( slug, channel , uuid, StringHelper.removeWhiteSpace( title ), StringHelper.removeWhiteSpace( link ), preview, StringHelper.removeWhiteSpace( body ), StringHelper.removeWhiteSpace( author ), country.toLowerCase(), date);
     }
 
     async saveScore(){

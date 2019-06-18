@@ -72,7 +72,9 @@ export default function (express){
 
             }
 
-            const comment = new Comment( existsComment.slug, topicModel.slug, channelModel.slug, body, link, preview, author, channelModel.country, new Date().getTime() );
+            const uuid = await client.hincrbyAsync('comments:uuid', topicModel.slug.toLowerCase(), 1);
+
+            const comment = new Comment( existsComment.slug, topicModel.slug, channelModel.slug, uuid, body, link, preview, author, channelModel.country, new Date().getTime() );
 
             await comment .save();
             res.json({result: true, comment : comment.toJSON() });

@@ -2,11 +2,13 @@ import Model from "modules/DB/model"
 
 export default class TopicModel extends Model {
 
-    constructor( slug, channel, title, link, preview, body, author, country, date){
+    constructor( slug, channel, uuid, title, link, preview, body, author, country, date){
 
-        super( "topic", [ "slug", "channel", "title","link", "body", "author", "preview", "country" , "date" ], ["comments"] );
+        super( "topic", [ "slug", "channel", "uuid", "title","link", "body", "author", "preview", "country" , "date" ], ["comments"] );
 
         this.channel = channel;
+
+        this.uuid = uuid;
         this.title = title;
         this.body = body;
 

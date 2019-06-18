@@ -5,8 +5,8 @@ import StringHelper from "../../../helpers/string-helper";
 
 export default class Comment extends CommentModel {
 
-    constructor( slug, topic, channel, body ='', link = '', preview, author = '', country = '', date){
-        super(slug, topic, channel, StringHelper.removeWhiteSpace( body ), StringHelper.removeWhiteSpace( link ), preview, StringHelper.removeWhiteSpace( author ), country.toLowerCase(), date);
+    constructor( slug, topic, channel, uuid, body ='', link = '', preview, author = '', country = '', date){
+        super(slug, topic, channel, uuid, StringHelper.removeWhiteSpace( body ), StringHelper.removeWhiteSpace( link ), preview, StringHelper.removeWhiteSpace( author ), country.toLowerCase(), date);
     }
 
     async saveScore(){
