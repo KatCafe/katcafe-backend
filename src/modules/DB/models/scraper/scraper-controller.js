@@ -29,9 +29,43 @@ class ScraperController {
 
     }
 
+    async getYoutubePreview( id, timeout){
+
+        let uri = 'https://www.youtube.com/results?search_query='+id;
+
+        const html = await NetworkHelper.get( uri, undefined, false, timeout );
+        const $ = cheerio.load( html );
+
+        const scripts = $('script');
+
+        const dataScript = scripts[scripts.length-3].children[0].data;
+
+        let search = `"movingThumbnailDetails":{"thumbnails":[{"url":"`;
+        let position = dataScript.indexOf(search);
+
+        if (position >= 0 ) {
+            let thumbnail = dataScript.substr(position + search.length);
+            thumbnail = thumbnail.substr(0, thumbnail.indexOf(`","width":`));
+
+            thumbnail = thumbnail.replace('\\u0026','&');
+            thumbnail = thumbnail.replace('\\u0026','&');
+
+            console.log(thumbnail);
+
+            return {
+                image: thumbnail,
+            }
+        }
+
+    }
+
     async getPreview(uri, timeout){
 
         try{
+
+            if (!uri) throw "invalid uri";
+
+
 
             let image = await this.getImage(uri, timeout);
 
@@ -58,15 +92,36 @@ class ScraperController {
             if ( !title && $("title").length ) title = $("title").text();
             if ( !title && $("h1").length ) title = $("h1").text();
 
+            let youtubeId = '';
+            if (uri.indexOf("youtube.com") >= 0 )
+                youtubeId = uri.substr( uri.indexOf("watch?v=") + "watch?v=".length, 'fSqMpZ5qhz0'.length );
+            else
+            if (uri.indexOf("youtu.be") >= 0)
+                youtubeId = uri.substr( uri.indexOf("youtu.be") + "youtu.be".length, 'fSqMpZ5qhz0'.length );
+
+            let thumbnail;
+            if (youtubeId){
+                uri = 'https://youtube.com/watch?v='+youtubeId;
+                const youtubePreview = await this.getYoutubePreview( youtubeId, timeout);
+                if (youtubePreview) {
+                    thumbnail = image;
+                    image = youtubePreview.image;
+                }
+
+            }
+
+
             if (image && typeof image === "string")
                 image = await this.getImage(image);
 
             if (!title && !image && !description) throw "error";
 
             return {
+                uri,
                 title,
                 description,
                 image,
+                thumbnail,
             }
 
         }catch(err){

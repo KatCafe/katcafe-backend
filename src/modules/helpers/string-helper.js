@@ -188,8 +188,7 @@ class StringHelper {
     }
 
     parseBody(string){
-        string =  queryString.decode(string);
-        return Object.keys(string)[0];
+        return string;
     }
 
 }
