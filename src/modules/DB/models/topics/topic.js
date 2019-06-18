@@ -12,12 +12,12 @@ export default class Topic extends TopicModel {
     async saveScore(){
 
         await client.saddAsync(this._table+"s:list", this.id );
-
         const hot = - this.hot();
         const date = - this.date;
 
         const promises = ["channel", "country"].map( it => Promise.all([
 
+                client.saddAsync(this._table+'s:list:'+it+':' + this[it].toLowerCase(), this.id ),
                 client.zaddAsync(this._table+'s:rank:hot:'+it+':' + this[it].toLowerCase(), hot, this.id ),
                 client.zaddAsync(this._table+'s:rank:date:'+it+':' + this[it].toLowerCase(), date, this.id )
 
@@ -35,6 +35,7 @@ export default class Topic extends TopicModel {
 
         const promises = ["channel", "country"].map( it => Promise.all([
 
+                client.sremAsync(this._table+'s:list:'+it+':' + this[it].toLowerCase(), this.id ),
                 client.zremAsync(this._table+'s:rank:hot:'+it+':' + this[it].toLowerCase(), this.id ),
                 client.zremAsync(this._table+'s:rank:date:'+it+':' + this[it].toLowerCase(), this.id )
 
