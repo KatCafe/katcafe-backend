@@ -53,7 +53,8 @@ class ScraperController {
             console.log(thumbnail);
 
             return {
-                image: thumbnail,
+                thumbnail: thumbnail,
+                img: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
             }
         }
 
@@ -99,20 +100,21 @@ class ScraperController {
             if (uri.indexOf("youtu.be") >= 0)
                 youtubeId = uri.substr( uri.indexOf("youtu.be") + "youtu.be".length, 'fSqMpZ5qhz0'.length );
 
-            let thumbnail;
-            if (youtubeId){
-                uri = 'https://youtube.com/watch?v='+youtubeId;
-                const youtubePreview = await this.getYoutubePreview( youtubeId, timeout);
-                if (youtubePreview) {
-                    thumbnail = image;
-                    image = youtubePreview.image;
-                }
-
+            if (youtubeId) {
+                uri = 'https://youtube.com/watch?v=' + youtubeId;
+                image = {
+                    youtubeId: youtubeId,
+                };
             }
 
 
-            if (image && typeof image === "string")
-                image = await this.getImage(image);
+            if (image && typeof image === "string") image = await this.getImage(image);
+            if (image && typeof image === "object" ){
+
+                if (image.img) image.img = await this.getImage(image.img);
+                if (image.thumbnail) image.thumbnail = await this.getImage(image.thumbnail);
+
+            }
 
             if (!title && !image && !description) throw "error";
 
@@ -121,7 +123,6 @@ class ScraperController {
                 title,
                 description,
                 image,
-                thumbnail,
             }
 
         }catch(err){
