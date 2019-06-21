@@ -121,6 +121,12 @@ export default function (express){
 
                 const comments = await CommentsController.getByRank( false, 'date', 'topic', topic.slug, 1, 2, true );
                 outComments = outComments.concat(comments);
+
+                topic.commentsPage = {
+                    pageIndex: 1,
+                    count: 2,
+                };
+
             }
 
             res.json({result: true, topics: out.map( it=>it.toJSON() ), comments: outComments.map( it=>it.toJSON() ) });
