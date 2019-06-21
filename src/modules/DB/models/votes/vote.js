@@ -6,7 +6,7 @@ import Model from "../../model";
 export default class Vote extends VoteModel {
 
     constructor( slug, ip, value, date){
-        super( slug, ip.toLowerCase(), value.toLowerCase(), date);
+        super( slug, ip.toLowerCase(), value, date);
     }
 
 
