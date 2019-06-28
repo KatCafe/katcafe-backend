@@ -82,7 +82,7 @@ export default function (express){
             country = country.toLowerCase();
             count = Math.min( count, 40);
 
-            const out = await ChannelsController.getByRank( searchRevert, algorithm, country, '',(index-1)*count, index*count-1 );
+            const out = await ChannelsController.getByRank( searchRevert, algorithm, 'country', country, (index-1)*count, index*count-1 );
 
             res.json({result: true, channels: out });
 

@@ -8,6 +8,7 @@ import FileController from "../files/file-controller";
 import CaptchaController from "modules/DB/models/captcha/captcha-controller"
 import TopicsController from "./topics.controller"
 import CommentsController from "./../comments/comments.controller"
+import VotesController from "../votes/votes.controller";
 
 export default function (express){
 
@@ -94,6 +95,8 @@ export default function (express){
             if ( await topic.load() === false)
                 throw "Not found";
 
+            topic.myvote = await VotesController.getVote( topic.slug, req );
+
             res.json({result: true, topic: topic.toJSON()});
 
 
@@ -114,12 +117,12 @@ export default function (express){
 
             if (searchQuery === 'country' && !search ) search = 'us';
 
-            const out = await TopicsController.getByRank( searchRevert, searchAlgorithm, searchQuery, search, index, count, true);
+            const out = await TopicsController.getByRank( searchRevert, searchAlgorithm, searchQuery, search, index, count, true, req);
 
             let outComments = [];
             for (const topic of out){
 
-                const comments = await CommentsController.getByRank( false, 'date', 'topic', topic.slug, 1, 2, true );
+                const comments = await CommentsController.getByRank( false, 'date', 'topic', topic.slug, 1, 2, true, req );
                 outComments = outComments.concat(comments);
 
                 topic.commentsPage = {

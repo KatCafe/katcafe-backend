@@ -26,10 +26,16 @@ export default function (express){
 
             if (await vote.load() ){
 
-                if (vote.value === value )
-                    return res.json({result: true, vote: vote.toJSON() });
-
                 prevVote = vote.value;
+
+                if (prevVote === value )
+                    return res.json({result: true, vote: vote.toJSON(), prevVote });
+                else {
+
+                    if (prevVote !== 0)
+                        value = 0;
+
+                }
 
                 vote.date = new Date().getTime();
                 vote.value = value;
@@ -43,16 +49,16 @@ export default function (express){
 
             if (await model.load() === false ) throw "Parent was not found";
 
-            if (prevVote === -1) model.votesDown --;
-            if (prevVote === 1) model.votesUp --;
+            if (prevVote === -1) model.votesDown = (model.votesDown || 0) - 1;
+            if (prevVote === 1) model.votesUp = (model.votesUp || 0) -1;
 
-            if (vote.value === -1) model.votesDown++;
-            if (vote.value === 1) model.votesUp++;
+            if (vote.value === -1) model.votesDown = (model.votesDown || 0) + 1;
+            if (vote.value === 1) model.votesUp = (model.votesUp || 0) + 1;
 
             await model.save();
             await vote.save();
 
-            return res.json({result: true, vote: vote.toJSON() });
+            return res.json({result: true, vote: vote.toJSON(), prevVote });
 
         }catch(err){
             res.status(500).json( err.toString() );

@@ -4,7 +4,7 @@ export default class CommentModel extends Model {
 
     constructor( slug, topic, channel, uuid, body, link, preview, author, country, date){
 
-        super( "comment", ["slug", "topic", "uuid", "body","link", "preview", "channel", "author", "country", "date"], ["votesUp", "votesDown"] );
+        super( "comment", ["slug", "topic", "uuid", "body","link", "preview", "channel", "author", "country", "date", "votesUp", "votesDown"], [ {name: "myvote", defualt: 0 } ] );
 
         this.slug = slug;
 

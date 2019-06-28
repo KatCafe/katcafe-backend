@@ -65,8 +65,18 @@ export default class Model {
 
         if (!save){
 
-            for (const key of this._fieldsAdditionalToJSON)
-                obj[key] = this[key];
+            for (const key of this._fieldsAdditionalToJSON) {
+
+                let defaultValue, finalKey = key;
+
+
+                if (typeof key === "object"){
+                    finalKey = key.name;
+                    defaultValue = key.default;
+                }
+
+                obj[key] = this[key] || defaultValue;
+            }
 
         }
 

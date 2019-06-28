@@ -12,7 +12,7 @@ import FileController from "modules/DB/models/files/file-controller"
 import CaptchaController from "modules/DB/models/captcha/captcha-controller"
 import CommentsController from "./comments.controller"
 
-
+import VotesController from "./../votes/votes.controller"
 
 export default function (express){
 
@@ -98,7 +98,8 @@ export default function (express){
 
             if (searchQuery === 'country' && !search ) search = 'us';
 
-            const out = await CommentsController.getByRank( searchRevert, searchAlgorithm, searchQuery, search, index, count, true);
+            const out = await CommentsController.getByRank( searchRevert, searchAlgorithm, searchQuery, search, index, count, true, req);
+
             res.json({result: true, comments: out.map( it=>it.toJSON() ) });
 
 
