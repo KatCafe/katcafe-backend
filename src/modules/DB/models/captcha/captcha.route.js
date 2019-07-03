@@ -1,3 +1,4 @@
+const svgCaptcha = require('svg-captcha');
 
 import CryptoHelper from "src/modules/helpers/crypto-helper"
 import StringHelper from "modules/helpers/string-helper";
@@ -7,6 +8,12 @@ export default function (express){
     express.get('/captcha/get', async function(req, res ) {
 
         try{
+
+            const captcha = svgCaptcha.create({
+                ignoreChars: '0o1ilI',
+                noise: 3,
+                color: true,
+            });
 
             res.json( {
 
