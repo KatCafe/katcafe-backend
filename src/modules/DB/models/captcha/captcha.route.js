@@ -18,6 +18,7 @@ export default function (express){
             res.json( {
 
                 result: true,
+
                 captcha: {
                     data: captcha.data,
                     encryption: CryptoHelper.encryptText( 0 + "#$#"+captcha.text + "#$#" + StringHelper.makeId(32) + "#$#" + new Date().getTime() ).toString("hex") ,

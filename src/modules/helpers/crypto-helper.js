@@ -1,14 +1,12 @@
 const crypto = require('crypto');
 import constsSecret from "consts/consts-secret"
 
-const secret = 'KABOOOM';
-
 class CryptoHelper {
 
     sha256(data){
 
 
-        const hash = crypto.createHmac('sha256', secret)
+        const hash = crypto.createHmac('sha256', constsSecret.crypto.SECRET )
             .update(data)
             .digest();
 
@@ -21,7 +19,8 @@ class CryptoHelper {
     }
 
     encrypt(text) {
-        let cipher = crypto.createCipheriv('aes-256-cbc', constsSecret.captchaSecretKey, constsSecret.captchaSecretIV );
+
+        let cipher = crypto.createCipheriv('aes-256-cbc', constsSecret.crypto.KEY, constsSecret.crypto.IV );
         let encrypted = cipher.update(text);
         encrypted = Buffer.concat([encrypted, cipher.final()]);
         return encrypted;
@@ -33,7 +32,7 @@ class CryptoHelper {
 
     decrypt(input) {
         let encryptedText = Buffer.from( input, 'hex');
-        let decipher = crypto.createDecipheriv('aes-256-cbc', constsSecret.captchaSecretKey, constsSecret.captchaSecretIV );
+        let decipher = crypto.createDecipheriv('aes-256-cbc', constsSecret.crypto.KEY, constsSecret.crypto.IV );
         let decrypted = decipher.update(encryptedText);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
         return decrypted;
