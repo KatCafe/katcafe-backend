@@ -27,6 +27,7 @@ export default function (express){
             });
 
         }catch(err){
+            console.log(err);
             res.status(500).json( err.toString() );
         }
 

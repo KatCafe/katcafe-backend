@@ -221,12 +221,12 @@ class StringHelper {
     fixURL(link){
 
         let linkLowerCase = link.toLowerCase();
-        if (linkLowerCase.indexOf('http://') < 0) {
+        if (linkLowerCase.indexOf('http://') < 0 && linkLowerCase.indexOf('https://') < 0) {
             link = "http://"+link;
             linkLowerCase = link.toLowerCase();
         }
 
-        if (linkLowerCase.indexOf('http') < 0) {
+        if (linkLowerCase.indexOf('http') < 0 && linkLowerCase.indexOf('https') < 0) {
             link = "http"+link;
             linkLowerCase = link.toLowerCase();
         }
