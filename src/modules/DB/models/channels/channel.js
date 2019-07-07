@@ -46,7 +46,12 @@ export default class Channel extends ChannelModel {
 
     }
 
+    _score(){
+        return this.topics || 0;
+    }
 
-
+    hot(){
+        return Math.log10( this._score );
+    }
 
 }

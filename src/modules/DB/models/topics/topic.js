@@ -47,7 +47,6 @@ export default class Topic extends TopicModel {
 
     }
 
-
     async load(){
 
         const promises = [
