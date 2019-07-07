@@ -27,6 +27,7 @@ export default function (express){
             await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
             if (channel[0] === '/') channel = channel.substr(1);
+            if (channel.indexOf('us') === 0) channel = channel.substr(3);
 
             const channelModel = new Channel(channel);
 
@@ -95,7 +96,7 @@ export default function (express){
             if ( await topic.load() === false)
                 throw "Not found";
 
-            topic.myvote = await VotesController.getVote( topic.slug, req );
+            topic.myVote = await VotesController.getVote( topic.slug, req );
 
             res.json({result: true, topic: topic.toJSON()});
 

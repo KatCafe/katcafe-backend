@@ -32,7 +32,7 @@ export default function (express){
                     return res.json({result: true, vote: vote.toJSON(), prevVote });
                 else {
 
-                    if (prevVote !== 0)
+                    if (prevVote && prevVote !== 0)
                         value = 0;
 
                 }
@@ -90,7 +90,5 @@ export default function (express){
         }
 
     });
-
-
 
 }

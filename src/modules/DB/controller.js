@@ -29,7 +29,7 @@ class Controller{
         if (req){
 
             const outVotes = await Promise.all( data.map (data => VotesController.getVote( data.slug, req )) );
-            data.map( (it, index) => it.myvote = outVotes[index] );
+            data.map( (it, index) => it.myVote = outVotes[index] );
 
         }
 

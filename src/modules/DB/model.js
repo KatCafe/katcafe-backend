@@ -51,8 +51,15 @@ export default class Model {
 
     fromJSON(obj){
 
-        for (const key of this._fields)
-            this[key] = obj[key];
+        for (const key of this._fields) {
+
+            let finalKey = key;
+
+            if (typeof key === "object")
+                finalKey = key.name;
+
+            this[finalKey] = obj[finalKey];
+        }
 
     }
 
@@ -60,11 +67,19 @@ export default class Model {
 
         const obj = {};
 
-        for (const key of this._fields)
-            obj[key] = this[key];
+        for (const key of this._fields) {
 
-        if (!save){
+            let defaultValue, finalKey = key;
 
+            if (typeof key === "object"){
+                finalKey = key.name;
+                defaultValue = key.default;
+            }
+
+            obj[finalKey] = this[finalKey] || defaultValue;
+        }
+
+        if (!save)
             for (const key of this._fieldsAdditionalToJSON) {
 
                 let defaultValue, finalKey = key;
@@ -75,10 +90,8 @@ export default class Model {
                     defaultValue = key.default;
                 }
 
-                obj[key] = this[key] || defaultValue;
+                obj[finalKey] = this[finalKey] || defaultValue;
             }
-
-        }
 
         return obj;
 

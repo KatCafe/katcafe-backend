@@ -4,7 +4,9 @@ export default class TopicModel extends Model {
 
     constructor( slug, channel, uuid, title, link, preview, body, author, country, date){
 
-        super( "topic", [ "slug", "channel", "uuid", "title","link", "body", "author", "preview", "country" , "date", "votesUp", "votesDown" ], ["comments", {name: "myvote", default: 0 } ] );
+        super( "topic", [ "slug", "channel", "uuid", "title","link", "body", "author", "preview", "country" , "date",
+                          {name: "votesUp", default: 0}, {name: "votesDown", default: 0}],
+               ["comments", {name: "myVote", default: 0 } ] );
 
         this.channel = channel;
 
