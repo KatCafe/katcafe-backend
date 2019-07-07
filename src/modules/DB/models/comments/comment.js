@@ -2,7 +2,6 @@ import client from "modules/DB/redis"
 import CommentModel from "./comment.model"
 import StringHelper from "../../../helpers/string-helper";
 
-
 export default class Comment extends CommentModel {
 
     constructor( slug, topic, channel, uuid, body ='', link = '', preview, author = '', country = '', date){
@@ -47,7 +46,8 @@ export default class Comment extends CommentModel {
 
     }
 
-
-
+    hot(){
+        return this.confidence(this.votesUp , this.votesDown)
+    }
 
 }

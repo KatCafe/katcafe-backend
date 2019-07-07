@@ -1,3 +1,5 @@
+//const pnormaldist = require('pnormaldist'); //get it
+
 import client from "./redis";
 
 const epoch = new Date("1970/01/01").getTime();
@@ -130,23 +132,31 @@ export default class Model {
     }
 
     hot(){
+
         const s = this._score();
+
         const order = Math.log( Math.max( Math.abs(s), 1) ) / Math.log(10);
         const sign = Math.sign( s );
         const seconds = this._seconds() - startingDate;
+
         return ( sign * order + seconds / 45000 ).toFixed( 7 );
 
     }
 
+    confidence(ups = 0, downs = 0){
 
-    ci_lower_bound(pos, n, confidence){
+        const n = ups + downs;
+
         if (n === 0) return 0;
 
-        const z = Statistics2.pnormaldist(1-(1-confidence)/2);
+        const z = 1.281551565545;
+        const p = ups / n;
 
-        const phat = 1.0*pos/n;
-        return (phat + z*z/(2*n) - z * Math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n);
+        const left = p + 1/(2*n)*z*z;
+        const right = z*Math.sqrt(p*(1-p)/n + z*z/(4*n*n));
+        const under = 1+1/n*z*z;
 
+        return (left - right) / under;
     }
 
 }

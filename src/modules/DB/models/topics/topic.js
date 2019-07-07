@@ -9,6 +9,7 @@ export default class Topic extends TopicModel {
         super( slug, channel , uuid, StringHelper.removeWhiteSpace( title ), StringHelper.removeWhiteSpace( link ), preview, StringHelper.removeWhiteSpace( body ), StringHelper.removeWhiteSpace( author ), country.toLowerCase(), date);
     }
 
+
     async saveScore(){
 
         await client.saddAsync(this._table+"s:list", this.id );
@@ -59,6 +60,8 @@ export default class Topic extends TopicModel {
 
     }
 
-
+    _score(){
+        return (this.votesUp || 0 ) - ( this.votesDown || 0 ) + Math.log10(this.comments || 0);
+    }
 
 }
