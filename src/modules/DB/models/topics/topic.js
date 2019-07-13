@@ -60,7 +60,7 @@ export default class Topic extends TopicModel {
     }
 
     _score(){
-        return (this.votesUp || 0 ) - ( this.votesDown || 0 ) + Math.log10(this.comments || 0);
+        return ( this.votesUp || 0 ) - ( this.votesDown || 0 ) + Math.log10( Math.max( this.comments || 0, 1) );
     }
 
 }

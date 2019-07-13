@@ -134,9 +134,9 @@ export default class Model {
     hot(){
 
         const s = this._score();
+        const sign = Math.sign(s);
 
-        const order = Math.log( Math.max( Math.abs(s), 1) ) / Math.log(10);
-        const sign = Math.sign( s );
+        const order = Math.log10( Math.max( Math.abs(s), 1) );
         const seconds = this._seconds() - startingDate;
 
         return ( sign * order + seconds / 45000 ).toFixed( 7 );
@@ -147,7 +147,7 @@ export default class Model {
 
         const n = ups + downs;
 
-        if (n === 0) return 0;
+        if ( n === 0 ) return 0;
 
         const z = 1.281551565545;
         const p = ups / n;

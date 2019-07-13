@@ -42,7 +42,7 @@ export default class Channel extends ChannelModel {
             ])
         );
 
-        await Promise.all(promises);
+        await Promise.all( promises );
 
     }
 
@@ -51,7 +51,7 @@ export default class Channel extends ChannelModel {
     }
 
     hot(){
-        return Math.log10( this._score );
+        return Math.log10( this._score() || 1 );
     }
 
 }
