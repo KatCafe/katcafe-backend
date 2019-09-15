@@ -29,6 +29,7 @@ import Comments from "modules/DB/models/comments/comments.route"
 import Scraper from "modules/DB/models/scraper/scraper.route"
 import Captcha from "modules/DB/models/captcha/captcha.route"
 import Votes from "modules/DB/models/votes/votes.route"
+import Auth from "modules/DB/models/auth/auth.route"
 
 global.appRoot = path.resolve(__dirname+'/../');
 
@@ -112,6 +113,7 @@ class APIServer {
         Scraper(this.app);
         Captcha(this.app);
         Votes(this.app);
+        Auth(this.app);
 
     }
 
