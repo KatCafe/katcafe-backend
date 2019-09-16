@@ -5,7 +5,7 @@ import Channel from "../channels/channel";
 import StringHelper from "../../../helpers/string-helper";
 import ScraperHelper from "../scraper/scraper-controller";
 import FileController from "../files/file-controller";
-import client from "../../redis";
+import client from "modules/DB/redis"
 
 class TopicsController extends Controller{
 

@@ -26,15 +26,9 @@ export default function (express){
 
         try{
 
-            const { userEmail, password, captcha} = req.body;
-
-            const user = new User(userEmail);
-
-            if ( await user.load() === false)
-                throw "Not found";
+            const user = await AuthController.loginModel(req.body);
 
             res.json({result: true, user: user.toJSON() });
-
 
         }catch(err){
             res.status(500).json( err.toString() );

@@ -3,7 +3,7 @@ import Topic from "../topics/topic";
 
 import StringHelper from "modules/helpers/string-helper";
 import Comment from "./comment";
-import client from "../../redis";
+import client from "modules/DB/redis"
 
 import ScraperHelper from "modules/DB/models/scraper/scraper-controller"
 

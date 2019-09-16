@@ -3,26 +3,30 @@ import User from "./user";
 import StringHelper from "../../../helpers/string-helper";
 import CaptchaController from "../captcha/captcha-controller";
 
+import client from "modules/DB/redis"
+
 class AuthController extends Controller{
 
     constructor(){
         super('users');
     }
 
-    async createModel( {username = '', email = '', password = '', country = '', captcha} ){
+    async createModel( {username = '', email = '', password = '', confirmPassword='', country = '', captcha} ){
 
         username = StringHelper.removeWhiteSpace(username);
         email = StringHelper.removeWhiteSpace(email);
         password = StringHelper.removeWhiteSpace(password);
         country = StringHelper.removeWhiteSpace(country);
 
-        if (!username || username.length < 4) throw "username is invalid. Required it requires at least 5 letters";
-        if (StringHelper.url_slug( username ) !== username) throw "Username";
+        if (!username || username.length < 3) throw "username is invalid. Requires at least 4 letters";
+        if (StringHelper.url_slug( username ) !== username) throw "Username contains illegal characters";
+        const slug = username;
 
-        if (!email || email.length < 5) throw "Title is too small. Required at least 5 char";
+        if (!email || email.length < 5) throw "Email is too small. Requires at least 3 char";
         if (!this._validateEmail(email)) throw "Email invalid";
 
         if (!password || password.length < 5) throw "Password too simple";
+        if ( confirmPassword !== password) throw "Passwords don't match";
 
         if (!country || country.length === 0) throw "Country Code is required";
 
@@ -31,11 +35,30 @@ class AuthController extends Controller{
 
         await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
-        const slug = username;
-
         const user = new User(slug, username, email, password, country, new Date().getTime() );
 
+        //saving a hset to enable login from emails
+        await client.hsetAsync(this.table+":emails",  email, slug );
+
         return super.createModel(user);
+
+    }
+
+    async loginModel({ userEmail, password, captcha}){
+
+        const out = await client.hgetAsync(this.table+":emails", userEmail);
+        if (out)
+            userEmail = out;
+
+        const user = User(userEmail);
+
+        if ( await user.load() === false)
+            throw "The user doesn't exist";
+
+        if (user.password !== password)
+            throw "Password doesn't match";
+
+        return user;
 
     }
 

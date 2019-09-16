@@ -1,18 +1,18 @@
 import Model from "modules/DB/model"
-import client from "../../redis";
+import client from "modules/DB/redis"
 
 export default class UserModel extends Model {
 
-    constructor( slug, username, email, password, date ){
+    constructor( slug, username, email, password, country, date ){
 
-        super( "user", ["slug", "username","email","password", "date" ] );
+        super( "user", ["slug", "username","email","password", "country", "date" ] );
 
         this.slug = slug;
 
-        this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.country = country;
 
         this.date = date;
     }
