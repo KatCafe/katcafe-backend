@@ -11,32 +11,9 @@ export default function (express){
 
         try{
 
-            let { username, email, password, country, captcha } = req.body;
+            const user = await AuthController.createModel(req.body);
 
-            if (!username || username.length < 1) throw "Name is to small. Required at least 1 char";
-            if (StringHelper.url_slug( username ) !== username) throw "Username invalid";
-
-            if (!email || email.length < 5) throw "Title is too small. Required at least 5 char";
-
-            if (!password || password.length < 5) throw "Password too simple";
-
-            if (!country || country.length === 0) throw "Country Code is required";
-
-            country = country.toLowerCase();
-            if (!country) country = 'us';
-
-            await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
-
-            const slug = username;
-
-            const channel = new Channel(slug, name, title, icon, cover, country, new Date().getTime() );
-
-            if ( await channel.exists() )
-                throw "Already exists";
-            else{
-                await channel.save();
-                res.json({result: true, channel: channel.toJSON() });
-            }
+            res.json({result: true, user: user.toJSON() });
 
 
         }catch(err){
@@ -51,12 +28,12 @@ export default function (express){
 
             const { userEmail, password, captcha} = req.body;
 
-            const channel = new User(userEmail);
+            const user = new User(userEmail);
 
-            if ( await channel.load() === false)
+            if ( await user.load() === false)
                 throw "Not found";
 
-            res.json({result: true, channel: channel.toJSON() });
+            res.json({result: true, user: user.toJSON() });
 
 
         }catch(err){

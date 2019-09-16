@@ -9,9 +9,9 @@ export default function (express){
 
         try{
 
-            const vote = VotesController.createModel( req.body, req.headers['x-forwarded-for'] || req.connection.remoteAddress );
+            const {vote, prevVote} = await VotesController.createModel( req.body, req.headers['x-forwarded-for'] || req.connection.remoteAddress );
 
-            return res.json({result: true, vote: vote.toJSON() });
+            return res.json({result: true, vote: vote.toJSON(), prevVote });
 
         }catch(err){
             res.status(500).json( err.toString() );
