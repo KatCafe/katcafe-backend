@@ -51,7 +51,7 @@ class AuthController extends Controller{
 
     }
 
-    async loginModel({ userEmail, password, captcha}){
+    async loginModel({ userEmail, password, captcha}, askCaptcha = false){
 
         const out = await client.hgetAsync(this.table+":emails", userEmail);
         if (out)
@@ -59,7 +59,8 @@ class AuthController extends Controller{
 
         const user = new User(userEmail);
 
-        //await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
+        if (askCaptcha)
+            await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
         if ( await user.load() === false)
             throw "The user doesn't exist";

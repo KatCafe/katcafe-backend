@@ -1,7 +1,3 @@
-import User from "./users/user"
-import StringHelper from "modules/helpers/string-helper";
-
-import CaptchaController from "modules/DB/models/captcha/captcha-controller"
 import AuthController from "./auth-controller"
 import SessionController from "./sessions/session-controller"
 
@@ -13,7 +9,9 @@ export default function (express){
 
             const user = await AuthController.createUserModel(req.body);
 
-            res.json({result: true, user: user.toJSON() });
+            const out = await AuthController.loginModel({userEmail: req.body.username, password: req.body.password, captcha: undefined}, false);
+
+            res.json({result: true, user: user.toJSON(), session: out.session.toJSON() });
 
 
         }catch(err){
@@ -26,7 +24,7 @@ export default function (express){
 
         try{
 
-            const out = await AuthController.loginModel(req.body);
+            const out = await AuthController.loginModel(req.body, true);
 
             res.json({result: true, user: out.user.toJSON(), session: out.session.toJSON() });
 
