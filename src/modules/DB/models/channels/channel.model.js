@@ -5,7 +5,7 @@ export default class ChannelModel extends Model {
 
     constructor( slug, name, title, icon, cover, country, date){
 
-        super( "channel", ["slug", "name","title","icon","cover", "country", "date" ],
+        super( "channel", [ "slug", "name","title","icon","cover", "country", "date" ],
                [ "topics" ]);
 
         this.slug = slug;

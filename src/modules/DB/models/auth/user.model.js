@@ -5,8 +5,7 @@ export default class UserModel extends Model {
 
     constructor( slug, username, email, password, date ){
 
-        super( "channel", ["slug", "username","email","password", "date" ],
-            [ "topics" ]);
+        super( "user", ["slug", "username","email","password", "date" ] );
 
         this.slug = slug;
 
@@ -22,15 +21,5 @@ export default class UserModel extends Model {
         return this.slug;
     }
 
-    async load(){
-
-        const promises = [
-            Model.prototype.load.call(this),
-        ];
-        const out = await Promise.all(promises);
-
-        this.topics = out[1] || 0;
-
-    }
 
 }

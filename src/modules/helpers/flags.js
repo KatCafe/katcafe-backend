@@ -247,22 +247,25 @@ const flags = [
     { value:'zw',   css:"flag zw", label:"Zimbabwe"},
 ];
 
-export function getFlags () {
-    return flags;
+class Flags {
+
+    getFlags(){
+        return flags;
+    }
+
+    getLabelByCode(code){
+
+        code = code.toLowerCase();
+        const flags = this.getFlags();
+
+        for (const flag of flags)
+            if (flag.value.toLowerCase() === code)
+                return flag.label;
+
+        return '';
+
+    }
+
 }
 
-
-
-
-export function getLabelByCode(code){
-
-    code = code.toLowerCase();
-    const flags = getFlags();
-
-    for (const flag of flags)
-        if (flag.value.toLowerCase() === code)
-            return flag.label;
-
-    return '';
-
-}
+export default new Flags();

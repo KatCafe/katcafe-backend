@@ -5,7 +5,22 @@ import VotesController from "./models/votes/votes.controller"
 
 class Controller{
 
-    async getByRank(table='topics', classModel, revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load, req){
+    constructor(table='table'){
+        this.table = table;
+    }
+
+    async createModel(model){
+
+        if ( await model.exists() )
+            throw "Already exists";
+
+        await model.save();
+
+        return model;
+
+    }
+
+    async getByRank( classModel, revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load, req){
 
         if (!index) index = 1;
         if ( !count ) count = 10;
@@ -13,7 +28,7 @@ class Controller{
         search = StringHelper.parseBody( (search || '').toLowerCase() );
         count = Math.min( count, 30);
 
-        const out = await client[`z${revert ? 'rev' : ''}rangeAsync`]( `${table}:rank:${searchAlgorithm}:${searchQuery}${search ? ':'+search : ''}`, (index-1) * count, index*count-1 );
+        const out = await client[`z${revert ? 'rev' : ''}rangeAsync`]( `${this.table}:rank:${searchAlgorithm}:${searchQuery}${search ? ':'+search : ''}`, (index-1) * count, index*count-1 );
 
         if (!load) return out;
 
