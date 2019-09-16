@@ -11,7 +11,7 @@ export default function (express){
 
             const {vote, prevVote} = await VotesController.createModel( req.body, req.headers['x-forwarded-for'] || req.connection.remoteAddress );
 
-            return res.json({result: true, vote: vote.toJSON(), prevVote });
+            return res.json({ vote: vote.toJSON(), prevVote });
 
         }catch(err){
             res.status(500).json( err.toString() );
@@ -35,7 +35,7 @@ export default function (express){
             if ( await vote.load() === false)
                 throw "Not found";
 
-            res.json({result: true, vote: vote.toJSON() });
+            res.json({vote: vote.toJSON() });
 
 
         }catch(err){

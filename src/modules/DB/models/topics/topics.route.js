@@ -3,6 +3,7 @@ import client from "../../redis";
 import TopicsController from "./topics.controller"
 import CommentsController from "./../comments/comments.controller"
 import VotesController from "../votes/votes.controller";
+import SessionController from "../auth/sessions/session-controller";
 
 export default function (express){
 
@@ -12,7 +13,7 @@ export default function (express){
 
             const topic = await TopicsController.createModel(req.body);
 
-            res.json({result: true, topic: topic.toJSON() });
+            res.json({ topic: topic.toJSON() });
 
 
         }catch(err){
@@ -37,7 +38,7 @@ export default function (express){
 
             topic.myVote = await VotesController.getVote( topic.slug, req );
 
-            res.json({result: true, topic: topic.toJSON()});
+            res.json({ topic: topic.toJSON()});
 
 
         }catch(err){
@@ -72,13 +73,35 @@ export default function (express){
 
             }
 
-            res.json({result: true, topics: out.map( it=>it.toJSON() ), comments: outComments.map( it=>it.toJSON() ) });
+            res.json({topics: out.map( it=>it.toJSON() ), comments: outComments.map( it=>it.toJSON() ) });
 
 
         }catch(err){
             res.status(500).json( err.toString() );
         }
 
+
+    });
+
+    express.post( '/topics/delete', async function(req, res ) {
+
+        try{
+
+            const out = await SessionController.loginModelSession(req.headers.session);
+
+            const topic = new Topic(req.body.slug);
+            if (await topic.load() === false) throw "Topic not found";
+
+            if (!out.user.isUserOwner(topic)) throw "No rights";
+
+            //await topic.delete();
+
+            res.json( {result: true} );
+
+
+        }catch(err){
+            res.status(500).json( err.toString() );
+        }
 
     });
 

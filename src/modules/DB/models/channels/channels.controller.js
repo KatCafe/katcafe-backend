@@ -3,6 +3,8 @@ import Channel from "./channel";
 
 import StringHelper from "modules/helpers/string-helper";
 import CaptchaController from "modules/DB/models/captcha/captcha-controller"
+import SessionController from "modules/DB/models/auth/sessions/session-controller"
+
 import Flags from "modules/helpers/flags";
 
 class ChannelsController extends Controller{
@@ -11,7 +13,9 @@ class ChannelsController extends Controller{
         super("channels");
     }
 
-    async createModel( {name, title, icon, cover, country, captcha} ){
+    async createModel( { name, title, icon, cover, country, captcha}, sessionKey ){
+
+        const out = await SessionController.loginModelSession(sessionKey);
 
         name = StringHelper.removeWhiteSpace(name);
         title = StringHelper.removeWhiteSpace(title);
@@ -31,7 +35,7 @@ class ChannelsController extends Controller{
 
         const slug = (country !== 'us' ? country +'/' : '') + StringHelper.url_slug( name );
 
-        const channel = new Channel(slug, name, title, icon, cover, country, new Date().getTime() );
+        const channel = new Channel( slug, name, title, icon, cover, out.user.username, country, new Date().getTime() );
 
         return super.createModel(channel);
 

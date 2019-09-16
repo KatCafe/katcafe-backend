@@ -11,7 +11,7 @@ export default function (express){
 
             const out = await AuthController.loginModel({userEmail: req.body.username, password: req.body.password, captcha: undefined}, false);
 
-            res.json({result: true, user: user.toJSON(), session: out.session.toJSON() });
+            res.json( { user: user.toJSON(), session: out.session.toJSON() });
 
 
         }catch(err){
@@ -26,7 +26,7 @@ export default function (express){
 
             const out = await AuthController.loginModel(req.body, true);
 
-            res.json({result: true, user: out.user.toJSON(), session: out.session.toJSON() });
+            res.json({ user: out.user.toJSON(), session: out.session.toJSON() });
 
         }catch(err){
             res.status(500).json( err.toString() );
@@ -40,7 +40,7 @@ export default function (express){
 
             const out = await SessionController.loginModelSession(req.body.key, true);
 
-            res.json({result: true, user: out.user.toJSON(), session: out.session.toJSON() });
+            res.json({ user: out.user.toJSON(), session: out.session.toJSON() });
 
         }catch(err){
             res.status(500).json( err.toString() );
@@ -54,7 +54,7 @@ export default function (express){
 
             const out = await SessionController.logoutSession(req.headers.session, true);
 
-            res.json({result: true });
+            res.json( {result: true } );
 
         }catch(err){
             res.status(500).json( err.toString() );

@@ -8,9 +8,9 @@ export default function (express){
 
         try{
 
-            const channel = await ChannelsController.createModel(req.body);
+            const channel = await ChannelsController.createModel(req.body, req.headers.session);
 
-            res.json({result: true, channel: channel.toJSON() });
+            res.json({ channel: channel.toJSON() });
 
         }catch(err){
             res.status(500).json( err.toString() );
@@ -33,7 +33,7 @@ export default function (express){
             if ( await channel.load() === false)
                 throw "Not found";
 
-            res.json({result: true, channel: channel.toJSON() });
+            res.json({ channel: channel.toJSON() });
 
 
         }catch(err){
@@ -58,7 +58,7 @@ export default function (express){
 
             const out = await ChannelsController.getByRank( searchRevert, algorithm, 'country', country, (index-1)*count, index*count-1 );
 
-            res.json({result: true, channels: out });
+            res.json({ channels: out });
 
 
         }catch(err){

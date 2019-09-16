@@ -16,7 +16,6 @@ export default function (express) {
 
             res.json( {
 
-                result: true,
                 scrape : out,
 
             });

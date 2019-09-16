@@ -5,7 +5,7 @@ export default class UserModel extends Model {
 
     constructor( username, email, salt, password, country, date ){
 
-        super( "user", ["username","email", 'salt', "password", "country", "date" ] );
+        super( "user", ["username","email", 'salt', "password", "country", "date", "role" ] );
 
         this.username = username;
         this.email = email;

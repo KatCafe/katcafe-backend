@@ -91,6 +91,12 @@ class FileController{
 
     }
 
+    async deleteFile(){
+
+
+
+    }
+
 }
 
 export default new FileController();
