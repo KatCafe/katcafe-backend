@@ -1,4 +1,4 @@
-import User from "./user"
+import User from "./users/user"
 import StringHelper from "modules/helpers/string-helper";
 
 import CaptchaController from "modules/DB/models/captcha/captcha-controller"

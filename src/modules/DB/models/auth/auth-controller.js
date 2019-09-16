@@ -1,6 +1,6 @@
 import Controller from "../../controller";
-import User from "./user";
-import StringHelper from "../../../helpers/string-helper";
+import User from "./users/user";
+import StringHelper from "modules/helpers/string-helper";
 import CaptchaController from "../captcha/captcha-controller";
 import saltedMd5 from 'salted-md5';
 

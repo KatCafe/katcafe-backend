@@ -182,7 +182,7 @@ class StringHelper {
         return result;
     }
 
-    makeSalt(length = 30, characters = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-=+_,./<>?;' ){
+    makeSalt(length = 30, characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-=+_,./<>?;[]{}\\|`~/\'"' ){
         return this.makeId(length, characters );
     }
 

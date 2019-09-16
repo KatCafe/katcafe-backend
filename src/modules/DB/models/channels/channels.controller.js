@@ -33,13 +33,13 @@ class ChannelsController extends Controller{
 
         const channel = new Channel(slug, name, title, icon, cover, country, new Date().getTime() );
 
-        return Controller.prototype.createModel(channel);
+        return super.createModel(channel);
 
     }
 
     async getByRank(revert , searchAlgorithm , searchQuery, search, index, count, load){
 
-        return Controller.prototype.getByRank.call(this,  Channel, revert, searchAlgorithm, searchQuery, search, index, count, load );
+        return super.getByRank.call(this,  Channel, revert, searchAlgorithm, searchQuery, search, index, count, load );
 
     }
 

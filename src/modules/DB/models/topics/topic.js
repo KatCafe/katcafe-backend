@@ -50,7 +50,7 @@ export default class Topic extends TopicModel {
     async load(){
 
         const promises = [
-            Model.prototype.load.call(this),
+            super.load.call(this),
             client.zcardAsync('comments:rank:date:topic:'+this.id.toLowerCase() )
         ];
         const out = await Promise.all(promises);

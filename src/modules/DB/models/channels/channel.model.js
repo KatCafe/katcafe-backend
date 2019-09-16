@@ -26,7 +26,7 @@ export default class ChannelModel extends Model {
     async load(){
 
         const promises = [
-            Model.prototype.load.call(this),
+            super.load.call(this),
             client.zcardAsync('topics:rank:date:channel:'+this.id.toLowerCase() )
         ];
         const out = await Promise.all(promises);

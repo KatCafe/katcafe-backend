@@ -78,7 +78,7 @@ class TopicsController extends Controller{
 
     async getByRank(revert , searchAlgorithm , searchQuery, search, index, count, load, req){
 
-        return Controller.prototype.getByRank.call(this, Topic, revert, searchAlgorithm, searchQuery, search, index, count, load, req );
+        return super.getByRank.call(this, Topic, revert, searchAlgorithm, searchQuery, search, index, count, load, req );
 
     }
 
