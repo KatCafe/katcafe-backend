@@ -3,11 +3,9 @@ import client from "modules/DB/redis"
 
 export default class UserModel extends Model {
 
-    constructor( slug, username, email, salt, password, country, date ){
+    constructor( username, email, salt, password, country, date ){
 
-        super( "user", ["slug", "username","email", 'salt', "password", "country", "date" ] );
-
-        this.slug = slug;
+        super( "user", ["username","email", 'salt', "password", "country", "date" ] );
 
         this.username = username;
         this.email = email;
@@ -19,7 +17,7 @@ export default class UserModel extends Model {
     }
 
     get id(){
-        return this.slug;
+        return this.username;
     }
 
 

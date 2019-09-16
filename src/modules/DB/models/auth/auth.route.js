@@ -36,13 +36,27 @@ export default function (express){
 
     });
 
-    express.get( '/auth/signin-session/:key', async function(req, res ) {
+    express.post( '/auth/signin-session', async function(req, res ) {
 
         try{
 
-            const out = await SessionController.loginModelSession(req.params.key, true);
+            const out = await SessionController.loginModelSession(req.body.key, true);
 
             res.json({result: true, user: out.user.toJSON(), session: out.session.toJSON() });
+
+        }catch(err){
+            res.status(500).json( err.toString() );
+        }
+
+    });
+
+    express.get( '/auth/logout/', async function(req, res ) {
+
+        try{
+
+            const out = await SessionController.logoutSession(req.headers.session, true);
+
+            res.json({result: true });
 
         }catch(err){
             res.status(500).json( err.toString() );

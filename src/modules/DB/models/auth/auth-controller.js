@@ -23,7 +23,6 @@ class AuthController extends Controller{
 
         if (!username || username.length < 3) throw "username is invalid. Requires at least 4 letters";
         if (StringHelper.url_slug( username ) !== username) throw "Username contains illegal characters";
-        const slug = username;
 
         if (!email || email.length < 5) throw "Email is too small. Requires at least 3 char";
         if (!this._validateEmail(email)) throw "Email invalid";
@@ -43,10 +42,10 @@ class AuthController extends Controller{
 
         const passwordSalted = saltedMd5(password, salt);
 
-        const user = new User(slug, username, email, salt, passwordSalted, country, new Date().getTime() );
+        const user = new User( username, email, salt, passwordSalted, country, new Date().getTime() );
 
         //saving a hset to enable login from emails
-        await client.hsetAsync(this.table+":emails",  email, slug );
+        await client.hsetAsync(this.table+":emails",  email, username );
 
         return super.createModel(user);
 
@@ -70,7 +69,7 @@ class AuthController extends Controller{
         if (user.password !== passwordSalted)
             throw "Password doesn't match";
 
-        const session = await SessionController.createSessionModel({userSlug: user.slug});
+        const session = await SessionController.createSessionModel({username: user.username});
 
         return {
             user,

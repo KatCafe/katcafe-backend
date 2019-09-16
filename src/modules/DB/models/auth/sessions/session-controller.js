@@ -1,6 +1,7 @@
 import Controller from "../../../controller";
 import Session from "./session.model"
 import StringHelper from "modules/helpers/string-helper";
+import User from "modules/DB/models/auth/users/user"
 
 import client from "modules/DB/redis"
 
@@ -10,9 +11,9 @@ class SessionController extends Controller {
         super('sessions');
     }
 
-    async createSessionModel({userSlug, date}){
+    async createSessionModel({username, date}){
 
-        if (!userSlug) throw "Username must be specified";
+        if (!username) throw "Username must be specified";
 
         if (!date) date = new Date().getTime() + 2592000000;
 
@@ -22,7 +23,7 @@ class SessionController extends Controller {
 
             key = StringHelper.makeSalt(70);
 
-            session = new Session( key, userSlug, new Date().getTime(), date, new Date().getTime() );
+            session = new Session( key, username, new Date().getTime(), date, new Date().getTime() );
 
             if ( await session.exists() === false )
                 break;
@@ -42,7 +43,7 @@ class SessionController extends Controller {
         if (await session.load() === false)
             throw "Session not found";
 
-        if (session.expirationDate > new Date().getTime()) {
+        if (session.expirationDate < new Date().getTime()) {
             await session.delete();
             throw "Session was expired";
         }
@@ -52,12 +53,29 @@ class SessionController extends Controller {
             await session.save();
         }
 
-        const user = new User(session.slug)
+        const user = new User(session.username);
+        if (await user.load() === false) {
+            await session.delete();
+            throw "User was not found by username";
+        }
 
         return {
             user,
             session,
         }
+
+    }
+
+    async logoutSession( key ) {
+
+        const session = new Session(key);
+
+        if (await session.load() === false)
+            throw "Session not found";
+
+        await session.delete();
+
+        return true;
 
     }
 
