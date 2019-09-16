@@ -10,19 +10,20 @@ class SessionController extends Controller {
         super('sessions');
     }
 
-    async createModel({username, date}){
+    async createSessionModel({userSlug, date}){
 
-        if (!username) throw "Username must be specified";
+        if (!userSlug) throw "Username must be specified";
 
-        if (!date) date = new Date().getTime() + 157784760000;
+        if (!date) date = new Date().getTime() + 2592000000;
 
         let key, session;
 
         while (1) {
 
-            key = StringHelper.makeSalt(40);
+            key = StringHelper.makeSalt(70);
 
-            session = new Session(key, username, new Date().getTime(), date, new Date().getTime());
+            session = new Session( key, userSlug, new Date().getTime(), date, new Date().getTime() );
+
             if ( await session.exists() === false )
                 break;
         }
@@ -30,6 +31,33 @@ class SessionController extends Controller {
         await session.save();
 
         return session;
+
+    }
+
+
+    async loginModelSession( key, loginFirst = false ){
+
+        const session = new Session(key);
+
+        if (await session.load() === false)
+            throw "Session not found";
+
+        if (session.expirationDate > new Date().getTime()) {
+            await session.delete();
+            throw "Session was expired";
+        }
+
+        if (loginFirst) {
+            session.lastUseDate = new Date().getTime();
+            await session.save();
+        }
+
+        const user = new User(session.slug)
+
+        return {
+            user,
+            session,
+        }
 
     }
 

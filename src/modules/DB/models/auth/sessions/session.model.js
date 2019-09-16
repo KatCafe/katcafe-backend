@@ -3,12 +3,12 @@ import client from "modules/DB/redis"
 
 export default class SessionModel extends Model {
 
-    constructor( key, username, date, expirationDate, lastUseDate){
+    constructor( key, userSlug, date, expirationDate, lastUseDate){
 
-        super( "session", [ 'key', 'username', "date", 'expirationDate', 'lastUseDate' ] );
+        super( "session", [ 'key', 'userSlug', "date", 'expirationDate', 'lastUseDate' ] );
 
         this.key = key;
-        this.username = username;
+        this.userSlug = userSlug;
         this.date = date;
         this.expirationDate = expirationDate;
         this.lastUseDate = lastUseDate;

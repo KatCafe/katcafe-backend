@@ -5,6 +5,8 @@ import CaptchaController from "../captcha/captcha-controller";
 import saltedMd5 from 'salted-md5';
 
 import client from "modules/DB/redis"
+import SessionController from "./sessions/session-controller"
+import Session from "./sessions/session.model"
 
 class AuthController extends Controller{
 
@@ -12,7 +14,7 @@ class AuthController extends Controller{
         super('users');
     }
 
-    async createModel( {username = '', email = '', password = '', confirmPassword='', country = '', captcha} ){
+    async createUserModel( {username = '', email = '', password = '', confirmPassword='', country = '', captcha} ){
 
         username = StringHelper.removeWhiteSpace(username);
         email = StringHelper.removeWhiteSpace(email);
@@ -68,9 +70,15 @@ class AuthController extends Controller{
         if (user.password !== passwordSalted)
             throw "Password doesn't match";
 
-        return user;
+        const session = await SessionController.createSessionModel({userSlug: user.slug});
+
+        return {
+            user,
+            session,
+        };
 
     }
+
 
     _validateEmail(email) {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

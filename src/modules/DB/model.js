@@ -18,8 +18,7 @@ export default class Model {
     async exists(){
 
         const out = await client.hgetAsync( this._table, this.id );
-        if (out) return true;
-
+        return !!out;
     }
 
     async save(){

@@ -2,5 +2,5 @@ node_modules/
 dist_bundle/
 package-lock.json
 .idea/
-consts/
+consts/consts-secret.js
 public/images/*
