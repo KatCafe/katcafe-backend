@@ -2,6 +2,7 @@ import Controller from "../../controller";
 import User from "./user";
 import StringHelper from "../../../helpers/string-helper";
 import CaptchaController from "../captcha/captcha-controller";
+import saltedMd5 from 'salted-md5';
 
 import client from "modules/DB/redis"
 
@@ -35,7 +36,12 @@ class AuthController extends Controller{
 
         await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
-        const user = new User(slug, username, email, password, country, new Date().getTime() );
+
+        const salt = StringHelper.makeSalt();
+
+        const passwordSalted = saltedMd5(password, salt);
+
+        const user = new User(slug, username, email, salt, passwordSalted, country, new Date().getTime() );
 
         //saving a hset to enable login from emails
         await client.hsetAsync(this.table+":emails",  email, slug );
@@ -50,12 +56,16 @@ class AuthController extends Controller{
         if (out)
             userEmail = out;
 
-        const user = User(userEmail);
+        const user = new User(userEmail);
+
+        //await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
         if ( await user.load() === false)
             throw "The user doesn't exist";
 
-        if (user.password !== password)
+        const passwordSalted = saltedMd5(password, user.salt);
+
+        if (user.password !== passwordSalted)
             throw "Password doesn't match";
 
         return user;

@@ -171,15 +171,19 @@ class StringHelper {
         return keywords.toString();
     }
 
-    makeId(length) {
+    makeId(length = 10, characters = 'abcdefghijklmnopqrstuvwxyz0123456789' ) {
 
         var result           = '';
-        var characters       = 'abcdefghijklmnopqrstuvwxyz0123456789';
         var charactersLength = characters.length;
+
         for ( var i = 0; i < length; i++ )
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
 
         return result;
+    }
+
+    makeSalt(length = 30, characters = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-=+_,./<>?;' ){
+        return this.makeId(length, characters );
     }
 
     removeWhiteSpace(str){
