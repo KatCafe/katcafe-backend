@@ -53,10 +53,18 @@ export default function (express){
             if ( !count ) count = 10;
             if (!algorithm ) algorithm = 'hot';
 
+            index = Number.parseInt(index);
+            count = Number.parseInt(count);
+
             country = country.toLowerCase();
             count = Math.min( count, 40);
 
             const out = await ChannelsController.getByRank( searchRevert, algorithm, 'country', country, (index-1)*count, index*count-1 );
+
+            if (index === 1){
+                const item = country;
+                out.splice(0, 0, item );
+            }
 
             res.json({ channels: out });
 
