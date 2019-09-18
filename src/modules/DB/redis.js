@@ -11,9 +11,9 @@ import constsSecret from "consts/consts-secret"
 
 async function conenctDB (){
 
-    if (constsSecret.redis.db) await client.select(constsSecret.redis.db);
-
     if (constsSecret.redis.pswd) await client.auth(constsSecret.redis.pswd);
+
+    if (constsSecret.redis.db) await client.select(constsSecret.redis.db);
 
     client.on("connect", function (err) {
         console.info("Redis connected");
