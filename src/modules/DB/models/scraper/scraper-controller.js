@@ -1,5 +1,3 @@
-import StringHelper from "../../../helpers/string-helper";
-
 const sizeOf = require('image-size');
 const cheerio = require('cheerio');
 
@@ -15,14 +13,14 @@ class ScraperController {
 
         try{
 
-            const image = await NetworkHelper.get(uri,undefined, false, timeout, null);
+            let image = await NetworkHelper.get(uri,undefined, false, timeout, null);
 
             if (!image) return;
 
             image = Buffer.from(image);
 
             const size = await sizeOf(image);
-            if (size) {
+            if (size && size.type !== "svg") {
                 size.img = uri;
                 return size;
             }
