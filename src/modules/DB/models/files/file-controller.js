@@ -51,6 +51,9 @@ class FileController{
             fileModel = new FileClass( slug, );
             await fileModel.load();
 
+            fileModel.used += 1;
+            await fileModel.save();
+
         } else {
 
             const slug = '0_'+file.name;
@@ -74,7 +77,7 @@ class FileController{
             }, file.title, file.sha256, {
                 width: resized.width,
                 height: resized.height,
-            }, new Date().getTime() );
+            }, new Date().getTime(), 1 );
 
 
             await fileModel.save();

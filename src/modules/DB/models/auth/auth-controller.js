@@ -44,9 +44,6 @@ class AuthController extends Controller{
 
         const user = new User( username, email, salt, passwordSalted, country, new Date().getTime() );
 
-        //saving a hset to enable login from emails
-        await client.hsetAsync(this.table+":emails",  email, username );
-
         return super.createModel(user);
 
     }
