@@ -1,11 +1,12 @@
 import Controller from "../../controller";
 import Topic from "./topic";
+import Channel from "./../channels/channel";
 import CaptchaController from "../captcha/captcha-controller";
-import Channel from "../channels/channel";
 import StringHelper from "../../../helpers/string-helper";
 import ScraperHelper from "../scraper/scraper-controller";
 import FileController from "../files/file-controller";
 import client from "modules/DB/redis"
+import SessionController from "../auth/sessions/session-controller";
 
 class TopicsController extends Controller{
 
@@ -74,7 +75,28 @@ class TopicsController extends Controller{
 
         await topic.save();
 
+        channelModel.topics++;
+        await channelModel.saveScore();
+
         return topic;
+    }
+
+    async deleteModel({session, slug}){
+
+        const out = await SessionController.loginModelSession(session);
+
+        const topic = new Topic(slug);
+        if (await topic.load() === false) throw "Topic not found";
+
+        if (!out.user.isUserOwner(topic)) throw "No rights";
+
+        await topic.delete();
+
+        //refresh score of parent
+        const channel = new Channel(topic.channel);
+        await channel.load();
+        await channel.saveScore();
+
     }
 
     async getByRank(revert , searchAlgorithm , searchQuery, search, index, count, load, req){

@@ -132,10 +132,10 @@ export default class Model {
 
     hot(){
 
-        const s = this._score();
+        const s = this._score() ;
         const sign = Math.sign(s);
 
-        const order = Math.log10( Math.max( Math.abs(s), 1) );
+        const order = Math.log10(  Math.abs(s)+1 );
         const seconds = this._seconds() - startingDate;
 
         return ( sign * order + seconds / 45000 ).toFixed( 7 );

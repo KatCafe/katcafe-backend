@@ -49,14 +49,7 @@ export default function (express){
 
         try{
 
-            const out = await SessionController.loginModelSession(req.headers.session);
-
-            const comment = new Comment(req.body.slug);
-            if (await comment.load() === false) throw "Comment not found";
-
-            if (!out.user.isUserOwner(comment)) throw "No rights";
-
-            await comment.delete();
+            await CommentsController.deleteModel({session: req.headers.session,slug: req.body.slug });
 
             res.json( {result: true} );
 

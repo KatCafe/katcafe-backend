@@ -1,9 +1,10 @@
 import Channel from "../channels/channel";
-import Topic from "../topics/topic";
 
 import StringHelper from "modules/helpers/string-helper";
 
 import Comment from "./comment";
+import Topic from "./../topics/topic"
+
 import client from "modules/DB/redis"
 
 import ScraperHelper from "modules/DB/models/scraper/scraper-controller"
@@ -12,6 +13,7 @@ import FileController from "modules/DB/models/files/file-controller"
 import CaptchaController from "modules/DB/models/captcha/captcha-controller"
 import VotesController from "./../votes/votes.controller"
 import Controller from "../../controller";
+import SessionController from "../auth/sessions/session-controller";
 
 class CommentsController extends Controller{
 
@@ -77,9 +79,30 @@ class CommentsController extends Controller{
 
         const comment = new Comment( existsComment.slug, topicModel.slug, channelModel.slug, uuid, body, link, preview, author, channelModel.country, new Date().getTime() );
 
-        await comment .save();
+        await comment.save();
+
+        topicModel.comments++;
+        await topicModel.saveScore();
 
         return comment;
+    }
+
+    async deleteModel({session, slug}){
+
+        const out = await SessionController.loginModelSession(session);
+
+        const comment = new Comment(slug);
+        if (await comment.load() === false) throw "Comment not found";
+
+        if (!out.user.isUserOwner(comment)) throw "No rights";
+
+        await comment.delete();
+
+        //refresh score of parent
+        const topic = new Topic(comment.topic);
+        await topic.load();
+        await topic.saveScore();
+
     }
 
     async getByRank(revert , searchAlgorithm , searchQuery, search, index, count, load, req){

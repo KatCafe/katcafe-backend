@@ -87,14 +87,7 @@ export default function (express){
 
         try{
 
-            const out = await SessionController.loginModelSession(req.headers.session);
-
-            const topic = new Topic(req.body.slug);
-            if (await topic.load() === false) throw "Topic not found";
-
-            if (!out.user.isUserOwner(topic)) throw "No rights";
-
-            await topic.delete();
+            await TopicsController.deleteModel({session: req.headers.session, slug: req.body.slug })
 
             res.json( {result: true} );
 
