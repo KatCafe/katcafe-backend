@@ -25,12 +25,14 @@ class ChannelsController extends Controller{
         country = (StringHelper.sanitizeText(country)||'us').toLowerCase();
 
         if (name.length < 1) throw "Name is to small. Required at least 1 char";
-        if (name.length === 2) throw "2 letters are reserved for countries";
 
         if (title.length < 5) throw "Title is too small. Required at least 5 char";
         if (country.length === 0) throw "Country Code is required";
 
         if (!Flags.getLabelByCode(country)) throw "Country is invalid";
+
+        if (country === 'us')
+            if (name.length === 2) throw "2 letters are reserved for countries";
 
         const slug = (country !== 'us' ? country +'/' : '') + StringHelper.url_slug( name );
         if (slug === 'u') throw "Slug u is being reserved for users";
