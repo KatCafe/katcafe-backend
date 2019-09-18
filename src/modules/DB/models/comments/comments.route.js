@@ -56,7 +56,7 @@ export default function (express){
 
             if (!out.user.isUserOwner(comment)) throw "No rights";
 
-            //await comment.delete();
+            await comment.delete();
 
             res.json( {result: true} );
 

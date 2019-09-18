@@ -94,7 +94,7 @@ export default function (express){
 
             if (!out.user.isUserOwner(topic)) throw "No rights";
 
-            //await topic.delete();
+            await topic.delete();
 
             res.json( {result: true} );
 

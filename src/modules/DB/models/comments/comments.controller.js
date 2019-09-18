@@ -67,6 +67,7 @@ class CommentsController extends Controller{
 
                 preview = fileModel.preview;
                 preview.full = fileModel.slug;
+                preview.sha256 = fileModel.sha256;
 
             } else throw "file not supported";
 

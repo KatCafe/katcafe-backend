@@ -2,6 +2,7 @@ import client from "modules/DB/redis"
 import TopicModel from "./topic.model"
 import StringHelper from "modules/helpers/string-helper";
 import Model from "../../model";
+import FileController from "../files/file-controller";
 
 export default class Topic extends TopicModel {
 
@@ -61,6 +62,14 @@ export default class Topic extends TopicModel {
 
     _score(){
         return ( this.votesUp || 0 ) - ( this.votesDown || 0 ) + Math.log10( Math.max( this.comments || 0, 1) );
+    }
+
+    async delete(){
+
+        if ( this.preview && this.preview.sha256)
+            await FileController.deleteFile(this.preview.sha256);
+
+        return super.delete();
     }
 
 }

@@ -1,5 +1,6 @@
 const path = require('path');
 const sharp = require('sharp');
+const fs = require('fs')
 
 import client from "modules/DB/redis"
 
@@ -96,9 +97,28 @@ class FileController{
 
     }
 
-    async deleteFile(){
+    async deleteFile(sha256){
 
+        const slug = await client.hgetAsync('files:hash', sha256);
+        if (slug){
+            const fileModel = new FileClass( slug, );
+            await fileModel.load();
 
+            fileModel.used -= 1;
+
+            if (fileModel.used === 0) {
+
+                try {
+                    await fs.unlinkSync(global.appRoot + fileModel.slug );
+                    await fs.unlinkSync(global.appRoot + fileModel.preview.img);
+                }catch(err){
+                    console.error("Error deleting files", error);
+                }
+
+                await fileModel.delete();
+            }
+
+        }
 
     }
 

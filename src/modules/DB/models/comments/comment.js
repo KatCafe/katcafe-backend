@@ -1,6 +1,7 @@
 import client from "modules/DB/redis"
 import CommentModel from "./comment.model"
 import StringHelper from "../../../helpers/string-helper";
+import FileController from "modules/DB/models/files/file-controller"
 
 export default class Comment extends CommentModel {
 
@@ -48,6 +49,14 @@ export default class Comment extends CommentModel {
 
     hot(){
         return this.confidence(this.votesUp , this.votesDown)
+    }
+
+    async delete(){
+
+        if ( this.preview && this.preview.sha256)
+            await FileController.deleteFile(this.preview.sha256);
+
+        return super.delete();
     }
 
 }
