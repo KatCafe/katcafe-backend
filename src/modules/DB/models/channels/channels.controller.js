@@ -32,9 +32,10 @@ class ChannelsController extends Controller{
 
         if (!Flags.getLabelByCode(country)) throw "Country is invalid";
 
-        await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
-
         const slug = (country !== 'us' ? country +'/' : '') + StringHelper.url_slug( name );
+        if (slug === 'u') throw "Slug u is being reserved for users";
+
+        await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
         const channel = new Channel( slug, name, title, icon, cover, out.user.username, country, new Date().getTime() );
 
