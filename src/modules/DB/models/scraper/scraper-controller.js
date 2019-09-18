@@ -1,7 +1,9 @@
+import StringHelper from "../../../helpers/string-helper";
+
 const sizeOf = require('image-size');
 const cheerio = require('cheerio');
 
-
+import StringHelper from "modules/helpers/string-helper";
 import NetworkHelper from "modules/helpers/network-helper"
 
 const timeout = 10000;
@@ -13,7 +15,7 @@ class ScraperController {
 
         try{
 
-            let image = await NetworkHelper.get(uri,undefined, false, timeout, null);
+            const image = await NetworkHelper.get(uri,undefined, false, timeout, null);
 
             if (!image) return;
 
@@ -65,8 +67,7 @@ class ScraperController {
         try{
 
             if (!uri) throw "invalid uri";
-
-
+            uri = StringHelper.sanitizeText(uri);
 
             let image = await this.getImage(uri, timeout);
 

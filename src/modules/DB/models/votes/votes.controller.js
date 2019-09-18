@@ -7,7 +7,7 @@ class VotesController {
 
     async createModel( {slug='', value, parentType}, req){
 
-        slug = StringHelper.removeWhiteSpace(slug);
+        slug = StringHelper.sanitizeText(slug);
 
         if (value !== -1 && value !== 0 && value !== 1) throw "value is invalid";
         if (parentType !== 'comment' && parentType !== 'topic') throw "parenType is invalid";

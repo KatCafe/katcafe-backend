@@ -2,6 +2,7 @@ import Controller from "../../controller";
 import Channel from "./channel";
 
 import StringHelper from "modules/helpers/string-helper";
+
 import CaptchaController from "modules/DB/models/captcha/captcha-controller"
 import SessionController from "modules/DB/models/auth/sessions/session-controller"
 
@@ -17,11 +18,11 @@ class ChannelsController extends Controller{
 
         const out = await SessionController.loginModelSession(sessionKey);
 
-        name = StringHelper.removeWhiteSpace(name);
-        title = StringHelper.removeWhiteSpace(title);
-        icon = StringHelper.removeWhiteSpace(icon);
-        cover = StringHelper.removeWhiteSpace(cover);
-        country = (StringHelper.removeWhiteSpace(country)||'us').toLowerCase();
+        name = StringHelper.sanitizeText(name);
+        title = StringHelper.sanitizeText(title);
+        icon = StringHelper.sanitizeText(icon);
+        cover = StringHelper.sanitizeText(cover);
+        country = (StringHelper.sanitizeText(country)||'us').toLowerCase();
 
         if (name.length < 1) throw "Name is to small. Required at least 1 char";
         if (name.length === 2) throw "2 letters are reserved for countries";

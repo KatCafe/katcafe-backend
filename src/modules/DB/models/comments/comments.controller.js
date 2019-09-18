@@ -2,6 +2,7 @@ import Channel from "../channels/channel";
 import Topic from "../topics/topic";
 
 import StringHelper from "modules/helpers/string-helper";
+
 import Comment from "./comment";
 import client from "modules/DB/redis"
 
@@ -20,10 +21,10 @@ class CommentsController extends Controller{
 
     async createModel({ topic, body='', link='', author='', file, captcha }) {
 
-        topic = StringHelper.removeWhiteSpace(topic);
-        body = StringHelper.removeWhiteSpace(body);
-        link = StringHelper.removeWhiteSpace(link);
-        author = StringHelper.removeWhiteSpace(author);
+        topic = StringHelper.sanitizeText(topic);
+        body = StringHelper.sanitizeText(body);
+        link = StringHelper.sanitizeText(link);
+        author = StringHelper.sanitizeText(author);
 
         if (!topic || topic.length < 1) throw "Topic was not selected";
 

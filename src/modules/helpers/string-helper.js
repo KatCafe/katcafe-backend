@@ -1,8 +1,7 @@
-const XRegExp = require ('xregexp');
+import sanitizeHtml from "sanitize-html";
+import XRegExp from 'xregexp';
 
-let regexUnicodeWord = XRegExp('^\\pL+$');
-
-const queryString = require('querystring');
+const regexUnicodeWord = XRegExp('^\\pL+$');
 
 const linkRegex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/gi;
 
@@ -12,7 +11,7 @@ class StringHelper {
     // Transliterate characters to ASCII
     transliterate(word){
 
-        var char_map = {
+        const char_map = {
             // Latin
             'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'AE', 'Ç': 'C',
             'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E', 'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I',
@@ -80,9 +79,9 @@ class StringHelper {
             'š': 's', 'ū': 'u', 'ž': 'z'
         };
 
-        for (var k in char_map) {
+        for (const k in char_map)
             word = word.replace(RegExp(k, 'g'), char_map[k]);
-        }
+
 
         return word;
     }
@@ -236,6 +235,13 @@ class StringHelper {
         }
 
         return link;
+    }
+
+
+    sanitizeText(string){
+
+        return sanitizeHtml( this.removeWhiteSpace(string) );
+
     }
 
 }

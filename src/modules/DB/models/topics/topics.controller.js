@@ -13,12 +13,12 @@ class TopicsController extends Controller{
         super('topics');
     }
 
-    async createModel(channel, title='', link='', body='', author='', file, captcha) {
+    async createModel( {channel, title='', link='', body='', author='', file, captcha} ) {
 
-        title = StringHelper.removeWhiteSpace(title);
-        link = StringHelper.removeWhiteSpace(link);
-        body = StringHelper.removeWhiteSpace(body);
-        author = StringHelper.removeWhiteSpace(author);
+        title = StringHelper.sanitizeText(title);
+        link = StringHelper.sanitizeText(link);
+        body = StringHelper.sanitizeText(body);
+        author = StringHelper.sanitizeText(author);
 
         if (!channel || channel.length < 1) throw "Channel was not selected";
         if (!title || title.length < 5) throw "Title is too small. Required at least 5 char";

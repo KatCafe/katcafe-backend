@@ -1,6 +1,7 @@
 import Controller from "../../controller";
 import User from "./users/user";
 import StringHelper from "modules/helpers/string-helper";
+
 import CaptchaController from "../captcha/captcha-controller";
 import saltedMd5 from 'salted-md5';
 
@@ -16,10 +17,9 @@ class AuthController extends Controller{
 
     async createUserModel( {username = '', email = '', password = '', confirmPassword='', country = '', captcha} ){
 
-        username = StringHelper.removeWhiteSpace(username);
-        email = StringHelper.removeWhiteSpace(email);
-        password = StringHelper.removeWhiteSpace(password);
-        country = StringHelper.removeWhiteSpace(country);
+        username = StringHelper.sanitizeText(username);
+        email = StringHelper.sanitizeText(email);
+        country = StringHelper.sanitizeText(country);
 
         if (!username || username.length < 3) throw "username is invalid. Requires at least 4 letters";
         if (StringHelper.url_slug( username ) !== username) throw "Username contains illegal characters";

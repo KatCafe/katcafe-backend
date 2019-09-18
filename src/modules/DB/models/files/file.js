@@ -6,7 +6,7 @@ import StringHelper from "../../../helpers/string-helper";
 export default class File extends FileModel {
 
     constructor( slug, mime, preview, title = '', sha256 ='',  extra, used = 0, date){
-        super(slug, mime, preview, StringHelper.removeWhiteSpace( title ), sha256.toLowerCase(), extra, used, date);
+        super(slug, mime, preview, title, sha256, extra, used, date);
     }
 
     async saveScore(){

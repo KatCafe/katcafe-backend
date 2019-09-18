@@ -12,8 +12,8 @@ class FileController{
 
     decodeBase64Image(dataString) {
 
-        var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-        var response = {};
+        const matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+        const response = {};
 
         if (matches.length !== 3)
             return new Error('Invalid input string');
@@ -27,11 +27,13 @@ class FileController{
 
     async processUploadedBase64File(file, res1 = 800, res2 = 200){
 
+        file.name = StringHelper.sanitizeText(file.name);
+
         const extension = path.extname(file.name).toLowerCase();
 
         if ( ['.jpg','.jpeg','.gif','.png','.tiff'].indexOf(extension) < 0 ) throw "invalid image extension";
 
-        file.name = StringHelper.removeWhiteSpace(file.name).replace('/\\,;[](){}~!@#$%^&**()','');
+        file.name = file.name.replace('/\\,;[](){}~!@#$%^&**()','');
 
         if ( !file.base64 || file.base64.length < 10) throw "invalid base64 file";
 
@@ -77,7 +79,7 @@ class FileController{
             }, file.title, file.sha256, {
                 width: resized.width,
                 height: resized.height,
-            }, new Date().getTime(), 1 );
+            }, 1, new Date().getTime() );
 
 
             await fileModel.save();

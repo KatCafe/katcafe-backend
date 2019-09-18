@@ -1,9 +1,12 @@
 import CryptoHelper from "src/modules/helpers/crypto-helper"
 import client from "modules/DB/redis"
+import StringHelper from "../../../helpers/string-helper";
 
 class CaptchaController {
 
     async captchaSolution(solution, encryption){
+
+        solution = StringHelper.sanitizeText(solution);
 
         const data = CryptoHelper.decryptText(encryption);
 
