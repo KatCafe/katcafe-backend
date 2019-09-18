@@ -102,7 +102,11 @@ class APIServer {
         });
 
         this.app.get('/hello', (req, res)=>{
-            res.json ({ version: 1 } );
+            res.json ({ hello: world } );
+        });
+
+        this.app.get('/', (req, res)=>{
+            res.json ({ ping: 'pong' } );
         });
 
         await client.conenctDB();
