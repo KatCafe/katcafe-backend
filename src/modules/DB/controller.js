@@ -25,7 +25,7 @@ class Controller{
         if (!index) index = 1;
         if ( !count ) count = 10;
 
-        search = StringHelper.parseBody( (search || '').toLowerCase() );
+        search = decodeURI( (search || '').toLowerCase() );
         count = Math.min( count, 30);
 
         const out = await client[`z${revert ? 'rev' : ''}rangeAsync`]( `${this.table}:rank:${searchAlgorithm}:${searchQuery}${search ? ':'+search : ''}`, (index-1) * count, index*count-1 );
