@@ -19,7 +19,7 @@ export default class User extends UserModel {
 
         if (!Array.isArray(objects)) objects = [];
 
-        return objects.reduce(  ( val, it) => val || ( it.owner === user.username) , false );
+        return objects.reduce(  ( val, it) => val || ( it && it.owner === user.username) , false );
 
     }
 

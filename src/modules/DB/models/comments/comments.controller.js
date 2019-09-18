@@ -21,7 +21,15 @@ class CommentsController extends Controller{
         super('comments');
     }
 
-    async createModel({ topic, body='', link='', author='', file, captcha }) {
+    async createModel({ topic, body='', link='', author='', file, captcha }, sessionKey) {
+
+        let owner;
+        try{
+            const out = await SessionController.loginModelSession(sessionKey);
+            owner = out.user;
+        }catch(err){
+
+        }
 
         topic = StringHelper.sanitizeText(topic);
         body = StringHelper.sanitizeText(body);
@@ -77,7 +85,7 @@ class CommentsController extends Controller{
 
         const uuid = await client.hincrbyAsync('comments:uuid', topicModel.slug.toLowerCase(), 1);
 
-        const comment = new Comment( existsComment.slug, topicModel.slug, channelModel.slug, uuid, body, link, preview, author, channelModel.country, new Date().getTime() );
+        const comment = new Comment( existsComment.slug, topicModel.slug, channelModel.slug, uuid, body, link, preview, author, owner ? owner.username : undefined, channelModel.country, new Date().getTime() );
 
         await comment.save();
 
