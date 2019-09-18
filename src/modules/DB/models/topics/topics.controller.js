@@ -88,13 +88,14 @@ class TopicsController extends Controller{
         const topic = new Topic(slug);
         if (await topic.load() === false) throw "Topic not found";
 
-        if (!out.user.isUserOwner(topic)) throw "No rights";
+        const channel = new Channel(topic.channel);
+        await channel.load();
+
+        if (!out.user.isUserOwner([topic, channel])) throw "No rights";
 
         await topic.delete();
 
         //refresh score of parent
-        const channel = new Channel(topic.channel);
-        await channel.load();
         await channel.saveScore();
 
     }

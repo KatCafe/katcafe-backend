@@ -94,13 +94,17 @@ class CommentsController extends Controller{
         const comment = new Comment(slug);
         if (await comment.load() === false) throw "Comment not found";
 
-        if (!out.user.isUserOwner(comment)) throw "No rights";
+        const topic = new Topic(comment.topic);
+        await topic.load();
+
+        const channel = new Channel(comment.channel);
+        await channel.load();
+
+        if ( !out.user.isUserOwner( [comment, channel, topic]) ) throw "No rights";
 
         await comment.delete();
 
         //refresh score of parent
-        const topic = new Topic(comment.topic);
-        await topic.load();
         await topic.saveScore();
 
     }
