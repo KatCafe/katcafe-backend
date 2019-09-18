@@ -1,5 +1,7 @@
 import client from "modules/DB/redis"
 import TopicModel from "./topic.model"
+import Comment from "./../comments/comment"
+
 import StringHelper from "modules/helpers/string-helper";
 import Model from "../../model";
 import FileController from "../files/file-controller";
@@ -65,6 +67,27 @@ export default class Topic extends TopicModel {
     }
 
     async delete(){
+
+        //delete comments first
+        const comments = [];
+
+        let index = 0;
+        do {
+            const out = await client.sscanAsync( 'comments:list:topic:'+this.slug.toLowerCase(), index );
+            index = Number.parseInt(out[0]);
+
+            out[1].map( it => comments.push(it ));
+        } while (index !== 0);
+
+        const commentsModels = await Promise.all( comments.map ( async it  => {
+
+            const comment = new Comment( it );
+            await comment.load();
+
+            return comment;
+        }));
+
+        await Promise.all( commentsModels.map( it => it.delete() ) );
 
         if ( this.preview && this.preview.sha256)
             await FileController.deleteFile(this.preview.sha256);
