@@ -63,9 +63,14 @@ class APIServer {
 
         try {
 
-            options.key = fs.readFileSync('./certificates/private.key', 'utf8');
-            options.cert = fs.readFileSync('./certificates/certificate.crt', 'utf8');
-            options.ca = fs.readFileSync('./certificates/ca_bundle.crt', 'utf8');
+            if (fs.existsSync('./certificates/ca_bundle.crt')) {
+                options.key = fs.readFileSync('./certificates/private.key', 'utf8');
+                options.cert = fs.readFileSync('./certificates/certificate.crt', 'utf8');
+                options.ca = fs.readFileSync('./certificates/ca_bundle.crt', 'utf8');
+            } else {
+                options.key = fs.readFileSync('./certificates/private.pem', 'utf8');
+                options.cert = fs.readFileSync('./certificates/certificate.pem', 'utf8');
+            }
 
             this.server = https.createServer( options, app).listen(port, ()=>{
 
