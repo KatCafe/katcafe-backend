@@ -70,7 +70,7 @@ class ScraperController {
             let image = await this.getImage(uri, timeout);
 
             if (image)
-                return { image: image };
+                return { uri, image };
 
             const html = await NetworkHelper.get( uri, undefined, false, timeout );
 
