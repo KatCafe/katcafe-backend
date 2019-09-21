@@ -15,28 +15,21 @@ export default class Topic extends TopicModel {
 
     async saveScore(){
 
-        try{
 
-            await client.saddAsync(this._table+"s:list", this.id );
-            const hot = - this.hot();
-            const date = - this.date;
+        await client.saddAsync(this._table+"s:list", this.id );
+        const hot = - this.hot();
+        const date = - this.date;
 
-            const promises = ["channel", "country"].map( it => Promise.all([
+        const promises = ["channel", "country"].map( it => Promise.all([
 
-                    client.saddAsync(this._table+'s:list:'+it+':' + this[it].toLowerCase(), this.id ),
-                    client.zaddAsync(this._table+'s:rank:hot:'+it+':' + this[it].toLowerCase(), hot, this.id ),
-                    client.zaddAsync(this._table+'s:rank:date:'+it+':' + this[it].toLowerCase(), date, this.id )
+                client.saddAsync(this._table+'s:list:'+it+':' + this[it].toLowerCase(), this.id ),
+                client.zaddAsync(this._table+'s:rank:hot:'+it+':' + this[it].toLowerCase(), hot, this.id ),
+                client.zaddAsync(this._table+'s:rank:date:'+it+':' + this[it].toLowerCase(), date, this.id )
 
-                ])
-            );
+            ])
+        );
 
-            await Promise.all(promises);
-
-        }catch(err){
-
-            console.log("Error saving", this.slug);
-
-        }
+        await Promise.all(promises);
 
     }
 
@@ -66,6 +59,8 @@ export default class Topic extends TopicModel {
         ];
 
         const out = await Promise.all(promises);
+
+        if (!out[0]) return false;
 
         this.comments = out[1] || 0;
 

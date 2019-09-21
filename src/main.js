@@ -55,15 +55,15 @@ class APIServer {
         app.use(cors({ credentials: true }));
         app.use('/.well-known/acme-challenge', serve('./certificates/well-known/acme-challenge', true) );
 
+        if (!fs.existsSync('./public')) fs.mkdirSync('./public');
+        if (!fs.existsSync('./public/images')) fs.mkdirSync('./public/images');
+
         app.use('/public', express.static('./public'));
 
         this.app = app;
 
         let options = {};
         let port = consts.PORT;
-
-        if (!fs.existsSync('./public')) fs.mkdirSync('./public');
-        if (!fs.existsSync('./public/images')) fs.mkdirSync('./public/images');
 
         try {
 

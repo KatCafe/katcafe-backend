@@ -32,6 +32,8 @@ export default class ChannelModel extends Model {
         ];
         const out = await Promise.all(promises);
 
+        if (!out[0]) return false;
+
         this.topics = out[1] || 0;
 
         return this;
