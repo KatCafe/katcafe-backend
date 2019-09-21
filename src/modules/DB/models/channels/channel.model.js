@@ -34,6 +34,7 @@ export default class ChannelModel extends Model {
 
         this.topics = out[1] || 0;
 
+        return this;
     }
 
 }

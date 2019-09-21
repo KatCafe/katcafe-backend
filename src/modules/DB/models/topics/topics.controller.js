@@ -11,7 +11,7 @@ import SessionController from "../auth/sessions/session-controller";
 class TopicsController extends Controller{
 
     constructor(){
-        super('topics');
+        super('topics', Topic);
     }
 
     async createModel( {channel, title='', link='', body='', author='', file, captcha}, sessionKey ) {
@@ -90,23 +90,19 @@ class TopicsController extends Controller{
         return topic;
     }
 
-    async deleteModel({session, slug}){
+    async deleteModel(params){
 
-        const out = await SessionController.loginModelSession(session);
+        let channel;
 
-        const topic = new Topic(slug);
-        if (await topic.load() === false) throw "Topic not found";
-
-        const channel = new Channel(topic.channel);
-        await channel.load();
-
-        if (!out.user.isUserOwner([topic, channel])) throw "No rights";
-
-        await topic.delete();
+        const topic = await super.deleteModel(params, ()=> {
+            channel = new Channel(topic.channel);
+            return channel;
+        });
 
         //refresh score of parent
         await channel.saveScore();
 
+        return topic;
     }
 
     async getByRank(revert , searchAlgorithm , searchQuery, search, index, count, load, req){

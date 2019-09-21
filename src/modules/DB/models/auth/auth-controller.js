@@ -12,7 +12,7 @@ import Session from "./sessions/session.model"
 class AuthController extends Controller{
 
     constructor(){
-        super('users');
+        super('users', User);
     }
 
     async createUserModel( {username = '', email = '', password = '', confirmPassword='', country = '', captcha} ){
@@ -50,7 +50,7 @@ class AuthController extends Controller{
 
     async loginModel({ userEmail, password, captcha}, askCaptcha = false){
 
-        const out = await client.hgetAsync(this.table+":emails", userEmail);
+        const out = await client.hgetAsync(this._table+":emails", userEmail);
         if (out)
             userEmail = out;
 

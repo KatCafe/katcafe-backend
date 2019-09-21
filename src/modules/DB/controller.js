@@ -2,11 +2,15 @@ import StringHelper from "../helpers/string-helper";
 import client from "./redis";
 
 import VotesController from "./models/votes/votes.controller"
+import SessionController from "./models/auth/sessions/session-controller";
+import Topic from "./models/topics/topic";
+import Channel from "./models/channels/channel";
 
 class Controller{
 
-    constructor(table='table'){
-        this.table = table;
+    constructor(table='table', modelClass = undefined){
+        this._table = table;
+        this._class = modelClass;
     }
 
     async createModel(model){
@@ -28,7 +32,7 @@ class Controller{
         search = decodeURI( (search || '').toLowerCase() );
         count = Math.min( count, 30);
 
-        const out = await client[ `z${ revert ? 'rev' : '' }rangeAsync` ]( `${this.table}:rank:${searchAlgorithm}:${searchQuery}${search ? ':'+search : ''}`, (index-1) * count, index*count-1 );
+        const out = await client[ `z${ revert ? 'rev' : '' }rangeAsync` ]( `${this._table}:rank:${searchAlgorithm}:${searchQuery}${search ? ':'+search : ''}`, (index-1) * count, index*count-1 );
 
         if (!load) return out;
 
@@ -50,6 +54,54 @@ class Controller{
         }
 
         return data;
+    }
+
+    async deleteModel({session, slug}, additionalLoading ) {
+
+        const out = await SessionController.loginModelSession(session);
+
+        const object = new this._class(slug);
+        if (await object.load() === false) throw "Data was not found";
+
+        let objects = [];
+        if (additionalLoading) objects = await additionalLoading( );
+
+        if (!out.user.isUserOwner( [ object, ...objects ] )) throw "No rights";
+
+        return object.delete();
+
+
+    }
+
+    async getAllIds(){
+
+        let list = [];
+
+        let index = 0;
+        do {
+            const out = await client.sscanAsync(this._table+':list', index);
+            index = Number.parseInt(out[0]);
+
+            out[1].map(it => list.push(it));
+        } while (index !== 0);
+
+        return list;
+    }
+
+    async loadAll(filter){
+
+        let list = await this.getAllIds();
+
+        if (filter)
+            list = list.filter( filter );
+
+        const models = list.map( it => {
+            const model = new this._class(it);
+            return model.load();
+        } );
+
+        return Promise.all(models);
+
     }
 
 }

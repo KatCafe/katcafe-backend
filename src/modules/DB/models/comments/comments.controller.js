@@ -18,7 +18,7 @@ import SessionController from "../auth/sessions/session-controller";
 class CommentsController extends Controller{
 
     constructor(){
-        super('comments');
+        super('comments', Comment);
     }
 
     async createModel({ topic, body='', link='', author='', file, captcha }, sessionKey) {
@@ -95,26 +95,25 @@ class CommentsController extends Controller{
         return comment;
     }
 
-    async deleteModel({session, slug}){
+    async deleteModel(params){
 
-        const out = await SessionController.loginModelSession(session);
+        let topic, channel;
 
-        const comment = new Comment(slug);
-        if (await comment.load() === false) throw "Comment not found";
+        const comment = await super.deleteModel(params, async () => {
 
-        const topic = new Topic(comment.topic);
-        await topic.load();
+            topic = new Topic(comment.topic);
+            await topic.load();
 
-        const channel = new Channel(comment.channel);
-        await channel.load();
+            channel = new Channel(comment.channel);
+            await channel.load();
 
-        if ( !out.user.isUserOwner( [comment, channel, topic]) ) throw "No rights";
-
-        await comment.delete();
+            return [topic, channel];
+        });
 
         //refresh score of parent
         await topic.saveScore();
 
+        return comment;
     }
 
     async getByRank(revert , searchAlgorithm , searchQuery, search, index, count, load, req){

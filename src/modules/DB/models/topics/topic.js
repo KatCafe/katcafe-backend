@@ -15,20 +15,28 @@ export default class Topic extends TopicModel {
 
     async saveScore(){
 
-        await client.saddAsync(this._table+"s:list", this.id );
-        const hot = - this.hot();
-        const date = - this.date;
+        try{
 
-        const promises = ["channel", "country"].map( it => Promise.all([
+            await client.saddAsync(this._table+"s:list", this.id );
+            const hot = - this.hot();
+            const date = - this.date;
 
-                client.saddAsync(this._table+'s:list:'+it+':' + this[it].toLowerCase(), this.id ),
-                client.zaddAsync(this._table+'s:rank:hot:'+it+':' + this[it].toLowerCase(), hot, this.id ),
-                client.zaddAsync(this._table+'s:rank:date:'+it+':' + this[it].toLowerCase(), date, this.id )
+            const promises = ["channel", "country"].map( it => Promise.all([
 
-            ])
-        );
+                    client.saddAsync(this._table+'s:list:'+it+':' + this[it].toLowerCase(), this.id ),
+                    client.zaddAsync(this._table+'s:rank:hot:'+it+':' + this[it].toLowerCase(), hot, this.id ),
+                    client.zaddAsync(this._table+'s:rank:date:'+it+':' + this[it].toLowerCase(), date, this.id )
 
-        await Promise.all(promises);
+                ])
+            );
+
+            await Promise.all(promises);
+
+        }catch(err){
+
+            console.log("Error saving", this.slug);
+
+        }
 
     }
 
@@ -61,6 +69,7 @@ export default class Topic extends TopicModel {
 
         this.comments = out[1] || 0;
 
+        return this;
     }
 
     _score(){

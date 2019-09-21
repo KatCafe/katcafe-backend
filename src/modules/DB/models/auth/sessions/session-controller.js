@@ -1,15 +1,11 @@
-import Controller from "../../../controller";
 import Session from "./session.model"
 import StringHelper from "modules/helpers/string-helper";
 import User from "modules/DB/models/auth/users/user"
 
 import client from "modules/DB/redis"
 
-class SessionController extends Controller {
+class SessionController {
 
-    constructor() {
-        super('sessions');
-    }
 
     async createSessionModel({username, date}){
 

@@ -38,7 +38,7 @@ export default class Model {
         const json = JSON.parse(out);
         this.fromJSON(json);
 
-        return true;
+        return this;
     }
 
     async delete() {
@@ -48,6 +48,7 @@ export default class Model {
         if (this.deleteScore)
             await this.deleteScore();
 
+        return this;
     }
 
     fromJSON(obj){

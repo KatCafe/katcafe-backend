@@ -239,9 +239,13 @@ class StringHelper {
 
 
     sanitizeText(string){
-
         return sanitizeHtml( this.removeWhiteSpace(string) );
+    }
 
+    verifyStringExistsInArray(list, string){
+        for (const str of list)
+            if (string.indexOf(str) >= 0)
+                return string;
     }
 
 }
