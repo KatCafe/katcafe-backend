@@ -62,6 +62,9 @@ class APIServer {
         let options = {};
         let port = consts.PORT;
 
+        if (!fs.existsSync('./public')) fs.mkdirSync('./public');
+        if (!fs.existsSync('./public/images')) fs.mkdirSync('./public/images');
+
         try {
 
             if (fs.existsSync('./certificates/ca_bundle.crt')) {
