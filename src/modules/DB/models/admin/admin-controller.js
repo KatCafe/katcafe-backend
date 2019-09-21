@@ -21,12 +21,12 @@ class AdminController{
         if (!channels || channels.length === 0 )
             channels = await ChannelsController.getAllIds();
 
-        let topics = await TopicsController.loadAll( it => StringHelper.verifyStringExistsInArray( channels, it ) );
+        let topics = await TopicsController.loadAllAndFix( it => StringHelper.verifyStringExistsInArray( channels, it ) );
         topics = topics.filter( it => !it.channel || !it.country );
 
         await Promise.all( topics.map( it => it.delete() ) );
 
-        let comments = await CommentsController.loadAll( it => StringHelper.verifyStringExistsInArray( channels, it ) );
+        let comments = await CommentsController.loadAllAndFix( it => StringHelper.verifyStringExistsInArray( channels, it ) );
         comments = comments.filter( it => !it.topic || !it.channel || !it.country);
 
         await Promise.all ( comments.map( it => it.delete() ) );

@@ -7,9 +7,9 @@ export default function (express){
 
         try{
 
-            await AdminController.removeWrongData( req.body, req.headers.session);
+            const out = await AdminController.removeWrongData( req.body, req.headers.session);
 
-            res.json( { result: true });
+            res.json( out );
 
 
         }catch(err){

@@ -92,13 +92,32 @@ class Controller{
 
         let list = await this.getAllIds();
 
-        if (filter)
-            list = list.filter( filter );
+        if (filter) list = list.filter( filter );
 
         const models = list.map( it => {
             const model = new this._class(it);
             return model.load();
         } );
+
+        return Promise.all(models);
+
+    }
+
+    async loadAllAndFix(filter){
+
+        let list = await this.getAllIds();
+
+        if (filter) list = list.filter( filter );
+
+        let models = list.map( async it => {
+            const model = new this._class(it);
+            const out = await model.load();
+
+            if (!out) model.delete();
+            return model;
+        } );
+
+        models = models.filter(it => it);
 
         return Promise.all(models);
 
