@@ -102,7 +102,7 @@ class ScraperController {
             if (youtubeId) {
                 uri = 'https://youtube.com/watch?v=' + youtubeId;
                 image = {
-                    youtubeId: youtubeId,
+                    youtubeId,
                 };
             }
 
@@ -115,7 +115,7 @@ class ScraperController {
 
             }
 
-            if (!title && !image && !description) throw "error";
+            if ( !title && !image && !description ) throw "error";
 
             return {
                 uri,

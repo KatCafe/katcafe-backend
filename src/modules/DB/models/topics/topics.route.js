@@ -61,9 +61,9 @@ export default function (express){
             const out = await TopicsController.getByRank( searchRevert, searchAlgorithm, searchQuery, search, index, count, true, req);
 
             let outComments = [];
-            for (const topic of out){
+            for (const topic of out) {
 
-                const comments = await CommentsController.getByRank( false, 'date', 'topic', topic.slug, 1, 2, true, req );
+                const comments = await CommentsController.getByRank( searchRevert, 'date', 'topic', topic.slug, 1, 2, true, req );
                 outComments = outComments.concat(comments);
 
                 topic.commentsPage = {

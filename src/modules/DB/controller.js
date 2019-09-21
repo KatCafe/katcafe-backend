@@ -22,24 +22,25 @@ class Controller{
 
     async getByRank( classModel, revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load, req){
 
-        if (!index) index = 1;
+        if ( !index ) index = 1;
         if ( !count ) count = 10;
 
         search = decodeURI( (search || '').toLowerCase() );
         count = Math.min( count, 30);
 
-        const out = await client[`z${revert ? 'rev' : ''}rangeAsync`]( `${this.table}:rank:${searchAlgorithm}:${searchQuery}${search ? ':'+search : ''}`, (index-1) * count, index*count-1 );
+        const out = await client[ `z${ revert ? 'rev' : '' }rangeAsync` ]( `${this.table}:rank:${searchAlgorithm}:${searchQuery}${search ? ':'+search : ''}`, (index-1) * count, index*count-1 );
 
         if (!load) return out;
 
         const p = [], data = [];
+
         for (const slug of out){
-            const obj = new classModel(slug);
+            const obj = new classModel( slug );
             p.push( obj.load() );
-            data.push(obj);
+            data.push( obj );
         }
 
-        await Promise.all(p);
+        await Promise.all( p );
 
         if (req){
 

@@ -3,7 +3,7 @@
 import client from "./redis";
 
 const epoch = new Date("1970/01/01").getTime();
-const startingDate = new Date("2019/01/01").getTime();
+const startingDate = new Date("2019/01/01").getTime()/1000;
 
 export default class Model {
 
@@ -68,31 +68,31 @@ export default class Model {
 
         const obj = {};
 
-        for (const key of this._fields) {
+        const processFields = ( data, fields ) => {
 
-            let defaultValue, finalKey = key;
+            if (!fields) return;
 
-            if (typeof key === "object"){
-                finalKey = key.name;
-                defaultValue = key.default;
-            }
-
-            obj[finalKey] = this[finalKey] || defaultValue;
-        }
-
-        if (!save)
-            for (const key of this._fieldsAdditionalToJSON) {
+            for (const key of fields) {
 
                 let defaultValue, finalKey = key;
-
 
                 if (typeof key === "object"){
                     finalKey = key.name;
                     defaultValue = key.default;
                 }
 
-                obj[finalKey] = this[finalKey] || defaultValue;
+                let out = data [finalKey] || defaultValue;
+                if ( typeof out === "function" ) out = out.call(this);
+
+                obj[key] = out;
             }
+
+        };
+
+        processFields( this, this._fields );
+
+        if (!save)
+            processFields(  this, this._fieldsAdditionalToJSON );
 
         return obj;
 
@@ -103,26 +103,29 @@ export default class Model {
     }
 
     _seconds(){
+
         let delta = ( this.date - epoch ) / 1000;
 
         // calculate (and subtract) whole days
-        let days = Math.floor(delta / 86400);
+        const days = Math.floor(delta / 86400);
         delta -= days * 86400;
 
         // calculate (and subtract) whole hours
-        let hours = Math.floor(delta / 3600) % 24;
+        const hours = Math.floor(delta / 3600) % 24;
         delta -= hours * 3600;
 
         // calculate (and subtract) whole minutes
-        let minutes = Math.floor(delta / 60) % 60;
+        const minutes = Math.floor(delta / 60) % 60;
         delta -= minutes * 60;
 
         // what's left is seconds
         let seconds = delta % 60;  // in theory the modulus is not required
         delta -= seconds;
 
+        seconds = 0;
+
         //return days;
-        return days * 24*60 + hours*60 + minutes;
+        return days * 24*60*60 + hours*60*60 + minutes*60 + seconds;
     }
 
 

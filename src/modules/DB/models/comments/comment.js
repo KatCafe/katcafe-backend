@@ -16,7 +16,7 @@ export default class Comment extends CommentModel {
         const hot = - this.hot();
         const date = - this.date;
 
-        const promises = ["channel", "topic", "country"].map( it => Promise.all([
+        const promises = [ "channel", "topic", "country" ].map( it => Promise.all([
 
                 client.saddAsync(this._table+'s:list:'+it+':' + this[it].toLowerCase(), this.id ),
                 client.zaddAsync(this._table+'s:rank:hot:'+it+':' + this[it].toLowerCase(), hot, this.id ),

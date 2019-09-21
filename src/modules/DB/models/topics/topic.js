@@ -56,6 +56,7 @@ export default class Topic extends TopicModel {
             super.load.call(this),
             client.zcardAsync('comments:rank:date:topic:'+this.id.toLowerCase() )
         ];
+
         const out = await Promise.all(promises);
 
         this.comments = out[1] || 0;

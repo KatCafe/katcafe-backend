@@ -2,11 +2,11 @@ import Model from "modules/DB/model"
 
 export default class TopicModel extends Model {
 
-    constructor( slug, channel, uuid, title, link, preview, body, author, owner, country, date){
+    constructor( slug, channel, uuid, title, link, preview, body, author, owner, country, date ){
 
         super( "topic", [ "slug", "channel", "uuid", "title","link", "body", "author", "preview", 'owner', "country" , "date",
                           {name: "votesUp", default: 0}, {name: "votesDown", default: 0}],
-               ["comments", {name: "myVote", default: 0 } ] );
+               ["comments", {name: "myVote", default: 0 }, 'hot' ] );
 
         this.slug = slug;
 

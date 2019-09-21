@@ -6,7 +6,7 @@ export default class CommentModel extends Model {
 
         super( "comment", ["slug", "topic", "uuid", "body","link", "preview", "channel", "author", 'owner', "country", "date",
                            {name: "votesUp", default: 0}, {name: "votesDown", default: 0}],
-                [ {name: "myVote", defualt: 0 } ] );
+                [ {name: "myVote", defualt: 0 }, 'hot' ] );
 
         this.slug = slug;
 
