@@ -84,7 +84,7 @@ export default class Model {
                 let out = data [finalKey] || defaultValue;
                 if ( typeof out === "function" ) out = out.call(this);
 
-                obj[key] = out;
+                obj[finalKey] = out;
             }
 
         };
@@ -122,8 +122,6 @@ export default class Model {
         let seconds = delta % 60;  // in theory the modulus is not required
         delta -= seconds;
 
-        seconds = 0;
-
         //return days;
         return days * 24*60*60 + hours*60*60 + minutes*60 + seconds;
     }
@@ -141,7 +139,7 @@ export default class Model {
         const order = Math.log10(  Math.abs(s)+1 );
         const seconds = this._seconds() - startingDate;
 
-        return ( sign * order + seconds / 45000 ).toFixed( 7 );
+        return Number.parseFloat( ( sign * order + seconds / 45000 ).toFixed( 7 ) );
 
     }
 

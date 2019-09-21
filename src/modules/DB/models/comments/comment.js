@@ -5,8 +5,8 @@ import FileController from "modules/DB/models/files/file-controller"
 
 export default class Comment extends CommentModel {
 
-    constructor( slug, topic, channel, uuid, body ='', link = '', preview, author = '', owner, country = '', date){
-        super(slug, topic, channel, uuid, body, link, preview, author, owner, country, date);
+    constructor( slug, topic, channel, uuid, body ='', link = '', preview, author = '', owner, country = '', date = new Date().getTime() ){
+        super(slug, topic, channel, uuid, body, link, preview, author, owner, country.toLowerCase(), date);
     }
 
     async saveScore(){
@@ -47,8 +47,12 @@ export default class Comment extends CommentModel {
 
     }
 
-    hot(){
-        return this.confidence(this.votesUp , this.votesDown)
+    // hot(){
+    //     return this.confidence(this.votesUp , this.votesDown)
+    // }
+
+    _score(){
+        return ( this.votesUp || 0 ) - ( this.votesDown || 0 );
     }
 
     async delete(){

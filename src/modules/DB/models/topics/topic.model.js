@@ -6,7 +6,7 @@ export default class TopicModel extends Model {
 
         super( "topic", [ "slug", "channel", "uuid", "title","link", "body", "author", "preview", 'owner', "country" , "date",
                           {name: "votesUp", default: 0}, {name: "votesDown", default: 0}],
-               ["comments", {name: "myVote", default: 0 }, 'hot' ] );
+               ["comments", {name: "myVote", default: undefined }, 'hot' ] );
 
         this.slug = slug;
 
