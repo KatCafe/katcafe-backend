@@ -32,7 +32,7 @@ class CommentsController extends Controller{
         }
 
         topic = StringHelper.sanitizeText(topic);
-        body = StringHelper.sanitizeText(body);
+        body = StringHelper.sanitizeText(body,false);
         link = StringHelper.sanitizeText(link);
         author = StringHelper.sanitizeText(author);
 

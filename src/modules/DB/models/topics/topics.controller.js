@@ -27,7 +27,7 @@ class TopicsController extends Controller{
 
         title = StringHelper.sanitizeText(title);
         link = StringHelper.sanitizeText(link);
-        body = StringHelper.sanitizeText(body);
+        body = StringHelper.sanitizeText(body, false);
         author = StringHelper.sanitizeText(author);
 
         if (!channel || channel.length < 1) throw "Channel was not selected";

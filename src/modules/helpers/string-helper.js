@@ -185,11 +185,15 @@ class StringHelper {
         return this.makeId(length, characters );
     }
 
-    removeWhiteSpace(str){
+    removeWhiteSpace(str, removeNewLines = true){
 
-        str = str.replace(/\s+/g,' ').trim();
+        if (!removeNewLines) {
+            str = str.replace(/[^\S\r\n]+/g, ' ');
+            str = str.replace(/[\r\n]{2,}/g, "\n");
+        }
+        else str = str.replace(/\s+/g,' ');
 
-        return str;
+        return str.trim();
 
     }
 
@@ -238,8 +242,8 @@ class StringHelper {
     }
 
 
-    sanitizeText(string){
-        return sanitizeHtml( this.removeWhiteSpace(string) );
+    sanitizeText(string, removeNewLines = true){
+        return sanitizeHtml( this.removeWhiteSpace(string, removeNewLines) );
     }
 
     verifyStringExistsInArray(list, string){
