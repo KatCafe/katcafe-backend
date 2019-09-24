@@ -47,7 +47,7 @@ class APIServer {
         const app = new express();
 
         app.use(function(req, res, next) {
-            res.header("Access-Control-Allow-Origin", consts.domain); // update to match the domain you will make the request from
+            res.header("Access-Control-Allow-Origin",'*'); // update to match the domain you will make the request from
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
         });
@@ -57,7 +57,6 @@ class APIServer {
         app.set('query parser', "extended");
         app.use(cookieParser());
 
-        app.use(cors({ credentials: true }));
         app.use('/.well-known/acme-challenge', serve('./certificates/well-known/acme-challenge', true) );
 
         if (!fs.existsSync('./public')) fs.mkdirSync('./public');
