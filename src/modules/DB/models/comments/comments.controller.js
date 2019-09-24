@@ -99,7 +99,7 @@ class CommentsController extends Controller{
 
         let topic, channel;
 
-        const comment = await super.deleteModel(params, async () => {
+        const comment = await super.deleteModel(params, async comment => {
 
             topic = new Topic(comment.topic);
             await topic.load();

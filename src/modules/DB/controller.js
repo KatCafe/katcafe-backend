@@ -64,7 +64,7 @@ class Controller{
         if (await object.load() === false) throw "Data was not found";
 
         let objects = [];
-        if (additionalLoading) objects = await additionalLoading( );
+        if (additionalLoading) objects = await additionalLoading( object );
 
         if (!out.user.isUserOwner( [ object, ...objects ] )) throw "No rights";
 

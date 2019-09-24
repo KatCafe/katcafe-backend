@@ -30,6 +30,8 @@ class TopicsController extends Controller{
         body = StringHelper.sanitizeText(body, false);
         author = StringHelper.sanitizeText(author);
 
+        if (title.length + body.length < 3) throw "";
+
         if (!channel || channel.length < 1) throw "Channel was not selected";
 
         await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
@@ -93,9 +95,10 @@ class TopicsController extends Controller{
 
         let channel;
 
-        const topic = await super.deleteModel(params, ()=> {
+        const topic = await super.deleteModel(params, async topic => {
             channel = new Channel(topic.channel);
-            return channel;
+            await channel.load();
+            return [channel];
         });
 
         //refresh score of parent
