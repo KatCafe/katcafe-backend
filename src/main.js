@@ -46,11 +46,33 @@ class APIServer {
 
         const app = new express();
 
-        app.use(function(req, res, next) {
-            res.header("Access-Control-Allow-Origin",consts.domain); // update to match the domain you will make the request from
-            res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-            res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, X-Requested-With");
-            next();
+        // var corsOptions = {
+        //     origin: 'https://katcafe.org',
+        //     allowedHeaders: ['session','user-agent'],
+        //     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+        // };
+        //
+        // app.use(cors(corsOptions));
+
+        app.use(function (req, res, next) {
+
+            // Website you wish to allow to connect
+            res.setHeader('Access-Control-Allow-Origin', consts.domain);
+
+            // Request methods you wish to allow
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+            // Request headers you wish to allow
+            res.setHeader('Access-Control-Allow-Headers', 'session, user-agent, X-Requested-With, content-type');
+
+            // Pass to next layer of middleware
+            // intercept OPTIONS method
+            if (req.method == 'OPTIONS')
+                res.send(200);
+
+            else
+                next();
+
         });
 
         app.use(bodyParser.json({limit: '50mb'}));

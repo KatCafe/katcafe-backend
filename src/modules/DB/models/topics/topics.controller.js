@@ -31,7 +31,6 @@ class TopicsController extends Controller{
         author = StringHelper.sanitizeText(author);
 
         if (!channel || channel.length < 1) throw "Channel was not selected";
-        if (!title || title.length < 5) throw "Title is too small. Required at least 5 char";
 
         await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
@@ -42,7 +41,7 @@ class TopicsController extends Controller{
 
         if (await channelModel.load() === false) throw "channel was not found";
 
-        const slug = channelModel.slug + '/' + StringHelper.url_slug(  title ) ;
+        const slug = channelModel.slug + '/' + StringHelper.url_slug(  title + StringHelper.makeId( Math.max( 0, 8 - title.length)  )  ) ;
         let existsTopic = new Topic();
         let suffix = '';
 
