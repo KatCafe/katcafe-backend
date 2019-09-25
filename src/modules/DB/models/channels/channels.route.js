@@ -1,6 +1,7 @@
 import Channel from "./channel"
 
 import ChannelsController from "./channels.controller"
+import StringHelper from "../../../helpers/string-helper";
 
 export default function (express){
 
@@ -25,8 +26,7 @@ export default function (express){
             let slug = req.params[0];
 
             if (!slug || slug.length < 1) throw "slug is not right";
-
-            if (slug[0]==='/') slug = slug.substr(1 );
+            slug = StringHelper.trimSlashes(slug);
 
             const channel = new Channel(slug);
 

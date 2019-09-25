@@ -2,7 +2,7 @@ import Controller from "../../controller";
 import Topic from "./topic";
 import Channel from "./../channels/channel";
 import CaptchaController from "../captcha/captcha-controller";
-import StringHelper from "../../../helpers/string-helper";
+import StringHelper from "modules/helpers/string-helper";
 import ScraperHelper from "../scraper/scraper-controller";
 import FileController from "../files/file-controller";
 import client from "modules/DB/redis"

@@ -1,7 +1,6 @@
 import client from "modules/DB/redis"
 import ChannelModel from "./channel.model"
-import StringHelper from "../../../helpers/string-helper";
-
+import StringHelper from "modules/helpers/string-helper";
 
 export default class Channel extends ChannelModel {
 

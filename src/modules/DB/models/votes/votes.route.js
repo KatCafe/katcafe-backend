@@ -26,7 +26,7 @@ export default function (express){
             let slug = req.params[0];
 
             if (!slug || slug.length < 1) throw "slug is not right";
-            if (slug[0] === '/') slug = slug.substr(1);
+            slug = StringHelper.trimSlashes(slug);
 
             const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 

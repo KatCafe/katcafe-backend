@@ -4,6 +4,7 @@ import TopicsController from "./topics.controller"
 import CommentsController from "./../comments/comments.controller"
 import VotesController from "../votes/votes.controller";
 import SessionController from "../auth/sessions/session-controller";
+import StringHelper from "modules/helpers/string-helper";
 
 export default function (express){
 
@@ -29,7 +30,7 @@ export default function (express){
             let slug = req.params[0];
 
             if (!slug || slug.length < 1) throw "slug is not right";
-            if (slug[0] === '/') slug = slug.substr(1);
+            slug = StringHelper.trimSlashes(slug);
 
             const topic = new Topic(slug);
 
@@ -67,11 +68,6 @@ export default function (express){
 
                 const comments = await CommentsController.getByRank( searchRevert, 'hot', 'topic', topic.slug, 1, COMMENTS_RETURN, true, req );
                 outComments = outComments.concat(comments);
-
-                topic.commentsPage = {
-                    pageIndex: 1,
-                    count: COMMENTS_RETURN,
-                };
 
             }
 

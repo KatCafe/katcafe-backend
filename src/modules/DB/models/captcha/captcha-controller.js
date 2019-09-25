@@ -1,6 +1,6 @@
 import CryptoHelper from "src/modules/helpers/crypto-helper"
 import client from "modules/DB/redis"
-import StringHelper from "../../../helpers/string-helper";
+import StringHelper from "modules/helpers/string-helper";
 
 class CaptchaController {
 

@@ -111,7 +111,7 @@ class StringHelper {
         s = String(s);
         opt = Object(opt);
 
-        var defaults = {
+        const defaults = {
             'delimiter': '-',
             'limit': undefined,
             'lowercase': false,
@@ -120,15 +120,12 @@ class StringHelper {
         };
 
         // Merge options
-        for (var k in defaults)
+        for (const k in defaults)
             if (!opt.hasOwnProperty(k))
                 opt[k] = defaults[k];
 
-
-
-
         // Make custom replacements
-        for (var k in opt.replacements)
+        for (const k in opt.replacements)
             s = s.replace(RegExp(k, 'g'), opt.replacements[k]);
 
 
@@ -137,7 +134,7 @@ class StringHelper {
 
 
         // Replace non-alphanumeric characters with our delimiter
-        var alnum = (typeof(XRegExp) === 'undefined') ? RegExp('[^a-z0-9]+', 'ig') : XRegExp('[^\\p{L}\\p{N}]+', 'ig');
+        const alnum = (typeof(XRegExp) === 'undefined') ? RegExp('[^a-z0-9]+', 'ig') : XRegExp('[^\\p{L}\\p{N}]+', 'ig');
         s = s.replace(alnum, opt.delimiter);
 
         // Remove duplicate delimiters
@@ -250,6 +247,10 @@ class StringHelper {
         for (const str of list)
             if (string.indexOf(str) >= 0)
                 return string;
+    }
+
+    trimSlashes(string){
+        return string.replace(/^\/|\/$/g, '');
     }
 
 }

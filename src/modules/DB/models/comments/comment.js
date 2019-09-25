@@ -1,6 +1,6 @@
 import client from "modules/DB/redis"
 import CommentModel from "./comment.model"
-import StringHelper from "../../../helpers/string-helper";
+import StringHelper from "modules/helpers/string-helper";
 import FileController from "modules/DB/models/files/file-controller"
 
 export default class Comment extends CommentModel {
