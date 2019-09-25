@@ -47,6 +47,8 @@ export default function (express){
 
     });
 
+    const COMMENTS_RETURN = 3;
+
     express.post( '/topics/top', async function(req, res ) {
 
         try{
@@ -63,12 +65,12 @@ export default function (express){
             let outComments = [];
             for (const topic of out) {
 
-                const comments = await CommentsController.getByRank( searchRevert, 'hot', 'topic', topic.slug, 1, 2, true, req );
+                const comments = await CommentsController.getByRank( searchRevert, 'hot', 'topic', topic.slug, 1, COMMENTS_RETURN, true, req );
                 outComments = outComments.concat(comments);
 
                 topic.commentsPage = {
                     pageIndex: 1,
-                    count: 3,
+                    count: COMMENTS_RETURN,
                 };
 
             }
