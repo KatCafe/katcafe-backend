@@ -38,7 +38,7 @@ class CommentsController extends Controller{
 
         if (!topic || topic.length < 1) throw "Topic was not selected";
 
-        if (!file && !link && body.length < 5) throw "You need to provide either a link/file or a text";
+        if (!file && !link && body.length < 5) throw "You need to provide either a link/file or write 5 characters";
 
         const topicModel = new Topic(topic);
         if (await topicModel.load() === false ) throw "topic was not found";

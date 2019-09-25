@@ -30,7 +30,7 @@ class TopicsController extends Controller{
         body = StringHelper.sanitizeText(body, false);
         author = StringHelper.sanitizeText(author);
 
-        if (title.length + body.length < 3) throw "";
+        if ( title.length + body.length <= 3) throw "Too few letters. Minimum 4 letters";
 
         if (!channel || channel.length < 1) throw "Channel was not selected";
 
