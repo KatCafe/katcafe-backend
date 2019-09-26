@@ -97,7 +97,7 @@ class ScraperController {
                 youtubeId = uri.substr( uri.indexOf("watch?v=") + "watch?v=".length, 'fSqMpZ5qhz0'.length );
             else
             if (uri.indexOf("youtu.be") >= 0)
-                youtubeId = uri.substr( uri.indexOf("youtu.be") + "youtu.be".length, 'fSqMpZ5qhz0'.length );
+                youtubeId = uri.substr( uri.indexOf("youtu.be") + "youtu.be".length+1, 'fSqMpZ5qhz0'.length );
 
             if (youtubeId) {
                 uri = 'https://youtube.com/watch?v=' + youtubeId;
