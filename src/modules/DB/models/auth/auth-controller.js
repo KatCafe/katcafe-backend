@@ -37,12 +37,17 @@ class AuthController extends Controller{
 
         await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
+        let user = new User(username);
+        if (await user.load() ) throw "Username already registered";
+
+        const out = await client.hgetAsync(this._table+":emails", email);
+        if (out) throw "Email already registered";
 
         const salt = StringHelper.makeSalt();
 
         const passwordSalted = saltedMd5(password, salt);
 
-        const user = new User( username, email, salt, passwordSalted, country, new Date().getTime() );
+        user = new User( username, email, salt, passwordSalted, country, new Date().getTime() );
 
         return super.createModel(user);
 
