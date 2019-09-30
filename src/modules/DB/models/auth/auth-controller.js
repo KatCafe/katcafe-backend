@@ -64,13 +64,11 @@ class AuthController extends Controller{
         if (askCaptcha)
             await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
-        if ( await user.load() === false)
-            throw "The user doesn't exist";
+        if ( await user.load() === false) throw "The user doesn't exist";
 
         const passwordSalted = saltedMd5(password, user.salt);
 
-        if (user.password !== passwordSalted)
-            throw "Password doesn't match";
+        if (user.password !== passwordSalted) throw "Password doesn't match";
 
         const session = await SessionController.createSessionModel({username: user.username});
 

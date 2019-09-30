@@ -7,11 +7,12 @@ const startingDate = new Date("2019/01/01").getTime()/1000;
 
 export default class Model {
 
-    constructor(table, fields = [], fieldsAdditionalToJSON = []) {
+    constructor(table, fields = [], fieldsAdditionalToJSON = [], fieldsHiddenToJSON = {}) {
 
         this._table = table;
         this._fields = fields;
         this._fieldsAdditionalToJSON = fieldsAdditionalToJSON;
+        this._fieldsHiddenToJSON = fieldsHiddenToJSON;
 
     }
 
@@ -74,6 +75,9 @@ export default class Model {
             if (!fields) return;
 
             for (const key of fields) {
+
+                if (!save && this._fieldsHiddenToJSON[key] )
+                    continue;
 
                 let defaultValue, finalKey = key;
 
