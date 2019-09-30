@@ -1,14 +1,23 @@
-const crypto = require('crypto');
+let crypto;
+try {
+    crypto = require('crypto');
+} catch (err) {
+    console.log('crypto support is disabled!');
+}
+
 import constsSecret from "consts/consts-secret"
 
 class CryptoHelper {
 
-    sha256(data){
+    dsha256(data, secret = constsSecret.crypto.SECRET){
+        return this.sha256( this.sha256(data, secret), secret);
+    }
 
+    sha256(data, secret = constsSecret.crypto.SECRET){
 
-        const hash = crypto.createHmac('sha256', constsSecret.crypto.SECRET )
-            .update(data)
-            .digest();
+        const sha256 = secret ? crypto.createHmac('sha256', secret  ) : crypto.createHash('sha256');
+
+        const hash = sha256.update(data).digest();
 
         return hash;
 

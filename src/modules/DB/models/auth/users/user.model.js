@@ -12,7 +12,7 @@ export default class UserModel extends Model {
         this.salt = salt;
         this.password = password;
         this.country = country;
-        this.encryption = 'sha256';
+        this.encryption = 'dsha256';
 
         this.date = date;
     }

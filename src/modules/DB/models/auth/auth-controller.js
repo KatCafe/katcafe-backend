@@ -1,3 +1,5 @@
+import CryptoHelper from "src/modules/helpers/crypto-helper"
+
 import Controller from "../../controller";
 import User from "./users/user";
 import StringHelper from "modules/helpers/string-helper";
@@ -61,12 +63,17 @@ class AuthController extends Controller{
 
         const user = new User(userEmail);
 
-        if (askCaptcha)
-            await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
+       if (askCaptcha)
+           await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
         if ( await user.load() === false) throw "The user doesn't exist";
 
-        const passwordSalted = saltedMd5(password, user.salt);
+        let passwordSalted;
+
+        if ( user.encryption === 'dsha256' )
+            passwordSalted = CryptoHelper.dsha256( password, '' ).toString('hex');
+        else
+            passwordSalted = saltedMd5(password, user.salt);
 
         if (user.password !== passwordSalted) throw "Password doesn't match";
 
