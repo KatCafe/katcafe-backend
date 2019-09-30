@@ -5,8 +5,8 @@ import FileController from "modules/DB/models/files/file-controller"
 
 export default class Comment extends CommentModel {
 
-    constructor( slug, topic, channel, uuid, body ='', link = '', preview, author = '', owner, country = '', date = new Date().getTime() ){
-        super(slug, topic, channel, uuid, body, link, preview, author, owner, country.toLowerCase(), date);
+    constructor( slug, topic, channel, uuid, body ='', link = '', preview, isAnonymous = false, owner, country = '', date = new Date().getTime() ){
+        super(slug, topic, channel, uuid, body, link, preview, isAnonymous, owner, country.toLowerCase(), date);
     }
 
     async saveScore(){

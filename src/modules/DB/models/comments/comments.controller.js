@@ -21,20 +21,12 @@ class CommentsController extends Controller{
         super('comments', Comment);
     }
 
-    async createModel({ topic, body='', link='', author='', file, captcha }, sessionKey) {
+    async createModel({ topic, body='', link='', file, captcha, isAnonymous = false }, auth) {
 
-        let owner;
-        try{
-            const out = await SessionController.loginModelSession(sessionKey);
-            owner = out.user;
-        }catch(err){
-
-        }
 
         topic = StringHelper.sanitizeText(topic);
         body = StringHelper.sanitizeText(body,false);
         link = StringHelper.sanitizeText(link);
-        author = StringHelper.sanitizeText(author);
 
         if (!topic || topic.length < 1) throw "Topic was not selected";
 
@@ -46,6 +38,8 @@ class CommentsController extends Controller{
         const channelModel = new Channel(topicModel.channel);
 
         if (await channelModel.load() === false) throw "channel was not found";
+
+        if (typeof isAnonymous !== "boolean") throw "isAnonymous is not boolean";
 
         const slug = topicModel.slug + '/';
         let existsComment = new Topic();
@@ -85,7 +79,7 @@ class CommentsController extends Controller{
 
         const uuid = await client.hincrbyAsync('comments:uuid', topicModel.slug.toLowerCase(), 1);
 
-        const comment = new Comment( existsComment.slug, topicModel.slug, channelModel.slug, uuid, body, link, preview, author, owner ? owner.username : undefined, channelModel.country, new Date().getTime() );
+        const comment = new Comment( existsComment.slug, topicModel.slug, channelModel.slug, uuid, body, link, preview, isAnonymous, auth ? auth.username : undefined, channelModel.country, new Date().getTime() );
 
         await comment.save();
 
@@ -116,9 +110,9 @@ class CommentsController extends Controller{
         return comment;
     }
 
-    async getByRank(revert , searchAlgorithm , searchQuery, search, index, count, load, req){
+    async getByRank(revert , searchAlgorithm , searchQuery, search, index, count, load, auth){
 
-        return super.getByRank.call(this, Comment, revert, searchAlgorithm, searchQuery, search, index, count, load, req );
+        return super.getByRank.call(this, Comment, revert, searchAlgorithm, searchQuery, search, index, count, load, auth );
 
     }
 

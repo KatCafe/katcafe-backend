@@ -1,3 +1,5 @@
+import SessionController from "./modules/DB/models/auth/sessions/session-controller";
+
 if(( typeof window !== 'undefined' && !window._babelPolyfill) ||
     ( typeof global !== 'undefined' && !global._babelPolyfill)) {
     require('babel-polyfill')
@@ -132,6 +134,19 @@ class APIServer {
             return false;
 
         this._initialized = true;
+
+        this.app.use( async (req, res, next)=>{
+
+            req.auth = null;
+            try{
+                const out = await SessionController.loginModelSession(req.headers.session);
+                req.auth = out.user;
+            }catch(err){
+                req.authError = err;
+            }
+
+            next();
+        });
 
         this.app.get('/version', (req, res)=>{
             res.json ({ version: 1 } );

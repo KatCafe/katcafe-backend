@@ -6,14 +6,14 @@ import client from "modules/DB/redis"
 
 export default class User extends UserModel {
 
-    isUserOwner(objects){
+    isUserOwner(objects, type = 'moderation'){
 
         const user = this;
 
         if (!user) return false;
 
         if (user.role === UserRole.SYS_ADMIN) return true;
-        if (user.role === UserRole.MODERATOR) return true;
+        if (type === 'moderation' && user.role === UserRole.MODERATOR) return true;
 
         if (!objects) return false;
 

@@ -7,10 +7,9 @@ import StringHelper from "modules/helpers/string-helper";
 
 class AdminController{
 
-    async removeWrongData({channels}, session){
+    async removeWrongData({channels}, auth){
 
-        const outUser = await SessionController.loginModelSession(session);
-        if (outUser.user.role !== UserRole.SYS_ADMIN) throw "You don't have SYS_ADMIN privileges";
+        if (!auth || auth.role !== UserRole.SYS_ADMIN) throw "You don't have SYS_ADMIN privileges";
 
         if (!Array.isArray(channels) && !channels) channels = [channels];
 
@@ -30,10 +29,9 @@ class AdminController{
         return {topics: topics.length, comments: comments.length};
     }
 
-    async updatesScores({channels }, session){
+    async updatesScores({channels }, auth){
 
-        const outUser = await SessionController.loginModelSession(session);
-        if (outUser.user.role !== UserRole.SYS_ADMIN) throw "You don't have SYS_ADMIN privileges";
+        if (!auth || auth.role !== UserRole.SYS_ADMIN) throw "You don't have SYS_ADMIN privileges";
 
         if (!Array.isArray(channels) && !channels) channels = [channels];
 

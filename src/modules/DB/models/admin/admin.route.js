@@ -7,7 +7,7 @@ export default function (express){
 
         try{
 
-            const out = await AdminController.removeWrongData( req.body, req.headers.session);
+            const out = await AdminController.removeWrongData( req.body, req.auth);
 
             res.json( out );
 
@@ -22,7 +22,7 @@ export default function (express){
 
         try{
 
-            await AdminController.updatesScores( req.body, req.headers.session);
+            await AdminController.updatesScores( req.body, req.auth);
 
             res.json( { result: true });
 

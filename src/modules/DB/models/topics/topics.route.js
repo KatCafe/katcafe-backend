@@ -12,7 +12,7 @@ export default function (express){
 
         try{
 
-            const topic = await TopicsController.createModel(req.body, req.headers.session);
+            const topic = await TopicsController.createModel(req.body, req.auth);
 
             res.json({ topic: topic.toJSON() });
 
@@ -26,6 +26,7 @@ export default function (express){
     express.get( '/topics/get/*', async function(req, res ) {
 
         try{
+
 
             let slug = req.params[0];
 
@@ -71,7 +72,7 @@ export default function (express){
 
             }
 
-            res.json({topics: out.map( it=>it.toJSON() ), comments: outComments.map( it=>it.toJSON() ) });
+            res.json({topics: out.map( it=>it.toJSON(false, req.auth) ), comments: outComments.map( it=>it.toJSON(false, req.auth) ) });
 
 
         }catch(err){
@@ -85,7 +86,7 @@ export default function (express){
 
         try{
 
-            await TopicsController.deleteModel({session: req.headers.session, slug: req.body.slug })
+            await TopicsController.deleteModel({ auth: req.auth, slug: req.body.slug })
 
             res.json( {result: true} );
 

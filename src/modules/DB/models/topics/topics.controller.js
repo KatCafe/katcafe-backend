@@ -14,16 +14,7 @@ class TopicsController extends Controller{
         super('topics', Topic);
     }
 
-    async createModel( {channel, title='', link='', body='', author='', file, captcha}, sessionKey ) {
-
-        let owner;
-        try{
-            const out = await SessionController.loginModelSession(sessionKey);
-            owner = out.user;
-        }catch(err){
-
-        }
-
+    async createModel( {channel, title='', link='', body='', author='', file, captcha}, auth ) {
 
         title = StringHelper.sanitizeText(title);
         link = StringHelper.sanitizeText(link);
@@ -81,7 +72,7 @@ class TopicsController extends Controller{
 
         const uuid = await client.hincrbyAsync('topics:uuid', 'total', 1);
 
-        const topic = new Topic(existsTopic.slug, channelModel.slug, uuid, title, link, preview, body, author, owner ? owner.username : undefined, channelModel.country.toLowerCase(), new Date().getTime() );
+        const topic = new Topic(existsTopic.slug, channelModel.slug, uuid, title, link, preview, body, author, auth ? auth.username : undefined, channelModel.country.toLowerCase(), new Date().getTime() );
 
         await topic.save();
 

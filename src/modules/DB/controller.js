@@ -56,9 +56,9 @@ class Controller{
         return data;
     }
 
-    async deleteModel({session, slug}, additionalLoading ) {
+    async deleteModel({auth, slug}, additionalLoading ) {
 
-        const out = await SessionController.loginModelSession(session);
+        if (!auth) throw "You must be logged in";
 
         const object = new this._class(slug);
         if (await object.load() === false) throw "Data was not found";
@@ -66,7 +66,7 @@ class Controller{
         let objects = [];
         if (additionalLoading) objects = await additionalLoading( object );
 
-        if (!out.user.isUserOwner( [ object, ...objects ] )) throw "No rights";
+        if (!auth.isUserOwner( [ object, ...objects ] )) throw "No rights";
 
         return object.delete();
 

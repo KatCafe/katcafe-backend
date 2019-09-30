@@ -2,9 +2,9 @@ import Model from "modules/DB/model"
 
 export default class CommentModel extends Model {
 
-    constructor( slug, topic, channel, uuid, body, link, preview, author, owner, country, date){
+    constructor( slug, topic, channel, uuid, body, link, preview, isAnonymous, owner, country, date){
 
-        super( "comment", ["slug", "topic", "uuid", "body","link", "preview", "channel", "author", 'owner', "country", "date",
+        super( "comment", ["slug", "topic", "uuid", "body","link", "preview", "channel", "isAnonymous", 'owner', "country", "date",
                            {name: "votesUp", default: 0}, {name: "votesDown", default: 0}],
                 [ {name: "myVote", default: undefined }, 'hot' ] );
 
@@ -17,7 +17,7 @@ export default class CommentModel extends Model {
         this.body = body;
         this.link = link;
         this.preview = preview;
-        this.author = author;
+        this.isAnonymous = isAnonymous;
         this.owner = owner;
 
         this.country = country;
@@ -28,6 +28,20 @@ export default class CommentModel extends Model {
 
     get id(){
         return this.slug.toLowerCase();
+    }
+
+
+    toJSON(save = false, userAuth){
+
+        const out = super.toJSON(save);
+
+        if (!save)
+            if ( this.isAnonymous && (!userAuth || !userAuth.isUserOwner(this, 'owner') ) ){
+                delete out.owner;
+            }
+
+        return out;
+
     }
 
 }

@@ -52,7 +52,7 @@ export default function (express){
 
         try{
 
-            const out = await SessionController.logoutSession(req.headers.session, true);
+            const out = await SessionController.logoutSession( req.headers.session, true);
 
             res.json( {result: true } );
 

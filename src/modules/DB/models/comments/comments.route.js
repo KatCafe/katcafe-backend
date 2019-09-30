@@ -11,7 +11,7 @@ export default function (express){
 
         try{
 
-            const comment = await CommentsController.createModel(req.body, req.headers.session);
+            const comment = await CommentsController.createModel(req.body, req.auth);
 
             res.json({ comment : comment.toJSON() });
 
@@ -35,7 +35,7 @@ export default function (express){
 
             const out = await CommentsController.getByRank( searchRevert, searchAlgorithm, searchQuery, search, index, count, true, req);
 
-            res.json({ comments: out.map( it=>it.toJSON() ) });
+            res.json({ comments: out.map( it=>it.toJSON(false, req.auth ) ) });
 
 
         }catch(err){
@@ -49,7 +49,7 @@ export default function (express){
 
         try{
 
-            await CommentsController.deleteModel({session: req.headers.session,slug: req.body.slug });
+            await CommentsController.deleteModel({auth: req.auth, slug: req.body.slug } );
 
             res.json( {result: true} );
 
