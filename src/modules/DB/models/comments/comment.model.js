@@ -35,10 +35,14 @@ export default class CommentModel extends Model {
 
         const out = super.toJSON(save);
 
-        if (!save)
-            if ( this.isAnonymous && (!userAuth || !userAuth.isUserOwner(this, 'owner') ) ){
-                delete out.owner;
-            }
+        if (!save) {
+
+            const hasRights = (userAuth && userAuth.isUserOwner(this, 'owner'));
+
+            if ( this.isAnonymous !== false && !hasRights) delete out.owner;
+            if (!hasRights) delete out.isAnonymous;
+
+        }
 
         return out;
 

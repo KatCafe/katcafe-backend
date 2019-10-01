@@ -6,7 +6,6 @@ import StringHelper from "modules/helpers/string-helper";
 import ScraperHelper from "../scraper/scraper-controller";
 import FileController from "../files/file-controller";
 import client from "modules/DB/redis"
-import SessionController from "../auth/sessions/session-controller";
 
 class TopicsController extends Controller{
 
@@ -14,16 +13,17 @@ class TopicsController extends Controller{
         super('topics', Topic);
     }
 
-    async createModel( {channel, title='', link='', body='', author='', file, captcha}, auth ) {
+    async createModel( {channel, title='', link='', body='', isAnonymous=false, file, captcha}, auth ) {
 
         title = StringHelper.sanitizeText(title);
         link = StringHelper.sanitizeText(link);
         body = StringHelper.sanitizeText(body, false);
-        author = StringHelper.sanitizeText(author);
 
         if ( title.length + body.length <= 3) throw "Too few letters. Minimum 4 letters";
 
         if (!channel || channel.length < 1) throw "Channel was not selected";
+
+        if (typeof isAnonymous !== "boolean") throw "isAnonymous is not boolean";
 
         await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
@@ -72,7 +72,7 @@ class TopicsController extends Controller{
 
         const uuid = await client.hincrbyAsync('topics:uuid', 'total', 1);
 
-        const topic = new Topic(existsTopic.slug, channelModel.slug, uuid, title, link, preview, body, author, auth ? auth.username : undefined, channelModel.country.toLowerCase(), new Date().getTime() );
+        const topic = new Topic(existsTopic.slug, channelModel.slug, uuid, title, link, preview, body, isAnonymous, auth ? auth.username : undefined, channelModel.country.toLowerCase(), new Date().getTime() );
 
         await topic.save();
 

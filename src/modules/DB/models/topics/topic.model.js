@@ -2,9 +2,9 @@ import Model from "modules/DB/model"
 
 export default class TopicModel extends Model {
 
-    constructor( slug, channel, uuid, title, link, preview, body, author, owner, country, date ){
+    constructor( slug, channel, uuid, title, link, preview, body, isAnonymous, owner, country, date ){
 
-        super( "topic", [ "slug", "channel", "uuid", "title","link", "body", "author", "preview", 'owner', "country" , "date",
+        super( "topic", [ "slug", "channel", "uuid", "title","link", "body", "isAnonymous", "preview", 'owner', "country" , "date",
                           {name: "votesUp", default: 0}, {name: "votesDown", default: 0}],
                ["comments", {name: "myVote", default: undefined }, 'hot' ] );
 
@@ -18,7 +18,7 @@ export default class TopicModel extends Model {
 
         this.link = link;
         this.preview = preview;
-        this.author = author;
+        this.isAnonymous = isAnonymous;
         this.owner = owner;
 
         this.country = country;
@@ -30,5 +30,23 @@ export default class TopicModel extends Model {
     get id(){
         return this.slug.toLowerCase();
     }
+
+    toJSON(save = false, userAuth){
+
+        const out = super.toJSON(save);
+
+        if (!save) {
+
+            const hasRights = (userAuth && userAuth.isUserOwner(this, 'owner'));
+
+            if ( this.isAnonymous !== false && !hasRights) delete out.owner;
+            if (!hasRights) delete out.isAnonymous;
+
+        }
+
+        return out;
+
+    }
+
 
 }

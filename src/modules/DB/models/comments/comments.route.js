@@ -1,7 +1,6 @@
 import CryptoHelper from "modules/helpers/crypto-helper"
 
 import CommentsController from "./comments.controller"
-import SessionController from "../auth/sessions/session-controller";
 import Comment from "./comment"
 
 export default function (express){

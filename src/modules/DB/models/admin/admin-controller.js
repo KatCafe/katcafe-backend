@@ -1,4 +1,3 @@
-import SessionController from "../auth/sessions/session-controller";
 import UserRole from "./../auth/users/user-role"
 import ChannelsController from "../channels/channels.controller"
 import TopicsController from "../topics/topics.controller"

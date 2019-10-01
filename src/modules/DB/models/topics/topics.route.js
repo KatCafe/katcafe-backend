@@ -3,7 +3,6 @@ import client from "../../redis";
 import TopicsController from "./topics.controller"
 import CommentsController from "./../comments/comments.controller"
 import VotesController from "../votes/votes.controller";
-import SessionController from "../auth/sessions/session-controller";
 import StringHelper from "modules/helpers/string-helper";
 
 export default function (express){

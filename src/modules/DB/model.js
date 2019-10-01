@@ -86,7 +86,10 @@ export default class Model {
                     defaultValue = key.default;
                 }
 
-                let out = data [finalKey] || defaultValue;
+                let out = data [finalKey] ;
+
+                if (defaultValue) out = out || defaultValue;
+
                 if ( typeof out === "function" ) out = out.call(this);
 
                 obj[finalKey] = out;

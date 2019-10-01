@@ -13,7 +13,6 @@ import FileController from "modules/DB/models/files/file-controller"
 import CaptchaController from "modules/DB/models/captcha/captcha-controller"
 import VotesController from "./../votes/votes.controller"
 import Controller from "../../controller";
-import SessionController from "../auth/sessions/session-controller";
 
 class CommentsController extends Controller{
 
@@ -32,14 +31,14 @@ class CommentsController extends Controller{
 
         if (!file && !link && body.length < 5) throw "You need to provide either a link/file or write 5 characters";
 
+        if (typeof isAnonymous !== "boolean") throw "isAnonymous is not boolean";
+
         const topicModel = new Topic(topic);
         if (await topicModel.load() === false ) throw "topic was not found";
 
         const channelModel = new Channel(topicModel.channel);
 
         if (await channelModel.load() === false) throw "channel was not found";
-
-        if (typeof isAnonymous !== "boolean") throw "isAnonymous is not boolean";
 
         const slug = topicModel.slug + '/';
         let existsComment = new Topic();
