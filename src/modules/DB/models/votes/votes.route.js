@@ -1,5 +1,6 @@
 import Vote from "./vote"
 import VotesController from "./votes.controller"
+import StringHelper from "modules/helpers/string-helper";
 
 import client from "../../redis";
 
