@@ -46,8 +46,8 @@ class AuthController extends Controller{
         if (out) throw "Email already registered";
 
         const salt = StringHelper.makeSalt();
-
-        const passwordSalted = saltedMd5(password, salt);
+        user.encryption = 'dsha256';
+        const passwordSalted = CryptoHelper.dsha256( salt + password, '' ).toString('hex');
 
         user = new User( username, email, salt, passwordSalted, country, new Date().getTime() );
 
@@ -71,7 +71,7 @@ class AuthController extends Controller{
         let passwordSalted;
 
         if ( user.encryption === 'dsha256' )
-            passwordSalted = CryptoHelper.dsha256( password, '' ).toString('hex');
+            passwordSalted = CryptoHelper.dsha256( user.salt + password, '' ).toString('hex');
         else
             passwordSalted = saltedMd5(password, user.salt);
 
