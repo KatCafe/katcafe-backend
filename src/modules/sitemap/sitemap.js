@@ -17,7 +17,7 @@ class Sitemap{
 
                 try{
 
-                    if ( this._finished && new Date().getTime() - this._lastTime > 30*60*1000 ) {
+                    if ( this._finished && new Date().getTime() - this._lastTime > 5*60*1000 ) {
 
                         this._finished = false;
 
@@ -40,6 +40,7 @@ class Sitemap{
             filepath: './public/sitemap.xml',
             maxEntriesPerFile: 50000,
             changeFreq: 'always',
+            maxConcurrency: 1, //to avoid making the website run slow
         });
 
         // register event listeners
