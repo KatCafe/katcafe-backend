@@ -33,11 +33,17 @@ class Sitemap{
         // start the crawler
         setInterval( ()=>{
 
-            if ( this._finished && new Date().getTime() - this._lastTime > 60*1000 ) {
-                this._finished = false;
+            try{
 
-                console.log("Sitemap Starting");
-                this._generator.start();
+                if ( this._finished && new Date().getTime() - this._lastTime > 60*1000 ) {
+                    this._finished = false;
+
+                    console.log("Sitemap Starting");
+                    this._generator.start();
+                }
+
+            }catch(err){
+
             }
 
         }, 3000);
@@ -45,8 +51,11 @@ class Sitemap{
     }
 
     sitemapCreated(){
-        this._finished = true;
         console.log("Sitemap finished");
+
+        setTimeout(()=>{
+            this._finished = true;
+        }, 30*1000);
     }
 
     initExpress(app){
