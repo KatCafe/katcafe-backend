@@ -2,6 +2,7 @@ import consts from 'consts/consts';
 
 import SitemapGenerator from 'sitemap-generator';
 
+const start = true;
 
 class Sitemap{
 
@@ -15,7 +16,6 @@ class Sitemap{
             filepath: './public/sitemap.xml',
             maxEntriesPerFile: 50000,
             changeFreq: 'always',
-            maxConcurrency: 1,
         });
 
         // register event listeners
@@ -31,23 +31,24 @@ class Sitemap{
         });
 
         // start the crawler
-        setInterval( ()=>{
+        if (start)
+            setInterval( ()=>{
 
-            try{
+                try{
 
-                if ( this._finished && new Date().getTime() - this._lastTime > 60*1000 ) {
+                    if ( this._finished && new Date().getTime() - this._lastTime > 60*1000 ) {
 
-                    this._finished = false;
+                        this._finished = false;
 
-                    console.log("Sitemap Starting");
-                    this._generator.start();
+                        console.log("Sitemap Starting");
+                        this._generator.start();
+                    }
+
+                }catch(err){
+
                 }
 
-            }catch(err){
-
-            }
-
-        }, 3000);
+            }, 3000);
 
     }
 
