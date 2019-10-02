@@ -2,7 +2,7 @@ import consts from 'consts/consts';
 
 import SitemapGenerator from 'sitemap-generator';
 
-const start = false;
+const start = consts.SITEMAP;
 
 class Sitemap{
 
@@ -36,7 +36,7 @@ class Sitemap{
     _generateSitemap(){
 
         // create generator
-        this._generator = SitemapGenerator(consts.domain, {
+        this._generator = SitemapGenerator(consts.DOMAIN, {
             filepath: './public/sitemap.xml',
             maxEntriesPerFile: 50000,
             changeFreq: 'always',
