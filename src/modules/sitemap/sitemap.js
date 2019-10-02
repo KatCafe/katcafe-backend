@@ -11,6 +11,30 @@ class Sitemap{
         this._lastTime = 0;
         this._finished = true;
 
+        // start the crawler
+        if (start)
+            setInterval( ()=>{
+
+                try{
+
+                    if ( this._finished && new Date().getTime() - this._lastTime > 60*1000 ) {
+
+                        this._finished = false;
+
+                        console.log("Sitemap Starting");
+                        this._generateSitemap();
+                    }
+
+                }catch(err){
+
+                }
+
+            }, 3000);
+
+    }
+
+    _generateSitemap(){
+
         // create generator
         this._generator = SitemapGenerator(consts.domain, {
             filepath: './public/sitemap.xml',
@@ -30,26 +54,8 @@ class Sitemap{
             // => { code: 404, message: 'Not found.', url: 'http://example.com/foo' }
         });
 
-        // start the crawler
-        if (start)
-            setInterval( ()=>{
 
-                try{
-
-                    if ( this._finished && new Date().getTime() - this._lastTime > 60*1000 ) {
-
-                        this._finished = false;
-
-                        console.log("Sitemap Starting");
-                        this._generator.start();
-                    }
-
-                }catch(err){
-
-                }
-
-            }, 3000);
-
+        this._generator.start();
     }
 
     sitemapCreated(){
