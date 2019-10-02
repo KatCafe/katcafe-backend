@@ -33,6 +33,7 @@ import Captcha from "modules/DB/models/captcha/captcha.route"
 import Votes from "modules/DB/models/votes/votes.route"
 import Auth from "modules/DB/models/auth/auth.route"
 import Admin from "modules/DB/models/admin/admin.route"
+import Sitemap from "modules/sitemap/sitemap"
 
 global.appRoot = path.resolve(__dirname+'/../');
 
@@ -170,6 +171,7 @@ class APIServer {
         Votes(this.app);
         Auth(this.app);
         Admin(this.app);
+        Sitemap.initExpress(this.app);
 
     }
 
