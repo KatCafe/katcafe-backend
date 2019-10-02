@@ -36,6 +36,7 @@ class Sitemap{
             try{
 
                 if ( this._finished && new Date().getTime() - this._lastTime > 60*1000 ) {
+
                     this._finished = false;
 
                     console.log("Sitemap Starting");
@@ -53,9 +54,8 @@ class Sitemap{
     sitemapCreated(){
         console.log("Sitemap finished");
 
-        setTimeout(()=>{
-            this._finished = true;
-        }, 30*1000);
+        this._lastTime = new Date().getTime();
+        this._finished = true;
     }
 
     initExpress(app){
