@@ -2,7 +2,7 @@ import consts from 'consts/consts';
 
 import SitemapGenerator from 'sitemap-generator';
 
-const start = true;
+const start = false;
 
 class Sitemap{
 
@@ -17,7 +17,7 @@ class Sitemap{
 
                 try{
 
-                    if ( this._finished && new Date().getTime() - this._lastTime > 60*1000 ) {
+                    if ( this._finished && new Date().getTime() - this._lastTime > 30*60*1000 ) {
 
                         this._finished = false;
 
