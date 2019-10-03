@@ -1,5 +1,6 @@
-const sizeOf = require('image-size');
-const cheerio = require('cheerio');
+import sizeOf from 'image-size';
+import fetchVideoInfo from 'youtube-info';
+import cheerio from 'cheerio';
 
 import StringHelper from "modules/helpers/string-helper";
 import NetworkHelper from "modules/helpers/network-helper"
@@ -67,36 +68,14 @@ class ScraperController {
             if (!uri) throw "invalid uri";
             uri = StringHelper.sanitizeText(uri);
 
-            let image = await this.getImage(uri, timeout);
+            let image, title, description;
 
-            if (image)
-                return { uri, image };
-
-            const html = await NetworkHelper.get( uri, undefined, false, timeout );
-
-            const $ = cheerio.load( html );
-
-            let title, description;
-
-            image = $("meta[property='og:image']").attr("content");
-            description = $("meta[property='og:description']").attr("content");
-
-            if (!title) title = $("meta[property='twitter:title']").attr("content");
-            if (!image) image = $("meta[property='twitter:image']").attr("content");
-            if (!description) description = $("meta[property='twitter:description']").attr("content");
-
-            if (!title) title = $("meta[name='title']").attr("content");
-            if (!image) image = $("meta[name='image']").attr("content");
-            if (!description) description = $("meta[name='description']").attr("content");
-
-            if ( !title && $("title").length ) title = $("title").text();
-            if ( !title && $("h1").length ) title = $("h1").text();
 
             let youtubeId = '';
-            if (uri.indexOf("youtube.com") >= 0 )
+            if (uri.toLowerCase().indexOf("youtube.com") >= 0 )
                 youtubeId = uri.substr( uri.indexOf("watch?v=") + "watch?v=".length, 'fSqMpZ5qhz0'.length );
             else
-            if (uri.indexOf("youtu.be") >= 0)
+            if (uri.toLowerCase().indexOf("youtu.be") >= 0)
                 youtubeId = uri.substr( uri.indexOf("youtu.be") + "youtu.be".length+1, 'fSqMpZ5qhz0'.length );
 
             if (youtubeId) {
@@ -104,6 +83,39 @@ class ScraperController {
                 image = {
                     youtubeId,
                 };
+
+                const out = await fetchVideoInfo(youtubeId);
+
+                title = out.title;
+                description = out.description;
+
+            } else {
+
+                image = await this.getImage(uri, timeout);
+
+                if (image)
+                    return { uri, image };
+
+                const html = await NetworkHelper.get( uri, undefined, false, timeout );
+
+                const $ = cheerio.load( html );
+
+                image = $("meta[property='og:image']").attr("content");
+                description = $("meta[property='og:description']").attr("content");
+
+                if (!title) title = $("meta[property='twitter:title']").attr("content");
+                if (!image) image = $("meta[property='twitter:image']").attr("content");
+                if (!description) description = $("meta[property='twitter:description']").attr("content");
+
+                if (!title) title = $("meta[name='title']").attr("content");
+                if (!image) image = $("meta[name='image']").attr("content");
+                if (!description) description = $("meta[name='description']").attr("content");
+
+                if ( !title && $("title").length ) title = $("title").text();
+                if ( !title && $("h1").length ) title = $("h1").text();
+
+
+
             }
 
 
