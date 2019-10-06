@@ -54,5 +54,23 @@ export default {
 
 # Running
 
+```
 npm run start
+```
+
+
+# Deploy PM2
+
+#### build it
+
+```
+npm run start
+pm2 restart `processId` --name back
+```
+
+#### new version
+
+```
+pm2 restart back
+```
 
