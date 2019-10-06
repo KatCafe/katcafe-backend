@@ -70,8 +70,8 @@ class APIServer {
 
             // Pass to next layer of middleware
             // intercept OPTIONS method
-            if (req.method == 'OPTIONS')
-                res.send(200);
+            if (req.method === 'OPTIONS')
+                res.sendStatus(200);
 
             else
                 next();
