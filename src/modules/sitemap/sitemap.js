@@ -1,6 +1,7 @@
 import consts from 'consts/consts';
 
 import SitemapGenerator from 'sitemap-generator';
+import NetworkHelper from "modules/helpers/network-helper"
 
 const start = consts.SITEMAP;
 
@@ -17,7 +18,7 @@ class Sitemap{
 
                 try{
 
-                    if ( this._finished && new Date().getTime() - this._lastTime > 5*60*1000 ) {
+                    if ( this._finished && new Date().getTime() - this._lastTime > 5*1000 ) {
 
                         this._finished = false;
 
@@ -47,7 +48,8 @@ class Sitemap{
         this._generator.on('done', () => {
 
             // sitemaps created
-            this.sitemapCreated();
+            return this.sitemapCreated();
+
         });
 
         this._generator.on('error', (error) => {
@@ -59,8 +61,16 @@ class Sitemap{
         this._generator.start();
     }
 
-    sitemapCreated(){
+    async sitemapCreated(){
         console.log("Sitemap finished");
+
+        //pinging google
+        if (!consts.DEBUG){
+            const url = consts.DOMAIN+consts.PORT+'/public/sitemap.xml';
+            console.log("Pinging google with sitemap", url);
+            console.log('pinging request:', 'www.google.com/webmasters/tools/ping?sitemap='+encodeURI(url));
+            await NetworkHelper.get('www.google.com/webmasters/tools/ping?sitemap='+encodeURI(url), );
+        }
 
         this._lastTime = new Date().getTime();
         this._finished = true;
