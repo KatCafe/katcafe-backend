@@ -8,8 +8,8 @@ import FileController from "../files/file-controller";
 
 export default class Topic extends TopicModel {
 
-    constructor( slug, channel, uuid, title='', link='', preview, body='', isAnonymous=false, owner, country='', date = new Date().getTime() ){
-        super( slug, channel , uuid, title, link, preview, body , isAnonymous, owner, country.toLowerCase(), date);
+    constructor( slug, channel, uuid, title='', link='', preview, body='', isAnonymous=false, owner, country='', ip='', date = new Date().getTime() ){
+        super( slug, channel , uuid, title, link, preview, body , isAnonymous, owner, country.toLowerCase(), ip.toLowerCase(), date);
     }
 
 

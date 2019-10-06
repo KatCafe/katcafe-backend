@@ -4,8 +4,8 @@ import StringHelper from "modules/helpers/string-helper";
 
 export default class Channel extends ChannelModel {
 
-    constructor( slug, name = '', title = '', icon, cover, owner, country = '', date){
-        super(slug, name, title, icon, cover, owner, country, date);
+    constructor( slug, name = '', title = '', icon, cover, owner, country = '', ip='', date){
+        super(slug, name, title, icon, cover, owner, country, ip.toLowerCase(), date);
     }
 
     async saveScore(){

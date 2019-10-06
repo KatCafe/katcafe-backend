@@ -11,7 +11,7 @@ export default function (express){
 
         try{
 
-            const topic = await TopicsController.createModel(req.body, req.auth);
+            const topic = await TopicsController.createModel(req.body, req);
 
             res.json({ topic: topic.toJSON() });
 

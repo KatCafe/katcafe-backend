@@ -1,12 +1,12 @@
-import Model from "modules/DB/model"
+import Model from 'modules/DB/model'
 
 export default class CommentModel extends Model {
 
-    constructor( slug, topic, channel, uuid, body, link, preview, isAnonymous, owner, country, date){
+    constructor( slug, topic, channel, uuid, body, link, preview, isAnonymous, owner, country, ip, date ){
 
-        super( "comment", ["slug", "topic", "uuid", "body","link", "preview", "channel", "isAnonymous", 'owner', "country", "date",
-                           {name: "votesUp", default: 0}, {name: "votesDown", default: 0}],
-                [ {name: "myVote", default: undefined }, 'hot' ] );
+        super( 'comment', ['slug', 'topic', 'uuid', 'body','link', 'preview', 'channel', 'isAnonymous', 'owner', 'country', 'ip', 'date',
+                           {name: 'votesUp', default: 0}, {name: 'votesDown', default: 0}],
+                [ {name: 'myVote', default: undefined }, 'hot' ] );
 
         this.slug = slug;
 
@@ -21,6 +21,7 @@ export default class CommentModel extends Model {
         this.owner = owner;
 
         this.country = country;
+        this.ip = ip;
 
         this.date = date;
 
@@ -40,7 +41,10 @@ export default class CommentModel extends Model {
             const hasRights = (userAuth && userAuth.isUserOwner(this, 'owner'));
 
             if ( this.isAnonymous !== false && !hasRights) delete out.owner;
-            if (!hasRights) delete out.isAnonymous;
+            if (!hasRights){
+                delete out.isAnonymous;
+                delete out.ip;
+            }
 
         }
 

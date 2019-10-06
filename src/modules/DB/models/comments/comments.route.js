@@ -10,7 +10,7 @@ export default function (express){
 
         try{
 
-            const comment = await CommentsController.createModel(req.body, req.auth);
+            const comment = await CommentsController.createModel(req.body, req);
 
             res.json({ comment : comment.toJSON() });
 

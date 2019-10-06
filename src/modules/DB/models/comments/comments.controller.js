@@ -20,7 +20,7 @@ class CommentsController extends Controller{
         super('comments', Comment);
     }
 
-    async createModel({ topic, body='', link='', file, captcha, isAnonymous = false }, auth) {
+    async createModel({ topic, body='', link='', file, captcha, isAnonymous = false }, {auth, ipAddress} ) {
 
 
         topic = StringHelper.sanitizeText(topic);
@@ -78,7 +78,7 @@ class CommentsController extends Controller{
 
         const uuid = await client.hincrbyAsync('comments:uuid', topicModel.slug.toLowerCase(), 1);
 
-        const comment = new Comment( existsComment.slug, topicModel.slug, channelModel.slug, uuid, body, link, preview, isAnonymous, auth ? auth.username : undefined, channelModel.country, new Date().getTime() );
+        const comment = new Comment( existsComment.slug, topicModel.slug, channelModel.slug, uuid, body, link, preview, isAnonymous, auth ? auth.username : undefined, channelModel.country, ipAddress, new Date().getTime() );
 
         await comment.save();
 

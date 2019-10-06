@@ -9,7 +9,7 @@ export default function (express){
 
         try{
 
-            const channel = await ChannelsController.createModel(req.body, req.auth);
+            const channel = await ChannelsController.createModel(req.body, req);
 
             res.json({ channel: channel.toJSON() });
 

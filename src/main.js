@@ -138,6 +138,8 @@ class APIServer {
 
         this.app.use( async (req, res, next)=>{
 
+            req.ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
             req.auth = null;
             try{
                 const out = await SessionController.loginModelSession(req.headers.session);

@@ -14,7 +14,7 @@ class ChannelsController extends Controller{
         super("channels", Channel );
     }
 
-    async createModel( { name, title, icon, cover, country, captcha}, auth ){
+    async createModel( { name, title, icon, cover, country, captcha}, {auth, ipAddress} ){
 
         if (!auth) throw "You need to be logged in";
 
@@ -39,7 +39,7 @@ class ChannelsController extends Controller{
 
         await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
-        const channel = new Channel( slug, name, title, icon, cover, auth.username, country, new Date().getTime() );
+        const channel = new Channel( slug, name, title, icon, cover, auth.username, country, ipAddress, new Date().getTime() );
 
         return super.createModel(channel);
 

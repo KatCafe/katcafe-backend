@@ -5,21 +5,15 @@ import StringHelper from "modules/helpers/string-helper";
 
 class VotesController {
 
-    async createModel( {slug='', value, parentType}, req){
+    async createModel( {slug='', value, parentType}, {auth, ipAddress}){
 
         slug = StringHelper.sanitizeText(slug);
 
         if (value !== -1 && value !== 0 && value !== 1) throw "value is invalid";
         if (parentType !== 'comment' && parentType !== 'topic') throw "parenType is invalid";
 
-        let ip;
-        if (typeof req === "string")
-            ip = req;
-        else
-        if (typeof req === "object" && ( req.headers || req.connection)  )
-            ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
-        let vote = new Vote( slug, ip, value, new Date().getTime() );
+        let vote = new Vote( slug, ipAddress, value, new Date().getTime() );
 
         let prevVote = 0;
 
@@ -61,16 +55,9 @@ class VotesController {
 
     }
 
-    async getVote( slug, req ){
+    async getVote( slug, {auth, ipAddress} ){
 
-        let ip;
-        if (typeof req === "string")
-            ip = req;
-        else
-        if (typeof req === "object" && ( req.headers || req.connection)  )
-            ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-
-        const vote = new Vote(slug, ip );
+        const vote = new Vote(slug, ipAddress );
         if ( await vote.load()  )
             return vote.value;
 

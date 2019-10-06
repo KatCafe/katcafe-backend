@@ -10,7 +10,7 @@ export default function (express){
 
         try{
 
-            const {vote, prevVote} = await VotesController.createModel( req.body, req.headers['x-forwarded-for'] || req.connection.remoteAddress );
+            const {vote, prevVote} = await VotesController.createModel( req.body, req );
 
             return res.json({ vote: vote.toJSON(), prevVote });
 
@@ -29,9 +29,7 @@ export default function (express){
             if (!slug || slug.length < 1) throw "slug is not right";
             slug = StringHelper.trimSlashes(slug);
 
-            const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-
-            let vote = new Vote(slug, ip, value, new Date().getTime() );
+            let vote = new Vote(slug, req.ipAddress, value, new Date().getTime() );
 
             if ( await vote.load() === false)
                 throw "Not found";

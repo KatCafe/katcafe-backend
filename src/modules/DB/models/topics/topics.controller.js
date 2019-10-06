@@ -13,7 +13,7 @@ class TopicsController extends Controller{
         super('topics', Topic);
     }
 
-    async createModel( {channel, title='', link='', body='', isAnonymous=false, file, captcha}, auth ) {
+    async createModel( {channel, title='', link='', body='', isAnonymous=false, file, captcha}, {auth, ipAddress} ) {
 
         title = StringHelper.sanitizeText(title);
         link = StringHelper.sanitizeText(link);
@@ -72,7 +72,7 @@ class TopicsController extends Controller{
 
         const uuid = await client.hincrbyAsync('topics:uuid', 'total', 1);
 
-        const topic = new Topic(existsTopic.slug, channelModel.slug, uuid, title, link, preview, body, isAnonymous, auth ? auth.username : undefined, channelModel.country.toLowerCase(), new Date().getTime() );
+        const topic = new Topic(existsTopic.slug, channelModel.slug, uuid, title, link, preview, body, isAnonymous, auth ? auth.username : undefined, channelModel.country.toLowerCase(), ipAddress, new Date().getTime() );
 
         await topic.save();
 

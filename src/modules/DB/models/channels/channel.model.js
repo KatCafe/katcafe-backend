@@ -1,12 +1,12 @@
-import Model from "modules/DB/model"
-import client from "../../redis";
+import Model from 'modules/DB/model'
+import client from '../../redis';
 
 export default class ChannelModel extends Model {
 
-    constructor( slug, name, title, icon, cover, owner, country, date){
+    constructor( slug, name, title, icon, cover, owner, country, ip, date){
 
-        super( "channel", [ "slug", "name","title","icon","cover", "owner", "country", "date" ],
-               [ "topics", 'hot' ]);
+        super( 'channel', [ 'slug', 'name','title','icon','cover', 'owner', 'country', 'ip', 'date' ],
+               [ 'topics', 'hot' ]);
 
         this.slug = slug;
 
@@ -16,6 +16,7 @@ export default class ChannelModel extends Model {
         this.cover = cover;
         this.owner = owner;
         this.country = country;
+        this.ip = ip;
 
         this.date = date;
     }
