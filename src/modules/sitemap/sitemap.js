@@ -66,7 +66,7 @@ class Sitemap{
 
         //pinging google
         if (!consts.DEBUG){
-            const url = consts.DOMAIN+consts.PORT+'/public/sitemap.xml';
+            const url = consts.DOMAIN+':'+consts.PORT+'/public/sitemap.xml';
             console.log("Pinging google with sitemap", url);
             console.log('pinging request:', 'https://www.google.com/ping?sitemap='+encodeURI(url));
             await NetworkHelper.get('https://www.google.com/ping?sitemap='+encodeURI(url), );
