@@ -20,11 +20,11 @@ export default function (express){
 
     });
 
-    express.get( '/votes/get/*', async function(req, res ) {
+    express.post( '/votes/get', async function(req, res ) {
 
         try{
 
-            let slug = req.params[0];
+            let {slug} = req.body;
 
             if (!slug || slug.length < 1) throw "slug is not right";
             slug = StringHelper.trimSlashes(slug);

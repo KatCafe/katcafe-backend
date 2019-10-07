@@ -20,7 +20,7 @@ export default function (express){
 
     });
 
-    express.post( '/auth/signin/', async function(req, res ) {
+    express.post( '/auth/signin', async function(req, res ) {
 
         try{
 
@@ -48,7 +48,7 @@ export default function (express){
 
     });
 
-    express.get( '/auth/logout/', async function(req, res ) {
+    express.get( '/auth/logout', async function(req, res ) {
 
         try{
 

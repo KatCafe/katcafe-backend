@@ -19,11 +19,11 @@ export default function (express){
 
     });
 
-    express.get( '/channels/get/*', async function(req, res ) {
+    express.post( '/channels/get', async function(req, res ) {
 
         try{
 
-            let slug = req.params[0];
+            let { slug } = req.body;
 
             if (!slug || slug.length < 1) throw "slug is not right";
             slug = StringHelper.trimSlashes(slug);
@@ -42,11 +42,11 @@ export default function (express){
 
     });
 
-    express.get( '/channels/:algorithm/:country?/:index?/:count?', async function(req, res ) {
+    express.post( '/channels/top', async function(req, res ) {
 
         try{
 
-            let {searchRevert, algorithm, country, index, count} = req.params;
+            let {searchRevert, algorithm, country, index, count} = req.body;
 
             if (!country ) country = 'us';
             if (!index) index = 1;

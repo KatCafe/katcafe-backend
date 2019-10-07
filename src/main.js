@@ -25,15 +25,10 @@ import client from "modules/DB/redis"
 
 import consts from 'consts/consts';
 
-import Channels from "modules/DB/models/channels/channels.route"
-import Topics from "modules/DB/models/topics/topics.route"
-import Comments from "modules/DB/models/comments/comments.route"
-import Scraper from "modules/DB/models/scraper/scraper.route"
-import Captcha from "modules/DB/models/captcha/captcha.route"
-import Votes from "modules/DB/models/votes/votes.route"
-import Auth from "modules/DB/models/auth/auth.route"
-import Admin from "modules/DB/models/admin/admin.route"
+import SocketServer from "modules/socket-server/socket-server"
+
 import Sitemap from "modules/sitemap/sitemap"
+
 
 global.appRoot = path.resolve(__dirname+'/../');
 
@@ -151,28 +146,13 @@ class APIServer {
             next();
         });
 
-        this.app.get('/version', (req, res)=>{
-            res.json ({ version: 1 } );
-        });
 
-        this.app.get('/hello', (req, res)=>{
-            res.json ({ hello: world } );
-        });
-
-        this.app.get('/', (req, res)=>{
-            res.json ({ ping: 'pong' } );
-        });
 
         await client.conenctDB();
 
-        Channels(this.app);
-        Topics(this.app);
-        Comments(this.app);
-        Scraper(this.app);
-        Captcha(this.app);
-        Votes(this.app);
-        Auth(this.app);
-        Admin(this.app);
+        SocketServer(this.app, this.server);
+
+
         Sitemap.initExpress(this.app);
 
     }
