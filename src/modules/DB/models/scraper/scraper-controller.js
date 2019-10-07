@@ -100,6 +100,8 @@ class ScraperController {
 
                 const $ = cheerio.load( html );
 
+
+                title = $("meta[property='og:title']").attr("content");
                 image = $("meta[property='og:image']").attr("content");
                 description = $("meta[property='og:description']").attr("content");
 
@@ -113,8 +115,6 @@ class ScraperController {
 
                 if ( !title && $("title").length ) title = $("title").text();
                 if ( !title && $("h1").length ) title = $("h1").text();
-
-
 
             }
 
@@ -131,8 +131,8 @@ class ScraperController {
 
             return {
                 uri,
-                title,
-                description,
+                title: StringHelper.removeWhiteSpace( title || '', true ),
+                description: StringHelper.removeWhiteSpace( description || '', false ),
                 image,
             }
 
