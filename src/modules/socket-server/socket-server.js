@@ -10,13 +10,13 @@ export default function(app, server){
 
     serverSocket.on('connection', function(socket){
 
-        console.log('Socket Connected');
+        const ipAddress = socket.request.connection.remoteAddress;
 
         socket.on('disconnect', ()=>{
-            console.log('Socket Disconnected');
+            console.log('Socket Disconnected', ipAddress);
         });
 
-        const ipAddress = socket.handshake.address;
+        console.log('Socket Connected', ipAddress);
 
         const callRoute = (route, callback)=> {
 
