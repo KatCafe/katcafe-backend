@@ -10,16 +10,14 @@ export default function(app, server){
 
     serverSocket.on('connection', function(socket){
 
-        const ipAddress = socket.request.connection.remoteAddress;
+        let ipAddress;
 
         try{
-
-            const ipAddress2 = socket.client.request.headers['cf-connecting-ip']
-            console.log("ipAddress2", ipAddress2);
-
+            ipAddress = socket.client.request.headers['cf-connecting-ip']
         }catch(err){
 
         }
+        if (!ipAddress) ipAddress = socket.request.connection.remoteAddress;
 
         socket.on('disconnect', ()=>{
             console.log('Socket Disconnected', ipAddress);
