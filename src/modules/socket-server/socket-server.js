@@ -12,6 +12,15 @@ export default function(app, server){
 
         const ipAddress = socket.request.connection.remoteAddress;
 
+        try{
+
+            const ipAddress2 = socket.client.request.headers['cf-connecting-ip']
+            console.log("ipAddress2", ipAddress2);
+
+        }catch(err){
+
+        }
+
         socket.on('disconnect', ()=>{
             console.log('Socket Disconnected', ipAddress);
         });
