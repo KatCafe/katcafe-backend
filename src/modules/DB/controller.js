@@ -79,7 +79,7 @@ class Controller{
 
         let index = 0;
         do {
-            const out = await client.sscanAsync(this._table+':list', index);
+            const out = await client.sscanAsync(this._table+'s:list', index);
             index = Number.parseInt(out[0]);
 
             out[1].map(it => list.push(it));
@@ -94,12 +94,16 @@ class Controller{
 
         if (filter) list = list.filter( filter );
 
-        const models = list.map( it => {
+        const models = [];
+        const promises = list.map( it => {
             const model = new this._class(it);
+            models.push(model);
             return model.load();
         } );
 
-        return Promise.all(models);
+        await Promise.all(promises);
+
+        return models;
 
     }
 

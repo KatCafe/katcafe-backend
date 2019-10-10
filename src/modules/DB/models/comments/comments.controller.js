@@ -19,7 +19,7 @@ import TrialsController from "./../trials/trials.controller"
 class CommentsController extends Controller{
 
     constructor(){
-        super('comments', Comment);
+        super('comment', Comment);
     }
 
     async createModel({ topic, body='', link='', file, captcha, isAnonymous = false }, {auth, ipAddress} ) {
@@ -46,7 +46,7 @@ class CommentsController extends Controller{
         let existsComment = new Topic();
         let suffix = '';
 
-        await TrialsController.processSpamContent({captcha}, {auth, ipAddress});
+        await TrialsController.process({category: 'spam:cnt', captcha}, {auth, ipAddress});
 
         do{
             suffix = StringHelper.makeId(15);
@@ -78,7 +78,7 @@ class CommentsController extends Controller{
 
         }
 
-        const uuid = await client.hincrbyAsync('comments:uuid', topicModel.slug.toLowerCase(), 1);
+        const uuid = await client.hincrbyAsync(this._table+'s:uuid', topicModel.slug.toLowerCase(), 1);
 
         const comment = new Comment( existsComment.slug, topicModel.slug, channelModel.slug, uuid, body, link, preview, isAnonymous, auth ? auth.username : undefined, channelModel.country, ipAddress, new Date().getTime() );
 

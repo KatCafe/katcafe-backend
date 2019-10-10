@@ -5,12 +5,12 @@ import Model from "../../model";
 
 export default class Trial extends TrialModel {
 
-    constructor( category, name, count = {}, date = new Date().getTime() ){
+    constructor( category, name='', count = {}, date = new Date().getTime() ){
         super( category.toLowerCase(), name.toLowerCase(), count, date);
     }
 
     get id(){
-        return this.category.toLowerCase() + ':' + this.name.toLowerCase();
+        return this.category.toLowerCase() + (this.name ? ':' + this.name.toLowerCase() : '');
     }
 
 }

@@ -11,7 +11,7 @@ import Flags from "modules/helpers/flags";
 class ChannelsController extends Controller{
 
     constructor(){
-        super("channels", Channel );
+        super("channel", Channel );
     }
 
     async createModel( { name, title, icon, cover, country, captcha}, {auth, ipAddress} ){

@@ -10,7 +10,7 @@ import client from "modules/DB/redis"
 class TopicsController extends Controller{
 
     constructor(){
-        super('topics', Topic);
+        super('topic', Topic);
     }
 
     async createModel( {channel, title='', link='', body='', isAnonymous=false, file, captcha}, {auth, ipAddress} ) {
@@ -70,7 +70,7 @@ class TopicsController extends Controller{
 
         }
 
-        const uuid = await client.hincrbyAsync('topics:uuid', 'total', 1);
+        const uuid = await client.hincrbyAsync(this._table+'s:uuid', 'total', 1);
 
         const topic = new Topic(existsTopic.slug, channelModel.slug, uuid, title, link, preview, body, isAnonymous, auth ? auth.username : undefined, channelModel.country.toLowerCase(), ipAddress, new Date().getTime() );
 

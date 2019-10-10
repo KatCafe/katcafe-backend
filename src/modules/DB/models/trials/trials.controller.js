@@ -2,6 +2,11 @@ import Trial from "./trial"
 import StringHelper from "modules/helpers/string-helper";
 import Controller from "../../controller";
 import CaptchaController from "../captcha/captcha-controller";
+import client from "../../redis";
+
+const MaxCounts = {
+    'spam:content': ({auth}) => ({ '5m': auth ? 5 : 1, h: auth ? 30 : 5, d: auth ? 200 : 10})
+};
 
 class TrialsController extends Controller {
 
@@ -9,10 +14,12 @@ class TrialsController extends Controller {
 
         super('trial', Trial);
 
-        this.resetTrials();
+        client.on("connect",  (err) => {
+            this._resetTrials();
+        });
     }
 
-    async _resetTrials(category, countName, time){
+    async _resetTrialsFct( countName, time){
 
         try{
 
@@ -24,27 +31,33 @@ class TrialsController extends Controller {
 
                 if ( !trial.count['5m'] && !trial.count.h && !trial.count.d)
                     return trial.delete();
+                else
+                    return trial.save();
 
             });
 
             await Promise.all( promises );
 
         }catch(err){
-
+            console.error("_resetTrialsFct", err);
         }
 
-        setTimeout( this._resetTrials.bind(this, category, countName, time), time);
+        this['_timeout'+countName] = setTimeout( this._resetTrialsFct.bind(this, countName, time), time);
     }
 
-    resetTrials(){
+    _resetTrials(){
 
-        this._resetTrials(this, '5m', 5*60*1000 );
-        this._resetTrials(this, 'h', 60*60*1000 );
-        this._resetTrials(this, 'd', 24*60*60*1000 );
+        clearTimeout(this['_timeout'+'5m']);
+        clearTimeout(this['_timeout'+'h']);
+        clearTimeout(this['_timeout'+'d']);
+
+        this._resetTrialsFct('5m', 5*60*1000 );
+        this._resetTrialsFct( 'h', 60*60*1000 );
+        this._resetTrialsFct('d', 24*60*60*1000 );
 
     }
 
-    async increaseTrialByIpAddress( {category, count = 1, maxCount = { '5m': 5, h: 10, d: 40} }, { auth, ipAddress } ){
+    async _increaseTrialByIpAddress( {category, count = 1, maxCount }, { auth, ipAddress } ){
 
         category = StringHelper.sanitizeText(category);
         if (typeof count !== "number") throw "count is not a number";
@@ -58,7 +71,7 @@ class TrialsController extends Controller {
         trial.count.h = (trial.count.h || 0) + count;
         trial.count.d = (trial.count.d || 0) + count;
 
-        if (maxCount && this.isTrialBlocked({trial, maxCount}, {auth, ipAddress}, ))
+        if (maxCount !== "none" && this.isTrialBlocked({trial, maxCount}, {auth, ipAddress}, ))
             throw "too many trials";
 
         await trial.save();
@@ -74,6 +87,9 @@ class TrialsController extends Controller {
             if ( await trial.load() === false ) return false;
         }
 
+        if (!maxCount) maxCount = MaxCounts[category];
+
+        if (typeof maxCount === "function") maxCount = maxCount(auth, ipAddress);
 
         if (trial)
             if (trial.count['5m'] >= maxCount['5m'] ||
@@ -89,13 +105,10 @@ class TrialsController extends Controller {
         if (await this.isTrialBlocked({category, maxCount }, params) )
             await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
 
-        await this.increaseTrialByIpAddress({category, count: 1, maxCount: null}, params)
+        await this._increaseTrialByIpAddress({category, count: 1, maxCount: 'none'}, params)
 
     }
 
-    processSpamContent({captcha}, params){
-        return this.process({category: 'spam:content', maxCount: { '5m': 5, h: 30, d: 200}, captcha, }, params);
-    }
 
 }
 

@@ -6,6 +6,7 @@ import Captcha from "modules/DB/models/captcha/captcha.route"
 import Votes from "modules/DB/models/votes/votes.route"
 import Auth from "modules/DB/models/auth/auth.route"
 import Admin from "modules/DB/models/admin/admin.route"
+import Trials from "modules/DB/models/trials/trials.route"
 
 export default function (app){
 
@@ -29,6 +30,6 @@ export default function (app){
     Votes(app);
     Auth(app);
     Admin(app);
-
+    Trials(app);
 
 }
