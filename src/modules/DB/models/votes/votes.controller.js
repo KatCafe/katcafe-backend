@@ -5,7 +5,7 @@ import StringHelper from "modules/helpers/string-helper";
 
 class VotesController {
 
-    async createModel( {slug='', value, parentType}, {auth, ipAddress}){
+    async vote( {slug='', value, parentType}, {auth, ipAddress}){
 
         slug = StringHelper.sanitizeText(slug);
 
@@ -13,7 +13,7 @@ class VotesController {
         if (parentType !== 'comment' && parentType !== 'topic') throw "parenType is invalid";
 
 
-        let vote = new Vote( slug, ipAddress, value, new Date().getTime() );
+        let vote = new Vote( slug, ipAddress, value );
 
         let prevVote = 0;
 

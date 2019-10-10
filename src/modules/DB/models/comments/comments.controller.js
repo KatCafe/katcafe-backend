@@ -14,6 +14,8 @@ import CaptchaController from "modules/DB/models/captcha/captcha-controller"
 import VotesController from "./../votes/votes.controller"
 import Controller from "../../controller";
 
+import TrialsController from "./../trials/trials.controller"
+
 class CommentsController extends Controller{
 
     constructor(){
@@ -44,7 +46,7 @@ class CommentsController extends Controller{
         let existsComment = new Topic();
         let suffix = '';
 
-        await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
+        await TrialsController.processSpamContent({captcha}, {auth, ipAddress});
 
         do{
             suffix = StringHelper.makeId(15);

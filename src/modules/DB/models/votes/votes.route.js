@@ -10,7 +10,7 @@ export default function (express){
 
         try{
 
-            const {vote, prevVote} = await VotesController.createModel( req.body, req );
+            const {vote, prevVote} = await VotesController.vote( req.body, req );
 
             return res.json({ vote: vote.toJSON(), prevVote });
 
