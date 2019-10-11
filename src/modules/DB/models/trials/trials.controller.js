@@ -7,7 +7,7 @@ import client from "../../redis";
 const MaxCountsPrefixes = ['2m', '5m','h','d'];
 
 const MaxCounts = {
-    'spam:cmt': ({auth}) => ({ '2m': auth ? 5 : 2, '5m': auth ? 10 : 3, h: auth ? 20 : 5, d: auth ? 200 : 20}),
+    'spam:cmt': ({auth}) => ({ '2m': auth ? 8 : 2, '5m': auth ? 15 : 4, h: auth ? 30 : 5, d: auth ? 250 : 20}),
     'spam:tpc': ({auth}) => ({ '2m': auth ? 2 : 1, '5m': auth ? 3 : 1, h: auth ? 12 : 3, d: auth ? 20 : 5}),
 };
 
@@ -22,20 +22,23 @@ class TrialsController extends Controller {
         });
     }
 
-    async _resetTrialsFct( countName, time, process=true){
+    async _resetTrialsFct( countName, time, process=true, interval){
 
         if (process)
         try{
 
+            const date = new Date().getTime();
             const out = await this.loadAll(undefined, countName);
 
             const promises = out.map( trial => {
 
-                trial.count = Math.max( 0, trial.count - 1);
-                if (!trial.count)
-                    return trial.delete();
-                else
-                    return trial.save();
+                if ( date - trial.date  >= time ) {
+                    trial.count = Math.max(0, trial.count - 1);
+                    if (!trial.count)
+                        return trial.delete();
+                    else
+                        return trial.save();
+                }
 
             });
 
@@ -45,7 +48,7 @@ class TrialsController extends Controller {
             console.error("_resetTrialsFct", err);
         }
 
-        this['_timeout'+countName] = setTimeout( this._resetTrialsFct.bind(this, countName, time), time);
+        this['_timeout'+countName] = setTimeout( this._resetTrialsFct.bind(this, countName, time), interval);
     }
 
     _resetTrials(){
@@ -55,10 +58,10 @@ class TrialsController extends Controller {
         clearTimeout(this['_timeout'+'h']);
         clearTimeout(this['_timeout'+'d']);
 
-        this._resetTrialsFct('2m', 2*60*1000, false );
-        this._resetTrialsFct('5m', 5*60*1000, false );
-        this._resetTrialsFct( 'h', 60*60*1000, false );
-        this._resetTrialsFct('d', 24*60*60*1000, false );
+        this._resetTrialsFct('2m', 2*60*1000, false, Math.floor( 1.5*60*1000 ) );
+        this._resetTrialsFct('5m', 5*60*1000, false, 3*60 *1000 );
+        this._resetTrialsFct( 'h', 60*60*1000, false, 15*60*1000 );
+        this._resetTrialsFct('d', 24*60*60*1000, false, 60*60*1000 );
 
     }
 
