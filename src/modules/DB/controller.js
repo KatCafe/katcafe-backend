@@ -32,7 +32,7 @@ class Controller{
         search = decodeURI( (search || '').toLowerCase() );
         count = Math.min( count, 30);
 
-        const out = await client[ `z${ revert ? 'rev' : '' }rangeAsync` ]( `${this._table}:rank:${searchAlgorithm}:${searchQuery}${search ? ':'+search : ''}`, (index-1) * count, index*count-1 );
+        const out = await client[ `z${ revert ? 'rev' : '' }rangeAsync` ]( `${this._table}s:rank:${searchAlgorithm}:${searchQuery}${search ? ':'+search : ''}`, (index-1) * count, index*count-1 );
 
         if (!load) return out;
 
@@ -73,13 +73,13 @@ class Controller{
 
     }
 
-    async getAllIds(){
+    async getAllIds(prefix){
 
         let list = [];
 
         let index = 0;
         do {
-            const out = await client.sscanAsync(this._table+'s:list', index);
+            const out = await client.sscanAsync(`${this._table}s:${prefix ? prefix+':' : ''}list`, index);
             index = Number.parseInt(out[0]);
 
             out[1].map(it => list.push(it));
@@ -88,9 +88,9 @@ class Controller{
         return list;
     }
 
-    async loadAll(filter){
+    async loadAll(filter, prefix){
 
-        let list = await this.getAllIds();
+        let list = await this.getAllIds(prefix);
 
         if (filter) list = list.filter( filter );
 
@@ -107,9 +107,9 @@ class Controller{
 
     }
 
-    async loadAllAndFix(filter){
+    async loadAllAndFix(filter, prefix){
 
-        let list = await this.getAllIds();
+        let list = await this.getAllIds(prefix);
 
         if (filter) list = list.filter( filter );
 

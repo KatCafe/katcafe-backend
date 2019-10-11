@@ -10,7 +10,6 @@ import client from "modules/DB/redis"
 import ScraperHelper from "modules/DB/models/scraper/scraper-controller"
 
 import FileController from "modules/DB/models/files/file-controller"
-import CaptchaController from "modules/DB/models/captcha/captcha-controller"
 import VotesController from "./../votes/votes.controller"
 import Controller from "../../controller";
 
@@ -46,7 +45,7 @@ class CommentsController extends Controller{
         let existsComment = new Topic();
         let suffix = '';
 
-        await TrialsController.process({category: 'spam:cnt', captcha}, {auth, ipAddress});
+        await TrialsController.process({category: 'spam:cmt', captcha}, {auth, ipAddress});
 
         do{
             suffix = StringHelper.makeId(15);

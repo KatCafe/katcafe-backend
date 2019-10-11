@@ -4,8 +4,11 @@ import Controller from "../../controller";
 import CaptchaController from "../captcha/captcha-controller";
 import client from "../../redis";
 
+const MaxCountsPrefixes = ['2m', '5m','h','d'];
+
 const MaxCounts = {
-    'spam:content': ({auth}) => ({ '5m': auth ? 5 : 1, h: auth ? 30 : 5, d: auth ? 200 : 10})
+    'spam:cmt': ({auth}) => ({ '2m': auth ? 5 : 2, '5m': auth ? 10 : 3, h: auth ? 20 : 5, d: auth ? 200 : 20}),
+    'spam:tpc': ({auth}) => ({ '2m': auth ? 2 : 1, '5m': auth ? 3 : 1, h: auth ? 12 : 3, d: auth ? 20 : 5}),
 };
 
 class TrialsController extends Controller {
@@ -19,17 +22,17 @@ class TrialsController extends Controller {
         });
     }
 
-    async _resetTrialsFct( countName, time){
+    async _resetTrialsFct( countName, time, process=true){
 
+        if (process)
         try{
 
-            const out = await this.loadAll();
+            const out = await this.loadAll(undefined, countName);
 
             const promises = out.map( trial => {
 
-                trial.count[countName] = Math.max(0, (trial.count[countName] || 0 ) - 1 ) ;
-
-                if ( !trial.count['5m'] && !trial.count.h && !trial.count.d)
+                trial.count = Math.max( 0, trial.count - 1);
+                if (!trial.count)
                     return trial.delete();
                 else
                     return trial.save();
@@ -47,13 +50,15 @@ class TrialsController extends Controller {
 
     _resetTrials(){
 
+        clearTimeout(this['_timeout'+'2m']);
         clearTimeout(this['_timeout'+'5m']);
         clearTimeout(this['_timeout'+'h']);
         clearTimeout(this['_timeout'+'d']);
 
-        this._resetTrialsFct('5m', 5*60*1000 );
-        this._resetTrialsFct( 'h', 60*60*1000 );
-        this._resetTrialsFct('d', 24*60*60*1000 );
+        this._resetTrialsFct('2m', 2*60*1000, false );
+        this._resetTrialsFct('5m', 5*60*1000, false );
+        this._resetTrialsFct( 'h', 60*60*1000, false );
+        this._resetTrialsFct('d', 24*60*60*1000, false );
 
     }
 
@@ -62,39 +67,37 @@ class TrialsController extends Controller {
         category = StringHelper.sanitizeText(category);
         if (typeof count !== "number") throw "count is not a number";
 
-        let trial = new Trial(category, ipAddress);
-        await trial.load();
+        let trials = await Promise.all(['2m','5m','h','d'].map(it => {
+            let trial = new Trial(category, auth ? auth.username : ipAddress, it );
+            return trial.load();
+        }));
 
-        if (!trial.count) trial.count = {};
+        trials = trials.map( (it,index) => it ? it : new Trial(category, auth ? auth.username : ipAddress, MaxCountsPrefixes[index] ) );
 
-        trial.count['5m'] = (trial.count['5m'] || 0) + count;
-        trial.count.h = (trial.count.h || 0) + count;
-        trial.count.d = (trial.count.d || 0) + count;
+        trials.map ( it => it.count = (it.count||0) + 1);
 
-        if (maxCount !== "none" && this.isTrialBlocked({trial, maxCount}, {auth, ipAddress}, ))
+        if (maxCount !== "none" && this.isTrialBlocked( { trials, maxCount}, {auth, ipAddress}, ))
             throw "too many trials";
 
-        await trial.save();
-
-        return trial;
+        return Promise.all( trials.map( it => it.save() ) );
 
     }
 
-    async isTrialBlocked( {trial, category, maxCount = { '5m': 5, h: 10, d: 40}}, {auth, ipAddress} ){
+    async isTrialBlocked( {trials, category, maxCount}, {auth, ipAddress} ){
 
-        if (!trial){
-            trial = new Trial( category, ipAddress );
-            if ( await trial.load() === false ) return false;
+        if (!trials){
+            trials = await Promise.all( ['2m','5m','h','d'].map(it => {
+                let trial = new Trial(category, auth ? auth.username : ipAddress, it );
+                return trial.load();
+            }));
         }
 
         if (!maxCount) maxCount = MaxCounts[category];
 
-        if (typeof maxCount === "function") maxCount = maxCount(auth, ipAddress);
+        if (typeof maxCount === "function") maxCount = maxCount( {auth, ipAddress} );
 
-        if (trial)
-            if (trial.count['5m'] >= maxCount['5m'] ||
-                trial.count['h'] >= maxCount['h'] ||
-                trial.count['d'] >= maxCount['d'] ) return true;
+        for (let i=0; i < MaxCountsPrefixes.length; i++)
+            if (trials[i] && trials[i].count >= maxCount[MaxCountsPrefixes[i]]) return true;
 
         return false;
 

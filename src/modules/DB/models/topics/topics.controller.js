@@ -1,11 +1,11 @@
 import Controller from "../../controller";
 import Topic from "./topic";
 import Channel from "./../channels/channel";
-import CaptchaController from "../captcha/captcha-controller";
 import StringHelper from "modules/helpers/string-helper";
 import ScraperHelper from "../scraper/scraper-controller";
 import FileController from "../files/file-controller";
 import client from "modules/DB/redis"
+import TrialsController from "../trials/trials.controller";
 
 class TopicsController extends Controller{
 
@@ -25,7 +25,7 @@ class TopicsController extends Controller{
 
         if (typeof isAnonymous !== "boolean") throw "isAnonymous is not boolean";
 
-        await CaptchaController.captchaSolution( captcha.solution, captcha.encryption ) ;
+        await TrialsController.process({category: 'spam:tpc', captcha}, {auth, ipAddress});
 
         if (channel[0] === '/') channel = channel.substr(1);
         if (channel.indexOf('us') === 0) channel = channel.substr(3);
