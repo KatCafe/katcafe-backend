@@ -29,6 +29,7 @@ export default class Model {
         if (this.saveScore)
             await this.saveScore();
 
+        return this;
     }
 
     async load(){

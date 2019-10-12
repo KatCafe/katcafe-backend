@@ -9,6 +9,10 @@ import constsSecret from "consts/consts-secret"
 
 class CryptoHelper {
 
+    md5(data){
+        return crypto.createHash('md5').update(data).digest();
+    }
+
     dsha256(data, secret = constsSecret.crypto.SECRET){
         return this.sha256( this.sha256(data, secret), secret);
     }
@@ -17,9 +21,7 @@ class CryptoHelper {
 
         const sha256 = secret ? crypto.createHmac('sha256', secret  ) : crypto.createHash('sha256');
 
-        const hash = sha256.update(data).digest();
-
-        return hash;
+        return sha256.update(data).digest();
 
     }
 

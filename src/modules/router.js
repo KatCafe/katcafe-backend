@@ -7,6 +7,7 @@ import Votes from "modules/DB/models/votes/votes.route"
 import Auth from "modules/DB/models/auth/auth.route"
 import Admin from "modules/DB/models/admin/admin.route"
 import Trials from "modules/DB/models/trials/trials.route"
+import NotificationSubscriptions from "modules/DB/models/notifications-subscriptions/notification-subscriptions.route"
 
 export default function (app){
 
@@ -31,5 +32,6 @@ export default function (app){
     Auth(app);
     Admin(app);
     Trials(app);
+    NotificationSubscriptions(app);
 
 }

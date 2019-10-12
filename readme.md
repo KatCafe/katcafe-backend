@@ -27,6 +27,12 @@ After editing it is required to restart redis
 sudo systemctl restart redis.service
 ```
 
+Generate Vapid Keys for notifications-subscriptions
+
+```
+npm run generate-vapid-keys
+```
+
 Configure `consts/consts-secret.js` with the Redis credentials:
 
 ```
@@ -48,6 +54,12 @@ export default {
 
         SECRET: Buffer.alloc(16), //used in SHA
     },
+
+    vapid:{
+        publicKey: '',
+        privateKey: '',
+        email: '',
+    }
 
 }
 ```
