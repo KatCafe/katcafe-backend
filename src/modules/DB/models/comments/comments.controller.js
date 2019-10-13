@@ -87,7 +87,8 @@ class CommentsController extends Controller{
         topicModel.comments++;
         await topicModel.saveScore();
 
-        await NotificationSubscribersController.addSubscriber({id: comment.slug }, {auth, publicKey });
+        await NotificationSubscribersController.addSubscriber({id: comment.topic }, {auth, publicKey });
+        await NotificationSubscribersController.pushNotificationToSubscribers({id: comment.topic }, {auth, publicKey});
 
         return comment;
     }

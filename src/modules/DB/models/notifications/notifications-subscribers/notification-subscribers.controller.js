@@ -34,7 +34,7 @@ class NotificationSubscribers extends  Controller{
 
         whoIds = whoIds.filter( it => it !== whoExcept1 && it !== whoExcept2 );
 
-        const promises = whoIds.map( who => NotificationSubscriptionsController.pushNotification( {who: who, payload}), {pub, auth} );
+        const promises = whoIds.map( who => NotificationSubscriptionsController.pushNotification( {who, payload}, {publicKey, auth} ) );
 
         return Promise.all(promises);
 
