@@ -15,6 +15,7 @@ import Controller from "../../controller";
 
 import TrialsController from "./../trials/trials.controller"
 import NotificationSubscribersController from "./../notifications/notifications-subscribers/notification-subscribers.controller"
+import NotificationsController from "./../notifications/notification/notifications.controller"
 
 class CommentsController extends Controller{
 
@@ -87,8 +88,11 @@ class CommentsController extends Controller{
         topicModel.comments++;
         await topicModel.saveScore();
 
+
+
         await NotificationSubscribersController.addSubscriber({id: comment.topic }, {auth, publicKey });
-        await NotificationSubscribersController.pushNotificationToSubscribers({id: comment.topic }, {auth, publicKey});
+        await NotificationsController.createCommentNotification({id: comment.slug, comment, topic: topicModel, channel: channelModel});
+
 
         return comment;
     }

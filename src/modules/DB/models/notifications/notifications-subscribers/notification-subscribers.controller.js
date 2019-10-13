@@ -9,32 +9,40 @@ class NotificationSubscribers extends  Controller{
         super("subscriber", null);
     }
 
-    async addSubscriber({id, who}, {publicKey, auth}){
+    async addSubscriber({id, subscriber}, {publicKey, auth}){
 
-        if (!who) who = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
 
-        await client.saddAsync(this._table + "s:"+id+":list", who);
+        await client.saddAsync(this._table + "s:"+id+":list", subscriber);
 
     }
 
-    async removeSubscriber({id, who}, {publicKey, auth}){
+    async removeSubscriber({id, subscriber}, {publicKey, auth}){
 
-        if (!who) who = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
 
-        await client.sremAsync(this._table + "s:"+id+":list", who);
+        await client.sremAsync(this._table + "s:"+id+":list", subscriber);
     }
 
-    async pushNotificationToSubscribers( { id, payload }, {publicKey, auth} ){
+    async getSubscribers({id}, {publicKey, auth}){
 
-        let whoIds = await this.getAllIds(id);
+        let subscribers = await this.getAllIds(id);
 
-        //filtering removing exceptWho
-        const whoExcept1 = auth ? CryptoHelper.md5(auth.user ).toString("base64") : undefined;
-        const whoExcept2 = CryptoHelper.md5( publicKey).toString("base64");
+        //filtering removing except me
+        const except1 = auth ? CryptoHelper.md5(auth.user ).toString("base64") : undefined;
+        const except2 = CryptoHelper.md5( publicKey).toString("base64");
 
-        whoIds = whoIds.filter( it => it !== whoExcept1 && it !== whoExcept2 );
+        subscribers = subscribers.filter( it => it !== except1 && it !== except2 );
 
-        const promises = whoIds.map( who => NotificationSubscriptionsController.pushNotification( {who, payload}, {publicKey, auth} ) );
+        return subscribers;
+
+    }
+
+    async pushNotificationToSubscribers( { id, payload, subscribers }, {publicKey, auth} ){
+
+        if (!subscribers) subscribers = this.getSubscribers({id}, {publicKey, auth});
+
+        const promises = subscribers.map( subscriber => NotificationSubscriptionsController.pushNotification( {subscriber, payload}, {publicKey, auth} ) );
 
         return Promise.all(promises);
 

@@ -16,16 +16,16 @@ class NotificationSubscriptionsController extends  Controller{
 
     async createNotificationSubscription( {subscription}, {publicKey, auth}){
 
-        const who = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+        const subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
 
         const data = {
-            who,
+            subscriber,
             subscription,
         };
 
         const id = CryptoHelper.md5( JSON.stringify(data), undefined).toString("base64");
 
-        const notificationSubscription = new NotificationSubscription(id, who, subscription);
+        const notificationSubscription = new NotificationSubscription(id, subscriber, subscription);
 
         if (await notificationSubscription.load())
             return false;
@@ -34,11 +34,11 @@ class NotificationSubscriptionsController extends  Controller{
 
     }
 
-    async pushNotification( {who, payload = {title: 'Title',  body: "Body", } }, {publicKey, auth} ){
+    async pushNotification( {subscriber, payload = {title: 'Title',  body: "Body", } }, {publicKey, auth} ){
 
-        if (!who) who = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
 
-        const subscriptions = await this.loadAll(undefined, who );
+        const subscriptions = await this.loadAll(undefined, subscriber );
 
         payload = JSON.stringify(payload );
 

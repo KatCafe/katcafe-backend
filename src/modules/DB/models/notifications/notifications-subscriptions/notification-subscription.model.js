@@ -3,13 +3,13 @@ import client from "../../../redis";
 
 export default class NotificationSubscriptionModel extends Model {
 
-    constructor( uuid, who, subscription, errors, date ){
+    constructor( uuid, subscriber, subscription, errors, date ){
 
-        super( 'subscription', ['uuid', 'who', 'subscription', 'errors', 'date'],
+        super( 'subscription', ['uuid', 'subscriber', 'subscription', 'errors', 'date'],
             [ ] );
 
         this.uuid = uuid;
-        this.who = who;
+        this.subscriber = subscriber;
         this.subscription = subscription;
         this.date = date;
         this.errors = errors;
@@ -23,11 +23,11 @@ export default class NotificationSubscriptionModel extends Model {
 
 
     async saveScore() {
-        await client.saddAsync(this._table + "s:"+this.who+":list", this.id);
+        await client.saddAsync(this._table + "s:"+this.subscriber+":list", this.id);
     }
 
     async deleteScore() {
-        client.sremAsync(this._table + "s:"+this.who+":list", this.id);
+        client.sremAsync(this._table + "s:"+this.subscriber+":list", this.id);
     }
 
 }
