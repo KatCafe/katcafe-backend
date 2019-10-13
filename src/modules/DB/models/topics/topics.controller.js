@@ -6,6 +6,7 @@ import ScraperHelper from "../scraper/scraper-controller";
 import FileController from "../files/file-controller";
 import client from "modules/DB/redis"
 import TrialsController from "../trials/trials.controller";
+import NotificationSubscribersController from "./../notifications/notifications-subscribers/notification-subscribers.controller";
 
 class TopicsController extends Controller{
 
@@ -13,7 +14,7 @@ class TopicsController extends Controller{
         super('topic', Topic);
     }
 
-    async createModel( {channel, title='', link='', body='', isAnonymous=false, file, captcha}, {auth, ipAddress} ) {
+    async createModel( {channel, title='', link='', body='', isAnonymous=false, file, captcha}, {auth, publicKey, ipAddress} ) {
 
         title = StringHelper.sanitizeText(title);
         link = StringHelper.sanitizeText(link);
@@ -78,6 +79,8 @@ class TopicsController extends Controller{
 
         channelModel.topics++;
         await channelModel.saveScore();
+
+        await NotificationSubscribersController.addSubscriber({id: topic.slug }, {auth, publicKey });
 
         return topic;
     }

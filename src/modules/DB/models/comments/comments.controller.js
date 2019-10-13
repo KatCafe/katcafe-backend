@@ -14,6 +14,7 @@ import VotesController from "./../votes/votes.controller"
 import Controller from "../../controller";
 
 import TrialsController from "./../trials/trials.controller"
+import NotificationSubscribersController from "./../notifications/notifications-subscribers/notification-subscribers.controller"
 
 class CommentsController extends Controller{
 
@@ -21,7 +22,7 @@ class CommentsController extends Controller{
         super('comment', Comment);
     }
 
-    async createModel({ topic, body='', link='', file, captcha, isAnonymous = false }, {auth, ipAddress} ) {
+    async createModel({ topic, body='', link='', file, captcha, isAnonymous = false }, {auth, publicKey, ipAddress} ) {
 
 
         topic = StringHelper.sanitizeText(topic);
@@ -85,6 +86,8 @@ class CommentsController extends Controller{
 
         topicModel.comments++;
         await topicModel.saveScore();
+
+        await NotificationSubscribersController.addSubscriber({id: comment.slug }, {auth, publicKey });
 
         return comment;
     }
