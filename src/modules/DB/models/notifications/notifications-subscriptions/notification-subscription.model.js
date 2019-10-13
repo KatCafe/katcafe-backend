@@ -1,17 +1,18 @@
 import Model from 'modules/DB/model'
-import client from "../../redis";
+import client from "../../../redis";
 
 export default class NotificationSubscriptionModel extends Model {
 
-    constructor( uuid, who, subscription, date ){
+    constructor( uuid, who, subscription, errors, date ){
 
-        super( 'notSub', ['uuid', 'who', 'subscription', 'date'],
+        super( 'subscription', ['uuid', 'who', 'subscription', 'errors', 'date'],
             [ ] );
 
         this.uuid = uuid;
         this.who = who;
         this.subscription = subscription;
         this.date = date;
+        this.errors = errors;
 
     }
 

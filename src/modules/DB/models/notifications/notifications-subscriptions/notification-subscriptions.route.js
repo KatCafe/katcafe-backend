@@ -1,6 +1,4 @@
 import NotificationSubscriptionsController from "./notification-subscriptions.controller"
-import StringHelper from "../../../helpers/string-helper";
-const webPush = require('web-push');
 import constsSecret from "consts/consts-secret"
 import secp256k1 from "modules/helpers/secp256k1"
 
@@ -12,29 +10,27 @@ export default function (express){
 
     });
 
-    express.post( '/notifications-subscriptions/subscribe', async function(req, res ) {
+    express.post( '/notifications-subscriptions/register-subscription', async function(req, res ) {
 
         try{
-            const {subscription, publicKey, signature} = req.body;
+            const {subscription, signature} = req.body;
+            const {publicKey} = req;
 
             if (req.auth)
                 subscription.user = req.auth.username;
-            else
+            else {
                 delete subscription.user;
+                if (publicKey.length < 62) throw "publicKey is invalid";
+            }
 
             const out = secp256k1.verify( JSON.stringify(subscription), signature, publicKey );
             if (!out) throw "invalid signature";
 
-            console.log("subscription", subscription);
+            delete subscription.user;
 
-            const notificationSubscription = await NotificationSubscriptionsController.createNotificationSubscription(subscription.user ? subscription.user : publicKey,subscription );
+            const notificationSubscription = await NotificationSubscriptionsController.createNotificationSubscription( {subscription}, req );
 
-            const payload = JSON.stringify({
-                title: 'Title',
-                body: "Body",
-            });
-
-            webPush.sendNotification(subscription, payload).catch(error => console.error(error));
+            await NotificationSubscriptionsController.pushNotification( {}, req);
 
             res.json({ out: true });
 

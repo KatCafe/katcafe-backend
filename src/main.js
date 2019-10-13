@@ -135,6 +135,8 @@ class APIServer {
 
             req.ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
+            req.publicKey = req.headers.publicKey;
+
             req.auth = null;
             try{
                 const out = await SessionController.loginModelSession(req.headers.session);

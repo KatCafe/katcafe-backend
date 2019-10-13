@@ -38,6 +38,7 @@ export default function(app, server){
                     }
 
                     data.ipAddress = ipAddress;
+                    data.publicKey = data.headers.publicKey;
 
                     callback(data, {
                         json: a => send(a),

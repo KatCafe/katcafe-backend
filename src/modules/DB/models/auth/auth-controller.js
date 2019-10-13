@@ -24,6 +24,7 @@ class AuthController extends Controller{
         country = StringHelper.sanitizeText(country);
 
         if (!username || username.length < 3) throw "username is invalid. Requires at least 4 letters";
+        if (username.length > 15) throw "username too long. Maximum 15 characters";
         if (StringHelper.url_slug( username ) !== username) throw "Username contains illegal characters";
 
         if (!email || email.length < 5) throw "Email is too small. Requires at least 3 char";
