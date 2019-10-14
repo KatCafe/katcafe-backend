@@ -9,6 +9,7 @@ import Admin from "modules/DB/models/admin/admin.route"
 import Trials from "modules/DB/models/trials/trials.route"
 import NotificationSubscriptions from "modules/DB/models/notifications/notifications-subscriptions/notification-subscriptions.route"
 import NotificationSubscribers from "modules/DB/models/notifications/notifications-subscribers/notification-subscribers.route"
+import Notifications from "modules/DB/models/notifications/notification/notifications.route"
 
 export default function (app){
 
@@ -35,5 +36,6 @@ export default function (app){
     Trials(app);
     NotificationSubscriptions(app);
     NotificationSubscribers(app);
+    Notifications(app);
 
 }

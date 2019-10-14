@@ -13,28 +13,50 @@ class NotificationsController extends  Controller{
         super("notification", Notification);
     }
 
-    async createNotification( {id, data}, {publicKey, auth}){
+    async updateUnreadCount({subscriber, value = 1}){
+        return client.hincrbyAsync(this._table+'s:unread',subscriber, value);
+    }
+
+    async getUnreadCount({subscriber}){
+        return client.hgetAsync(this._table+'s:unread',subscriber);
+    }
+
+    async createNotification( {id, data, payload}, {publicKey, auth}){
 
         const subscribers = await NotificationSubscribersController.getSubscribers({id}, {publicKey, auth});
 
         const notifications = await Promise.all( subscribers.map( async subscriber => {
 
+            let promise;
+
             const notification = new Notification( id, subscriber, data, 1, true );
             if (await notification.load() ) {
                 notification.count += 1;
                 notification.data.comments = Array.concat( notification.data.comments, data.comments ).splice(0, 3);
+                notification.date = new Date().getTime();
+
+                if (!notification.unread) {
+                    notification.unread = true;
+                    promise = this.updateUnreadCount({subscriber, value:1});
+                }
+            } else {
+                promise = this.updateUnreadCount({subscriber, value: 1});
             }
 
-            return notification.save();
+
+            return Promise.all([
+                notification.save(),
+                promise,
+            ]);
 
         }) );
 
-        await NotificationSubscribersController.pushNotificationToSubscribers({id: id, subscribers }, {auth, publicKey});
+        await NotificationSubscribersController.pushNotificationToSubscribers({id: id, subscribers, payload }, {auth, publicKey});
 
 
     }
 
-    async createCommentNotification({id, comment, topic, channel} ){
+    async createCommentNotification({id, comment, topic, channel}, {auth, publicKey} ){
 
         if (!comment){
             comment = new Comment(id);
@@ -47,7 +69,7 @@ class NotificationsController extends  Controller{
                 type: "comment",
                 comments: [id],
             },
-            payload: this.getCommentNotificationPayload({id, comment, topic, channel})
+            payload: await this.getCommentNotificationPayload({id, comment, topic, channel})
         }, {auth, publicKey});
 
 

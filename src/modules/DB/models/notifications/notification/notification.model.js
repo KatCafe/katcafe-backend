@@ -21,4 +21,13 @@ export default class NotificationModel extends Model {
         return this.subscriber.toLowerCase()+':'+this.uuid.toLowerCase();
     }
 
+    async saveScore() {
+        await client.zaddAsync(this._table + "s:"+this.subscriber+":list", this.date, this.id);
+    }
+
+    async deleteScore() {
+        client.zremAsync(this._table + "s:"+this.subscriber+":list", this.id);
+    }
+
+
 }

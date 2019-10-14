@@ -91,7 +91,7 @@ class CommentsController extends Controller{
 
 
         await NotificationSubscribersController.addSubscriber({id: comment.topic }, {auth, publicKey });
-        await NotificationsController.createCommentNotification({id: comment.slug, comment, topic: topicModel, channel: channelModel});
+        await NotificationsController.createCommentNotification({id: comment.slug, comment, topic: topicModel, channel: channelModel}, {auth, publicKey });
 
 
         return comment;
