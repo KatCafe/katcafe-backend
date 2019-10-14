@@ -34,6 +34,19 @@ class NotificationsController extends  Controller{
         return client.hgetAsync(this._table+'s:unread',subscriber);
     }
 
+    async markNotificationRead({id, subscriber, value = false}, {publicKey, auth}){
+
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+
+        const notification = new Notification(id, subscriber);
+        await notification.load();
+
+        notification.unread = !value;
+
+        return notification.save();
+
+    }
+
     async createNotification( {id, data, payload}, {publicKey, auth}){
 
         const subscribers = await NotificationSubscribersController.getSubscribers({id}, {publicKey, auth});
@@ -114,9 +127,12 @@ class NotificationsController extends  Controller{
             await channel.load();
         }
 
+
         return {
             title: `${commentJson.author || 'Anonymous'} replied to ${topic.title} in ${channel.name}`,
             body: `${commentJson.body.substr(0, 150)}`,
+            icon: channel.icon,
+            url: comment.url(),
         }
 
     }

@@ -18,7 +18,7 @@ export default class NotificationModel extends Model {
     }
 
     get id(){
-        return (this.subscriber ? this.subscriber.toLowerCase()+':' : '') + this.uuid ? this.uuid.toLowerCase() : '';
+        return (this.subscriber ? this.subscriber.toLowerCase()+':' : '') + (this.uuid ? this.uuid.toLowerCase() : '');
     }
 
     async saveScore() {

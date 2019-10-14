@@ -63,4 +63,9 @@ export default class Comment extends CommentModel {
         return super.delete();
     }
 
+    url(){
+        const url = this.slug;
+        return '/' + url.substr(0, url.lastIndexOf('/') ) + '#' + url.substr(url.lastIndexOf('/')+1 );
+    }
+
 }

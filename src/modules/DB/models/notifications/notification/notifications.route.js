@@ -2,7 +2,7 @@ import NotificationsController from "./notifications.controller"
 
 export default function (express){
 
-    express.post( '/notifications/clear-unread-notifications', async function(req, res ) {
+    express.get( '/notifications/clear-unread-notifications', async function(req, res ) {
 
         try{
 
@@ -18,7 +18,7 @@ export default function (express){
 
     });
 
-    express.post( '/notifications/get-unread-count-notifications', async function(req, res ) {
+    express.get( '/notifications/get-unread-count-notifications', async function(req, res ) {
 
         try{
 
@@ -58,6 +58,22 @@ export default function (express){
             res.status(500).json( err.toString() );
         }
 
+
+    });
+
+    express.post( '/notifications/mark-notification-read', async function(req, res ) {
+
+        try{
+
+            delete req.body.subscriber;
+
+            await NotificationsController.markNotificationRead(req.body, req);
+
+            res.json({ out: true });
+
+        }catch(err){
+            res.status(500).json( err.toString() );
+        }
 
     });
 
