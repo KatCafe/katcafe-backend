@@ -1,4 +1,5 @@
 import NotificationsController from "./notifications.controller"
+import CommentsController from "../../comments/comments.controller";
 
 export default function (express){
 
@@ -34,6 +35,24 @@ export default function (express){
         }catch(err){
             res.status(500).json( err.toString() );
         }
+
+    });
+
+    express.post( '/notifications/top', async function(req, res ) {
+
+        try{
+
+            let { searchRevert, index, count} = req.body;
+
+            const out = await CommentsController.getByRank( searchRevert, '', '', '', index, count, true, req);
+
+            res.json({ comments: out.map( it=>it.toJSON(false, req.auth ) ) });
+
+
+        }catch(err){
+            res.status(500).json( err.toString() );
+        }
+
 
     });
 

@@ -24,7 +24,7 @@ class Controller{
 
     }
 
-    async getByRank( classModel, revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load, req){
+    async getByRank( revert = false, searchAlgorithm = 'hot', searchQuery, search, index, count, load, req){
 
         if ( !index ) index = 1;
         if ( !count ) count = 10;
@@ -39,7 +39,7 @@ class Controller{
         const p = [], data = [];
 
         for (const slug of out){
-            const obj = new classModel( slug );
+            const obj = new this._class( slug );
             p.push( obj.load() );
             data.push( obj );
         }

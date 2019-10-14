@@ -45,12 +45,6 @@ class ChannelsController extends Controller{
 
     }
 
-    async getByRank(revert , searchAlgorithm , searchQuery, search, index, count, load){
-
-        return super.getByRank.call(this,  Channel, revert, searchAlgorithm, searchQuery, search, index, count, load );
-
-    }
-
 }
 
 export default new ChannelsController();

@@ -118,12 +118,6 @@ class CommentsController extends Controller{
         return comment;
     }
 
-    async getByRank(revert , searchAlgorithm , searchQuery, search, index, count, load, auth){
-
-        return super.getByRank.call(this, Comment, revert, searchAlgorithm, searchQuery, search, index, count, load, auth );
-
-    }
-
 }
 
 export default new CommentsController();
