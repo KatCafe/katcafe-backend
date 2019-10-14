@@ -13,11 +13,24 @@ class NotificationsController extends  Controller{
         super("notification", Notification);
     }
 
-    async updateUnreadCount({subscriber, value = 1}){
+    async clearUnreadCount({subscriber, value = 1}, {publicKey, auth}){
+
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+        return client.hdelAsync(this._table+'s:unread',subscriber);
+
+    }
+
+    async updateUnreadCount({subscriber, value = 1}, {publicKey, auth}){
+
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+
         return client.hincrbyAsync(this._table+'s:unread',subscriber, value);
     }
 
-    async getUnreadCount({subscriber}){
+    async getUnreadCount({subscriber}, {publicKey, auth}){
+
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+
         return client.hgetAsync(this._table+'s:unread',subscriber);
     }
 
@@ -37,10 +50,10 @@ class NotificationsController extends  Controller{
 
                 if (!notification.unread) {
                     notification.unread = true;
-                    promise = this.updateUnreadCount({subscriber, value:1});
+                    promise = this.updateUnreadCount({subscriber, value:1}, {publicKey, auth});
                 }
             } else {
-                promise = this.updateUnreadCount({subscriber, value: 1});
+                promise = this.updateUnreadCount({subscriber, value: 1}, {publicKey, auth});
             }
 
 
