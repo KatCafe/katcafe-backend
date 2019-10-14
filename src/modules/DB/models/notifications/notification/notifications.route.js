@@ -1,5 +1,4 @@
 import NotificationsController from "./notifications.controller"
-import CommentsController from "../../comments/comments.controller";
 
 export default function (express){
 
@@ -44,9 +43,15 @@ export default function (express){
 
             let { searchRevert, index, count} = req.body;
 
-            const out = await CommentsController.getByRank( searchRevert, '', '', '', index, count, true, req);
+            const out = await NotificationsController.getByRank( searchRevert, '', '', 'list', index, count, true, req);
 
-            res.json({ comments: out.map( it=>it.toJSON(false, req.auth ) ) });
+            const notifications = out.map( it=>it.toJSON(false, req.auth ) );
+
+            const payloads = await Promise.all( out.map ( it=> NotificationsController.getPayload({notification: it}, req ) ) );
+
+            notifications.map ( (it, index) => notifications[index].payload = payloads[index] );
+
+            res.json({ notifications });
 
 
         }catch(err){

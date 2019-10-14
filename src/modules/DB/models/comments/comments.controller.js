@@ -20,7 +20,7 @@ import NotificationsController from "./../notifications/notification/notificatio
 class CommentsController extends Controller{
 
     constructor(){
-        super('comment', Comment);
+        super('comment', Comment, true);
     }
 
     async createModel({ topic, body='', link='', file, captcha, isAnonymous = false }, {auth, publicKey, ipAddress} ) {

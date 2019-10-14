@@ -18,15 +18,15 @@ export default class NotificationModel extends Model {
     }
 
     get id(){
-        return this.subscriber.toLowerCase()+':'+this.uuid.toLowerCase();
+        return (this.subscriber ? this.subscriber.toLowerCase()+':' : '') + this.uuid ? this.uuid.toLowerCase() : '';
     }
 
     async saveScore() {
-        await client.zaddAsync(this._table + "s:"+this.subscriber+":list", this.date, this.id);
+        await client.zaddAsync(this._table + "s:rank:"+this.subscriber+":list", this.date, this.id);
     }
 
     async deleteScore() {
-        client.zremAsync(this._table + "s:"+this.subscriber+":list", this.id);
+        client.zremAsync(this._table + "s:rank:"+this.subscriber+":list", this.id);
     }
 
 

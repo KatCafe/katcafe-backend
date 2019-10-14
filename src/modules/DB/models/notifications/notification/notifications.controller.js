@@ -69,7 +69,14 @@ class NotificationsController extends  Controller{
 
     }
 
-    async createCommentNotification({id, comment, topic, channel}, {auth, publicKey} ){
+    async getPayload({notification}, req){
+
+        if (notification.data.type === 'comment') return this.getCommentNotificationPayload({id: notification.data.comments[0]}, req);
+
+        throw "payload was not identified";
+    }
+
+    async createCommentNotification({id, comment, topic, channel}, req ){
 
         if (!comment){
             comment = new Comment(id);
@@ -82,20 +89,20 @@ class NotificationsController extends  Controller{
                 type: "comment",
                 comments: [id],
             },
-            payload: await this.getCommentNotificationPayload({id, comment, topic, channel})
-        }, {auth, publicKey});
+            payload: await this.getCommentNotificationPayload({id, comment, topic, channel}, req)
+        }, req);
 
 
     }
 
-    async getCommentNotificationPayload({id, comment, topic, channel}){
+    async getCommentNotificationPayload({id, comment, topic, channel}, {auth}){
 
         if (!comment){
             comment = new Comment(id);
             await comment.load();
         }
 
-        const commentJson = comment.toJSON(false,);
+        const commentJson = comment.toJSON(false, auth );
 
         if (!topic){
             topic = new Topic(comment.topic);
@@ -112,6 +119,13 @@ class NotificationsController extends  Controller{
             body: `${commentJson.body.substr(0, 150)}`,
         }
 
+    }
+
+    async getByRank( revert = false, searchAlgorithm = '', searchQuery, search, index, count, load, req){
+
+        if (!searchQuery) searchQuery = CryptoHelper.md5(req.auth ? req.auth.user : req.publicKey ).toString("base64");
+
+        return super.getByRank(revert, searchAlgorithm, searchQuery, search, index, count, load, req);
     }
 
 }

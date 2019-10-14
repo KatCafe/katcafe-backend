@@ -8,9 +8,10 @@ import Channel from "./models/channels/channel";
 
 class Controller{
 
-    constructor(table='table', modelClass = undefined){
+    constructor(table='table', modelClass = undefined, hasVotes = false){
         this._table = table;
         this._class = modelClass;
+        this._hasVotes = hasVotes;
     }
 
     async createModel(model){
@@ -32,7 +33,7 @@ class Controller{
         search = decodeURI( (search || '').toLowerCase() );
         count = Math.min( count, 30);
 
-        const out = await client[ `z${ revert ? 'rev' : '' }rangeAsync` ]( `${this._table}s:rank:${searchAlgorithm}:${searchQuery}${search ? ':'+search : ''}`, (index-1) * count, index*count-1 );
+        const out = await client[ `z${ revert ? 'rev' : '' }rangeAsync` ]( `${this._table}s:rank${searchAlgorithm ? ':' + searchAlgorithm : ''}${searchQuery ? ':' + searchQuery : ''}${search ? ':'+search : ''}`, (index-1) * count, index*count-1 );
 
         if (!load) return out;
 
@@ -46,7 +47,7 @@ class Controller{
 
         await Promise.all( p );
 
-        if (req){
+        if (req && this._hasVotes){
 
             const outVotes = await Promise.all( data.map (data => VotesController.getVote( data.slug, req )) );
             data.map( (it, index) => it.myVote = outVotes[index] );

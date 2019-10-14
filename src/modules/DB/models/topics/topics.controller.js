@@ -11,7 +11,7 @@ import NotificationSubscribersController from "./../notifications/notifications-
 class TopicsController extends Controller{
 
     constructor(){
-        super('topic', Topic);
+        super('topic', Topic, true);
     }
 
     async createModel( {channel, title='', link='', body='', isAnonymous=false, file, captcha}, {auth, publicKey, ipAddress} ) {
