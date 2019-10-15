@@ -80,7 +80,8 @@ class TopicsController extends Controller{
         channelModel.topics++;
         await channelModel.saveScore();
 
-        await NotificationSubscribersController.addSubscriber({id: topic.slug }, {auth, publicKey });
+        //promises are not awaited
+        NotificationSubscribersController.addSubscriber({id: topic.slug }, {auth, publicKey });
 
         return topic;
     }

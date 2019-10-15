@@ -47,11 +47,11 @@ class NotificationSubscriptionsController extends  Controller{
 
         const subscriptions = await this.loadAll(undefined, subscriber );
 
-        payload = JSON.stringify(payload );
+        if (typeof payload === "string") payload = JSON.stringify(payload );
 
         const promises = subscriptions.map( subscription => webPush.sendNotification( subscription.subscription, payload) );
 
-        const results =  await Promise.all(promises.map(p => p.catch(e => e)));
+        const results = await Promise.all(promises.map(p => p.catch(e => e)) );
 
         const updates = await Promise.all( results.map ( (it, index) => {
 
@@ -59,9 +59,9 @@ class NotificationSubscriptionsController extends  Controller{
                 console.error("Error pushing notification", it);
                 subscriptions[index].errors += 1;
                 return subscriptions[index].save();
-            } else {
+            } else
+                return undefined;
 
-            }
 
         }));
 

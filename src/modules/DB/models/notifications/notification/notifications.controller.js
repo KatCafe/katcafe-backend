@@ -51,6 +51,7 @@ class NotificationsController extends  Controller{
 
         const subscribers = await NotificationSubscribersController.getSubscribers({id}, {publicKey, auth});
 
+        //add notifications
         const notifications = await Promise.all( subscribers.map( async subscriber => {
 
             let promise;
@@ -75,8 +76,10 @@ class NotificationsController extends  Controller{
 
         }) );
 
-        await NotificationSubscribersController.pushNotificationToSubscribers({id: id, subscribers, payload }, {auth, publicKey});
+        const pushNotifications = NotificationSubscribersController.pushNotificationToSubscribers({id: id, subscribers, payload }, {auth, publicKey});
 
+
+        return Promise.all( notifications.concat(pushNotifications) );
 
     }
 
