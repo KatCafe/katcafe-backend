@@ -53,7 +53,7 @@ class NotificationSubscriptionsController extends  Controller{
 
         payload = JSON.stringify(payload );
 
-        const promises = subscriptions.map( model => webPush.sendNotification( model.subscription, payload) );
+        const promises = subscriptions.map( subscription => webPush.sendNotification( subscription.subscription, payload) );
 
         const results =  await Promise.all(promises.map(p => p.catch(e => e)));
 

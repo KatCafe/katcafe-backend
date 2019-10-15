@@ -98,6 +98,8 @@ class TopicsController extends Controller{
         //refresh score of parent
         await channel.saveScore();
 
+        await NotificationSubscribersController.removeSubscribers({id: topic.slug}, params )
+
         return topic;
     }
 

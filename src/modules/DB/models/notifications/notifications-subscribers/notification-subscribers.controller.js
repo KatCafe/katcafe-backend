@@ -9,11 +9,15 @@ class NotificationSubscribers extends  Controller{
         super("subscriber", null);
     }
 
+    async removeSubscribers({id}, {publicKey, auth}){
+        return client.delAsync(this._table+'s:'+id+':list');
+    }
+
     async addSubscriber({id, subscriber}, {publicKey, auth}){
 
         if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.username : publicKey ).toString("base64");
 
-        await client.saddAsync(this._table + "s:"+id+":list", subscriber);
+        return client.saddAsync(this._table + 's:'+id+':list', subscriber);
 
     }
 
@@ -21,7 +25,7 @@ class NotificationSubscribers extends  Controller{
 
         if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.username : publicKey ).toString("base64");
 
-        await client.sremAsync(this._table + "s:"+id+":list", subscriber);
+        return client.sremAsync(this._table + 's:'+id+':list', subscriber);
     }
 
     async getSubscribers({id}, {publicKey, auth}){
