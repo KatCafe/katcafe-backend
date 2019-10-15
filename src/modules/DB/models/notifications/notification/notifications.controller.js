@@ -16,7 +16,7 @@ class NotificationsController extends  Controller{
     async clearUnreadCount({subscriber, value = 1}, {publicKey, auth}){
 
         if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
-        return client.hdelAsync(this._table+'s:unread',subscriber);
+        return client.delAsync(this._table+'s:unread:'+subscriber, );
 
     }
 
@@ -24,14 +24,14 @@ class NotificationsController extends  Controller{
 
         if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
 
-        return client.hincrbyAsync(this._table+'s:unread',subscriber, value);
+        return client.saddAsync(this._table+'s:unread:'+subscriber, value);
     }
 
     async getUnreadCount({subscriber}, {publicKey, auth}){
 
         if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
 
-        return client.hgetAsync(this._table+'s:unread',subscriber);
+        return client.scardAsync(this._table+'s:unread:'+subscriber );
     }
 
     async markNotificationRead({id, subscriber, value = false}, {publicKey, auth}){
@@ -61,14 +61,12 @@ class NotificationsController extends  Controller{
                 notification.data.comments = Array.concat( notification.data.comments, data.comments ).splice(0, 3);
                 notification.date = new Date().getTime();
 
-                if (!notification.unread) {
+                if (!notification.unread)
                     notification.unread = true;
-                    promise = this.updateUnreadCount({subscriber, value:1}, {publicKey, auth});
-                }
-            } else {
-                promise = this.updateUnreadCount({subscriber, value: 1}, {publicKey, auth});
+
             }
 
+            promise = this.updateUnreadCount({subscriber, value: id}, {publicKey, auth});
 
             return Promise.all([
                 notification.save(),
@@ -102,13 +100,13 @@ class NotificationsController extends  Controller{
                 type: "comment",
                 comments: [id],
             },
-            payload: await this.getCommentNotificationPayload({id, comment, topic, channel}, req)
+            payload: await this.getCommentNotificationPayload({id, comment, topic, channel }, req)
         }, req);
 
 
     }
 
-    async getCommentNotificationPayload({id, comment, topic, channel}, {auth}){
+    async getCommentNotificationPayload({id, comment, topic, channel, useTags = false}, {auth}){
 
         if (!comment){
             comment = new Comment(id);
@@ -127,10 +125,16 @@ class NotificationsController extends  Controller{
             await channel.load();
         }
 
+        let title = `${ commentJson.author ? '<b>'+commentJson.author+'</b>' : 'Anonymous'} replied to <b>${topic.title}</b> in <b>${channel.name}</b>:`;
+
+        if (!useTags) {
+            title = title.replace(/<b>/g,'');
+            title = title.replace(/<\/b>/g,'');
+        }
 
         return {
-            title: `${commentJson.author || 'Anonymous'} replied to ${topic.title} in ${channel.name}`,
-            body: `${commentJson.body.substr(0, 150)}`,
+            title: title,
+            body: `${commentJson.body.substr(0, 100)}`,
             icon: channel.icon,
             url: comment.url(),
         }
