@@ -11,7 +11,7 @@ class NotificationSubscribers extends  Controller{
 
     async addSubscriber({id, subscriber}, {publicKey, auth}){
 
-        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.username : publicKey ).toString("base64");
 
         await client.saddAsync(this._table + "s:"+id+":list", subscriber);
 
@@ -19,7 +19,7 @@ class NotificationSubscribers extends  Controller{
 
     async removeSubscriber({id, subscriber}, {publicKey, auth}){
 
-        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.username : publicKey ).toString("base64");
 
         await client.sremAsync(this._table + "s:"+id+":list", subscriber);
     }
@@ -29,7 +29,7 @@ class NotificationSubscribers extends  Controller{
         let subscribers = await this.getAllIds(id);
 
         //filtering removing except me
-        const except1 = auth ? CryptoHelper.md5(auth.user ).toString("base64") : undefined;
+        const except1 = auth ? CryptoHelper.md5(auth.username ).toString("base64") : undefined;
         const except2 = CryptoHelper.md5( publicKey).toString("base64");
 
         subscribers = subscribers.filter( it => it !== except1 && it !== except2 );

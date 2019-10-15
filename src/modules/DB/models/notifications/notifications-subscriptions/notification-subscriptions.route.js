@@ -30,7 +30,19 @@ export default function (express){
 
             const notificationSubscription = await NotificationSubscriptionsController.createNotificationSubscription( {subscription}, req );
 
-            await NotificationSubscriptionsController.pushNotification( {}, req);
+            res.json({ out: true });
+
+        }catch(err){
+            res.status(500).json( err.toString() );
+        }
+
+    });
+
+    express.post( '/notifications-subscriptions/unsubscribe', async function(req, res ) {
+
+        try{
+
+            await NotificationSubscriptionsController.deleteNotificationSubscription( req.body, req );
 
             res.json({ out: true });
 

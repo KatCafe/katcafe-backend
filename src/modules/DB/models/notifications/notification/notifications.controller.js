@@ -15,28 +15,28 @@ class NotificationsController extends  Controller{
 
     async clearUnreadCount({subscriber, value = 1}, {publicKey, auth}){
 
-        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.username : publicKey ).toString("base64");
         return client.delAsync(this._table+'s:unread:'+subscriber, );
 
     }
 
     async updateUnreadCount({subscriber, value = 1}, {publicKey, auth}){
 
-        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.username : publicKey ).toString("base64");
 
         return client.saddAsync(this._table+'s:unread:'+subscriber, value);
     }
 
     async getUnreadCount({subscriber}, {publicKey, auth}){
 
-        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.username : publicKey ).toString("base64");
 
         return client.scardAsync(this._table+'s:unread:'+subscriber );
     }
 
     async markNotificationRead({id, subscriber, value = false}, {publicKey, auth}){
 
-        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.user : publicKey ).toString("base64");
+        if (!subscriber) subscriber = CryptoHelper.md5(auth ? auth.username : publicKey ).toString("base64");
 
         const notification = new Notification(id, subscriber);
         await notification.load();
@@ -82,7 +82,7 @@ class NotificationsController extends  Controller{
 
     async getPayload({notification}, req){
 
-        if (notification.data.type === 'comment') return this.getCommentNotificationPayload({id: notification.data.comments[0]}, req);
+        if (notification.data.type === 'comment') return this.getCommentNotificationPayload({id: notification.data.comments[0], useTags: true}, req);
 
         throw "payload was not identified";
     }
@@ -143,7 +143,7 @@ class NotificationsController extends  Controller{
 
     async getByRank( revert = false, searchAlgorithm = '', searchQuery, search, index, count, load, req){
 
-        if (!searchQuery) searchQuery = CryptoHelper.md5(req.auth ? req.auth.user : req.publicKey ).toString("base64");
+        if (!searchQuery) searchQuery = CryptoHelper.md5(req.auth ? req.auth.username : req.publicKey ).toString("base64");
 
         return super.getByRank(revert, searchAlgorithm, searchQuery, search, index, count, load, req);
     }
