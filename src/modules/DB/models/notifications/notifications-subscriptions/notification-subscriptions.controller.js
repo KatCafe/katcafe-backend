@@ -17,9 +17,7 @@ class NotificationSubscriptionsController extends  Controller{
     async createNotificationSubscription( {subscription}, {publicKey, auth}){
 
         const subscriber = CryptoHelper.md5(auth ? auth.username : publicKey ).toString("base64");
-
         const data = { subscriber,  subscription, };
-
         const id = CryptoHelper.md5( JSON.stringify(data), undefined).toString("base64");
 
         const notificationSubscription = new NotificationSubscription(id, subscriber, subscription);
@@ -34,9 +32,7 @@ class NotificationSubscriptionsController extends  Controller{
     async deleteNotificationSubscription({subscription}, {publicKey, auth}){
 
         const subscriber = CryptoHelper.md5(auth ? auth.username : publicKey ).toString("base64");
-
         const data = { subscriber,  subscription, };
-
         const id = CryptoHelper.md5( JSON.stringify(data), undefined).toString("base64");
 
         const notificationSubscription = new NotificationSubscription(id, subscriber, subscription);
@@ -62,12 +58,14 @@ class NotificationSubscriptionsController extends  Controller{
             if (it instanceof Error ){
                 console.error("Error pushing notification", it);
                 subscriptions[index].errors += 1;
-                return subscriptions.save();
+                return subscriptions[index].save();
             } else {
 
             }
 
         }));
+
+        return updates;
 
     }
 
