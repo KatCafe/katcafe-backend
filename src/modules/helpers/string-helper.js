@@ -184,11 +184,7 @@ class StringHelper {
 
     removeWhiteSpace(str, removeNewLines = true){
 
-        if (!removeNewLines) {
-            str = str.replace(/[^\S\r\n]+/g, ' ');
-            str = str.replace(/[\r\n]{2,}/g, "\n");
-        }
-        else str = str.replace(/\s+/g,' ');
+        if (removeNewLines) str = str.replace(/\s+/g,' ');
 
         return str.trim();
 
