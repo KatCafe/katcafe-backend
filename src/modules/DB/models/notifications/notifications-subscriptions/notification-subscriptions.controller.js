@@ -47,7 +47,7 @@ class NotificationSubscriptionsController extends  Controller{
 
         const subscriptions = await this.loadAll(undefined, subscriber );
 
-        if (typeof payload === "string") payload = JSON.stringify(payload );
+        if (typeof payload === "object") payload = JSON.stringify(payload );
 
         const promises = subscriptions.map( subscription => webPush.sendNotification( subscription.subscription, payload) );
 
