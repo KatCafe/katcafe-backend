@@ -59,7 +59,7 @@ class NotificationsController extends  Controller{
             const notification = new Notification( id, subscriber, data, 1, true );
             if (await notification.load() ) {
                 notification.count += 1;
-                notification.data.comments = Array.concat( notification.data.comments, data.comments ).splice(0, 3);
+                notification.data.comments = Array.concat( data.comments, notification.data.comments ).splice(0, 3);
                 notification.date = new Date().getTime();
 
                 if (!notification.unread)
