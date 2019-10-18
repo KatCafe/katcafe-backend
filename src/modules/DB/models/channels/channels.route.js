@@ -23,7 +23,7 @@ export default function (express){
 
         try{
 
-            let { slug } = req.body;
+            let slug = decodeURI(req.body.slug);
 
             if (!slug || slug.length < 1) throw "slug is not right";
             slug = StringHelper.trimSlashes(slug);
