@@ -115,6 +115,16 @@ class TrialsController extends Controller {
 
     }
 
+    /*
+        it will make the captcha for 7 days to be present
+     */
+    async blockDays({ days = 7, user }, params){
+
+        const map = ['spam:tpc', 'spam:cmt' ].map (category => this._increaseTrialByIpAddress( { category: category, count: MaxCounts[category]( user ).d * days, maxCount: 'none'}, params) );
+
+        return await Promise.all( map );
+
+    }
 
 }
 
