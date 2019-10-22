@@ -3,6 +3,7 @@ import StringHelper from "modules/helpers/string-helper";
 import Controller from "../../controller";
 import CaptchaController from "../captcha/captcha-controller";
 import client from "../../redis";
+import UserRole from "../auth/users/user-role";
 
 const MaxCountsPrefixes = ['2m', '5m','h','d'];
 
@@ -118,9 +119,11 @@ class TrialsController extends Controller {
     /*
         it will make the captcha for 7 days to be present
      */
-    async blockDays({ days = 7, user }, params){
+    async blockDays({ days = 7, username, ipAddress }, {auth}){
 
-        const map = ['spam:tpc', 'spam:cmt' ].map (category => this._increaseTrialByIpAddress( { category: category, count: MaxCounts[category]( user ).d * days, maxCount: 'none'}, params) );
+        if (!auth || auth.role !== UserRole.SYS_ADMIN) throw "You don't have SYS_ADMIN privileges";
+
+        const map = ['spam:tpc', 'spam:cmt' ].map (category => this._increaseTrialByIpAddress( { category: category, count: MaxCounts[category]( {auth: username } ).d * days, maxCount: 'none'}, { auth: username ?  {username} : undefined, ipAddress }) );
 
         return await Promise.all( map );
 
