@@ -12,7 +12,6 @@ class VotesController {
         if (value !== -1 && value !== 0 && value !== 1) throw "value is invalid";
         if (parentType !== 'comment' && parentType !== 'topic') throw "parenType is invalid";
 
-
         let vote = new Vote( slug, ipAddress, value );
 
         let prevVote = 0;

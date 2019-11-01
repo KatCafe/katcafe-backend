@@ -15,7 +15,7 @@ class BansController extends Controller {
         for (const ip of this._list){
 
             if (ipAddress === ip)
-                throw "banned";
+                throw "you have been banned";
 
         }
 
