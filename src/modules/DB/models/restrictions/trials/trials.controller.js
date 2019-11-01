@@ -1,9 +1,9 @@
 import Trial from "./trial"
 import StringHelper from "modules/helpers/string-helper";
-import Controller from "../../controller";
-import CaptchaController from "../captcha/captcha-controller";
-import client from "../../redis";
-import UserRole from "../auth/users/user-role";
+import Controller from "../../../controller";
+import CaptchaController from "../../captcha/captcha-controller";
+import client from "../../../redis";
+import UserRole from "../../auth/users/user-role";
 
 const MaxCountsPrefixes = ['2m', '5m','h','d'];
 

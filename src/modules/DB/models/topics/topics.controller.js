@@ -5,7 +5,8 @@ import StringHelper from "modules/helpers/string-helper";
 import ScraperHelper from "../scraper/scraper-controller";
 import FileController from "../files/file-controller";
 import client from "modules/DB/redis"
-import TrialsController from "../trials/trials.controller";
+import TrialsController from "../restrictions/trials/trials.controller";
+import BansController from "../restrictions/bans/bans.controller";
 import NotificationSubscribersController from "./../notifications/notifications-subscribers/notification-subscribers.controller";
 
 class TopicsController extends Controller{
@@ -25,6 +26,8 @@ class TopicsController extends Controller{
         if (!channel || channel.length < 1) throw "Channel was not selected";
 
         if (typeof isAnonymous !== "boolean") throw "isAnonymous is not boolean";
+
+        await BansController.processBan({auth, ipAddress});
 
         await TrialsController.process({category: 'spam:tpc', captcha}, {auth, ipAddress});
 

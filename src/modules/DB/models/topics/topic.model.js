@@ -42,6 +42,7 @@ export default class TopicModel extends Model {
             const hasRights = (userAuth && userAuth.isUserOwner(this, 'owner'));
 
             if ( this.isAnonymous !== false && !hasRights) delete out.owner;
+
             if (!hasRights) {
                 delete out.isAnonymous;
                 delete out.ip;

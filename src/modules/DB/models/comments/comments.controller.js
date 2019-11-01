@@ -13,9 +13,10 @@ import FileController from "modules/DB/models/files/file-controller"
 import VotesController from "./../votes/votes.controller"
 import Controller from "../../controller";
 
-import TrialsController from "./../trials/trials.controller"
+import TrialsController from "../restrictions/trials/trials.controller"
 import NotificationSubscribersController from "./../notifications/notifications-subscribers/notification-subscribers.controller"
 import NotificationsController from "./../notifications/notification/notifications.controller"
+import BansController from "../restrictions/bans/bans.controller";
 
 class CommentsController extends Controller{
 
@@ -46,6 +47,8 @@ class CommentsController extends Controller{
         const slug = topicModel.slug + '/';
         let existsComment = new Topic();
         let suffix = '';
+
+        await BansController.processBan({auth, ipAddress});
 
         await TrialsController.process({category: 'spam:cmt', captcha}, {auth, ipAddress});
 

@@ -1,5 +1,5 @@
 import Model from "modules/DB/model"
-import client from "../../redis";
+import client from "../../../redis";
 
 export default class Trial extends Model {
 
