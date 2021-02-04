@@ -16,6 +16,14 @@ class Sitemap{
         if (start){
             
             console.log("Sitemap Starting");
+            // create generator
+            this._generator = SitemapGenerator(consts.DOMAIN, {
+                filepath: './public/sitemap.xml',
+                maxEntriesPerFile: 50000,
+                changeFreq: 'always',
+                maxConcurrency: 1, //to avoid making the website run slow
+            });
+           
             this._generateSitemap();
         }
         
@@ -24,14 +32,6 @@ class Sitemap{
     _generateSitemap(){
         
         this._finished = false;
-
-        // create generator
-        this._generator = SitemapGenerator(consts.DOMAIN, {
-            filepath: './public/sitemap.xml',
-            maxEntriesPerFile: 50000,
-            changeFreq: 'always',
-            maxConcurrency: 1, //to avoid making the website run slow
-        });
 
         // register event listeners
         this._generator.on('done', () => {
