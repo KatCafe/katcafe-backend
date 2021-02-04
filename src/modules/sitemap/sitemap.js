@@ -1,6 +1,6 @@
 import consts from 'consts/consts';
 
-import SitemapGenerator from 'sitemap-generator';
+import SitemapGenerator from ']';
 import NetworkHelper from "modules/helpers/network-helper"
 
 const start = consts.SITEMAP;
@@ -13,28 +13,17 @@ class Sitemap{
         this._finished = true;
 
         // start the crawler
-        if (start)
-            setInterval( ()=>{
-
-                try{
-
-                    if ( this._finished && new Date().getTime() - this._lastTime > 5*1000 ) {
-
-                        this._finished = false;
-
-                        console.log("Sitemap Starting");
-                        this._generateSitemap();
-                    }
-
-                }catch(err){
-
-                }
-
-            }, 3000);
-
+        if (start){
+            
+            console.log("Sitemap Starting");
+            this._generateSitemap();
+        }
+        
     }
 
     _generateSitemap(){
+        
+        this._finished = false;
 
         // create generator
         this._generator = SitemapGenerator(consts.DOMAIN, {
@@ -47,7 +36,7 @@ class Sitemap{
         // register event listeners
         this._generator.on('done', () => {
 
-            // sitemaps created
+            // sitemaps created_generateSitemap
             return this.sitemapCreated();
 
         });
@@ -74,6 +63,8 @@ class Sitemap{
 
         this._lastTime = new Date().getTime();
         this._finished = true;
+        
+        setTimeout( () => this._generateSitemap(), 5*60*1000 );       
     }
 
     initExpress(app){
