@@ -1,6 +1,6 @@
 import consts from 'consts/consts';
 
-import SitemapGenerator from ']';
+import SitemapGenerator from 'sitemap-generator';
 import NetworkHelper from "modules/helpers/network-helper"
 
 const start = consts.SITEMAP;
